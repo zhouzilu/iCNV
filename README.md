@@ -28,6 +28,6 @@ install_github("zhouzilu/iCNV")
 ```
 
 ## Demo code & Vignettes
-* [Vignettes](http://www.bioconductor.org/packages/devel/bioc/vignettes/CODEX/inst/doc/CODEX_vignettes.pdf)
+* [Vignettes](iCNV/vignettes/iCNV-vignette.Rmd)
 
 
