@@ -1,6 +1,6 @@
-library(fields)
-library(truncnorm)
-library(ggplot2)
+devtools::use_package('fields')
+devtools::use_package('truncnorm')
+devtools::use_package('ggplot2')
 #' Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
 #'
 #' @param r1L A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
