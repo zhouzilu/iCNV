@@ -16,6 +16,7 @@ devtools::use_package('ggplot2')
 #' @param projname A string as the name of this project. Default 'iCNV'
 #' @param CN An indicator variable with value {0,1} for whether wants to infer exact copy number. 0 no exact CN, 1 exact CN. Default 0.
 #' @param mu A length tree vectur specify means of intensity in mixture normal distribution (Deletion, Diploid, Duplification). Default c(-3,0,2)
+#' @param cap A boolean decides whether we cap insane intensity value due to double deletion or mutiple amplification. Default False
 #' @keywords CNV, BAF, Platform integration, Intensity
 #' @return (1) CNV inference, contains CNV inference, Start and end position for each inference, Conditional probability for each inference, mu for mixture normal, sigma for mixture normal, probability of CNVs, Z score for each inference.
 #' @return (2) exact copy number for each CNV inference, if CN=1.
