@@ -1,13 +1,14 @@
----
-title: "iCNV Vignette"
-author: "Zilu Zhou"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+
+# iCNV Vignette
+
+## Author
+Zilu Zhou, Nancy R. Zhang
+
+## Maintainer
+Zilu Zhou <zhouzilu@upenn.edu>
+
+## Date
+09/06/2017
 
   This is a demo for using the **iCNV** package in R. **iCNV** is a normalization and copy number variation detection procedure for mutiple study designs: WES only, WGS only, SNP array only, or any combination of SNP and sequencing data. **iCNV** applies platform specific normalization, utilizes allele specific reads from sequencing and integrates matched NGS and SNP-array data by a Hidden Markov Model (HMM). Figure 1 shows the overall pipeline. This package specifically emphasizes on the steps within the red box. Below is an example on calling copy number variation using whole-exome sequencing data and array SNPs of 38 samples from Alzheimer's Disease Sequencing Project. Only second half of chromesome 22 are analysed for illustration purposes. We will seperately shows normalization for WES and SNP array. We will also introduce integrated calling procedure as well as single platform procedure. R packages are avaliable at github and the toy dataset.
 
@@ -22,7 +23,7 @@ We could seperate the basic iCNV workflow into 5 steps: **1.** package installat
 ### 2.1 Install iCNV.
 
 Install iCNV dependent packages `fields, truncnorm, ggplot2, and CODEX` first
-```
+```r
 install.packages("fields")
 install.packages("truncnorm")
 install.packages("ggplot2")
@@ -31,13 +32,13 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("CODEX")
 ```
 Install the current release from Github:
-```
+```r
 install.packages("devtools")
 library(devtools)
 install_github("zhouzilu/iCNV")
 ```
 ### 2.2 .bam file normalization using CODEX
-```
+```r
 ###################################################
 ### 2.2 code chunk number 1: bambedObj1
 ###################################################
@@ -85,7 +86,7 @@ default method to determine the number of Poisson factors. Since false positives
 a closer examination of the post-segmentation data, whereas CNV signals removed in the normalization step
 cannot be recovered, CODEX opts for a more conservative normalization that, when in doubt, uses a smaller
 value of K.
-```
+```r
 optK = K[which.max(BIC)]
 load(paste0(projectname,"_",chr,".rda"))
 ###################################################
@@ -117,7 +118,7 @@ for i in *bam; do PATH/TO/SAMTOOLS/samtools mpileup -ugI -t DP -t DV -f PATH/TO/
 ### 2.4 SNP array LRR normalization and BAF
 
 For some of the SNP array LRR data, we need to apply SVD normalization to remove high dimension noisy and preserve low dimension signal. The best way to decide data senity is by plotting out the data. Noisy data has the feature of local strip across samples. Example code for remove high dimension noisy:
-```
+```r
 # lrr is LRR matrix, with row as sample and column as positions
 # You may want to substitute all the NAs in lrr by rowMeans
 lrr.svd = svd (lrr)
@@ -138,15 +139,15 @@ dev.off()
 ### 2.5 CNV detection using **iCNV**
 
 At this step, we should alreday have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array.
-```
+```r
 str(z1) # List of n vector, each one is the PLR for an exon
 str(z1pos) # List of n matrix (p x 2), each one is the start and end location for an exon
-str (baf1) # List of n vector, each one is the variants BAF from .bam
-str (baf1pos) # List of n vector, each one is the variants BAF position
+str(baf1) # List of n vector, each one is the variants BAF from .bam
+str(baf1pos) # List of n vector, each one is the variants BAF position
 str(z2) # List of n vector, each one is the normalized LRR for a SNP
 str(z2pos) # List of n vector, each one is a SNP position
-str (baf2) # List of n vector, each one is the BAF for a SNP
-str (baf2pos) # List of n vector, each one is the SNP BAF position
+str(baf2) # List of n vector, each one is the BAF for a SNP
+str(baf2pos) # List of n vector, each one is the SNP BAF position
 finalcall <- iCNV_detection(z1,z2,baf1,baf2,z1pos,z2pos,baf1pos,baf2pos,mu=c(-3,0,2),projname=projname)
 ```
 
