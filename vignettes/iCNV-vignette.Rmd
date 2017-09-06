@@ -140,6 +140,7 @@ dev.off()
 
 At this step, we should alreday have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array.
 ```r
+library(iCNV)
 str(z1) # List of n vector, each one is the PLR for an exon
 str(z1pos) # List of n matrix (p x 2), each one is the start and end location for an exon
 str(baf1) # List of n vector, each one is the variants BAF from .bam
