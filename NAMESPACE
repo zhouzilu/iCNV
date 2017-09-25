@@ -3,3 +3,4 @@
 export(iCNV_detection)
 export(plotHMMscore1)
 export(plotindi)
+export(output_list)
