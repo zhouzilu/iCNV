@@ -100,7 +100,7 @@ plotindi = function(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,hmmcalls,I,h=min(h
     a=Lposi[i,1]
     b=Lposi[i,2]
     if(a==b){
-      sel=which(ttlpos<a)
+      sel=which(ttlpos<=a)
       mat[5,max(sel)]=score[i]
     }
     else {
