@@ -47,7 +47,21 @@ iCNV_detection(r1L = NULL, r2L = NULL, baf1 = NULL, baf2 = NULL,
 Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
 }
 \examples{
-iCNV_detection()
+# icnv call without genotype (just infer deletion, duplication)
+projname='icnv.demo'
+icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
+                         ngs_baf,snp_baf,
+                         ngs_plr.pos,snp_lrr.pos,
+                         ngs_baf.pos,snp_baf.pos,
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+
+# icnv call with genotype inference and complete plot
+projname='icnv.demo.geno'
+icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
+                         ngs_baf,snp_baf,
+                         ngs_plr.pos,snp_lrr.pos,
+                         ngs_baf.pos,snp_baf.pos,
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
 }
 \keyword{CNV}
 \keyword{BAF}
