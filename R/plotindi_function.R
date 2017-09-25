@@ -51,7 +51,7 @@ plotindi = function(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,hmmcalls,I,h=min(h
   baf2i=baf2i[sel]
   bpos2i=bpos2i[sel]
   b=1000
-  ttlpos=seq(h-b/2,t+b/2,by=b)
+  ttlpos=seq(h-b/2,t+b,by=b)
   n=length(ttlpos)
   # row: z1, baf1, z2, baf2, score
   mat=matrix(NA,ncol=n-1,nrow=5)

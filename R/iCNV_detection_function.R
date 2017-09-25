@@ -70,15 +70,10 @@ iCNV_detection = function(r1L=NULL,r2L=NULL,baf1=NULL,baf2=NULL,rpos1=NULL,rpos2
       dev.off()
     }
     else{
-      pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
       if (CN!=0){
         bafzIs=novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
-      else{
-        plotHMMscore1(HMMcall,subj=projname)
-      }
-      dev.off()
     }
     print(paste0('Visualization time cost:',sum((proc.time() - ptm)[c(1,2)])))
   }
