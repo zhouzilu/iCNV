@@ -49,8 +49,8 @@ Copy number variation detection tool for germline data. Able to combine intensit
 \examples{
 iCNV_detection()
 }
-\keyword{BAF,}
-\keyword{CNV,}
+\keyword{CNV}
+\keyword{BAF}
 \keyword{Intensity}
-\keyword{Platform}
-\keyword{integration,}
+\keyword{Multi-platform}
+\keyword{integration}
