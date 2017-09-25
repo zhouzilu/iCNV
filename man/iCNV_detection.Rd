@@ -35,6 +35,8 @@ iCNV_detection(r1L = NULL, r2L = NULL, baf1 = NULL, baf2 = NULL,
 \item{CN}{An indicator variable with value {0,1} for whether wants to infer exact copy number. 0 no exact CN, 1 exact CN. Default 0.}
 
 \item{mu}{A length tree vectur specify means of intensity in mixture normal distribution (Deletion, Diploid, Duplification). Default c(-3,0,2)}
+
+\item{cap}{A boolean decides whether we cap insane intensity value due to double deletion or mutiple amplification. Default False}
 }
 \value{
 (1) CNV inference, contains CNV inference, Start and end position for each inference, Conditional probability for each inference, mu for mixture normal, sigma for mixture normal, probability of CNVs, Z score for each inference.
@@ -45,10 +47,24 @@ iCNV_detection(r1L = NULL, r2L = NULL, baf1 = NULL, baf2 = NULL,
 Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
 }
 \examples{
-iCNV_detection(r1L, r2L, baf1, baf2, rpos1, rpos2, bpos1, bpos2, maxIt = 50, visual = 0, CN = 1)
+# icnv call without genotype (just infer deletion, duplication)
+projname='icnv.demo'
+icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
+                         ngs_baf,snp_baf,
+                         ngs_plr.pos,snp_lrr.pos,
+                         ngs_baf.pos,snp_baf.pos,
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+
+# icnv call with genotype inference and complete plot
+projname='icnv.demo.geno'
+icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
+                         ngs_baf,snp_baf,
+                         ngs_plr.pos,snp_lrr.pos,
+                         ngs_baf.pos,snp_baf.pos,
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
 }
-\keyword{BAF,}
-\keyword{CNV,}
+\keyword{CNV}
+\keyword{BAF}
 \keyword{Intensity}
-\keyword{Platform}
-\keyword{integration,}
+\keyword{Multi-platform}
+\keyword{integration}
