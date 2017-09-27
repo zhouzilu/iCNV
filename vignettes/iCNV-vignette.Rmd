@@ -8,7 +8,7 @@ Zilu Zhou, Nancy R. Zhang
 Zilu Zhou <zhouzilu@upenn.edu>
 
 ## Date
-09/06/2017
+09/27/2017
 
   This is a demo for using the **iCNV** package in R. **iCNV** is a normalization and copy number variation detection procedure for mutiple study designs: WES only, WGS only, SNP array only, or any combination of SNP and sequencing data. **iCNV** applies platform specific normalization, utilizes allele specific reads from sequencing and integrates matched NGS and SNP-array data by a Hidden Markov Model (HMM). Figure 1 shows the overall pipeline. This package specifically emphasizes on the steps within the red box. Below is an example on calling copy number variation using whole-exome sequencing data and array SNPs of 38 samples from Alzheimer's Disease Sequencing Project. Only second half of chromesome 22 are analysed for illustration purposes. We will seperately shows normalization for WES and SNP array. We will also introduce integrated calling procedure as well as single platform procedure. R packages are avaliable at github and the toy dataset.
 
@@ -112,17 +112,17 @@ For sequencing data without sophisticated pipeline and SNVs call set in VCF form
 # Prerequest: samtools, bcftools and reference fasta file
 cd PATH/TO/BAM
 for i in *bam; do PATH/TO/SAMTOOLS/samtools mpileup -ugI -t DP -t DV -f PATH/TO/REF/human_hg37.fasta $i | ~/bcftools-1.3.1/bcftools call -cv -O z -o PATH/TO/OUTPUT/$i.vcf.gz; done
-
 ```
 
 ### 2.4 SNP array LRR normalization and BAF
 
-For some of the SNP array LRR data, we need to apply SVD normalization to remove high dimension noisy and preserve low dimension signal. The best way to decide data senity is by plotting out the data. Noisy data has the feature of local strip across samples. Example code for remove high dimension noisy:
+For some of the SNP array LRR data, we need to apply SVD normalization to remove high dimension noisy and preserve low dimension signal. The best way to decide data senity is by plotting out the data. Noisy data has the feature of local strip across samples. Conventional way for identifying elbow points can also apply here. Example code for remove high dimension noisy and plot:
 ```r
 # lrr is LRR matrix, with row as sample and column as positions
 # You may want to substitute all the NAs in lrr by rowMeans
 lrr.svd = svd (lrr)
 pdf(paste0(projectname,'_SVD.pdf'),height=10,width=14)
+plot(x=seq(0,9),y=diag(lrr.svd$d),xlab='K,',ylab='D',main='')
 for (K in 0:9){
 	D=diag(lrr.svd$d)
 	D.lowrank=diag(c(rep(0,K),lrr.svd$d[-(seq(1,K,1))]))
@@ -133,22 +133,34 @@ for (K in 0:9){
 	  xlab=paste0('chr',chr),ylab='samples',main=paste0('K=',K)
 }
 dev.off()
-
 ```
 
 ### 2.5 CNV detection using **iCNV**
 
-At this step, we should alreday have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array.
+At this step, we should alreday have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array. Please make sure all the input are in list form. This is mainly to accomadate the fact that length for `ngs_baf` and `ngs_baf.pos` is sample specific
+Try out with the Demo code and sample dataset in https://github.com/zhouzilu/iCNV/tree/master/demo
 ```r
 library(iCNV)
-str(z1) # List of n vector, each one is the PLR for an exon
-str(z1pos) # List of n matrix (p x 2), each one is the start and end location for an exon
-str(baf1) # List of n vector, each one is the variants BAF from .bam
-str(baf1pos) # List of n vector, each one is the variants BAF position
-str(z2) # List of n vector, each one is the normalized LRR for a SNP
-str(z2pos) # List of n vector, each one is a SNP position
-str(baf2) # List of n vector, each one is the BAF for a SNP
-str(baf2pos) # List of n vector, each one is the SNP BAF position
-finalcall <- iCNV_detection(z1,z2,baf1,baf2,z1pos,z2pos,baf1pos,baf2pos,mu=c(-3,0,2),projname=projname)
+load('demo_data.rda')
+ls()
+str(ngs_plr) # List of n vector, each one is the PLR for an exon
+str(ngs_plr.pos) # List of n matrix (p x 2), each one is the start and end location for an exon
+str(ngs_baf) # List of n vector, each one is the variants BAF from .bam
+str(ngs_baf.pos) # List of n vector, each one is the variants BAF position
+str(snp_lrr) # List of n vector, each one is the normalized LRR for a SNP
+str(snp_lrr.pos) # List of n vector, each one is a SNP position
+str(snp_baf) # List of n vector, each one is the BAF for a SNP
+str(snp_baf.pos) # List of n vector, each one is the SNP BAF position
+projname='icnv.demo'
+icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
+                         ngs_baf,snp_baf,
+                         ngs_plr.pos,snp_lrr.pos,
+                         ngs_baf.pos,snp_baf.pos,
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+icnv.output = output_list(icnv_res0,sample_id,CN=0)
+head(icnv.output)
 ```
+The results plot looks are follow. Each row is a sample and each column is a hidden state. The color indicates hidden state Z-score (large positive number prefers amplification, low negative number prefers deletion). Black dots represent amplification detected, while white dots show deletion detected.
+
+![](icnv.demo.png)
 
