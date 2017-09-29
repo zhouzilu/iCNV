@@ -29,5 +29,5 @@ install_github("zhouzilu/iCNV")
 
 ## Demo code & Vignettes
 * [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
-
+* [Demo](https://github.com/zhouzilu/iCNV/tree/master/demo)
 

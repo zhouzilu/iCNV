@@ -4,8 +4,7 @@ library(fields)
 library(ggplot2)
 
 ##### IMPORTANT #####
-# For detailed notation and pipeline, please visit https://github.com/zhouzilu/iCNV
-
+# For detailed notation and pipeline, please visit https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd
 
 ####################################################
 ####################################################
@@ -24,14 +23,14 @@ library(ggplot2)
 
 load('demo_data.rda')
 ls()
-str(ngs_plr)
-str(ngs_plr.pos)
-str(ngs_baf)
-str(ngs_baf.pos)
-str(snp_lrr)
-str(snp_lrr.pos)
-str(snp_baf)
-str(snp_baf.pos)
+str(ngs_plr) # List of n vector, each one is the PLR for an exon
+str(ngs_plr.pos) # List of n matrix (p x 2), each one is the start and end location for an exon
+str(ngs_baf) # List of n vector, each one is the variants BAF from .bam
+str(ngs_baf.pos) # List of n vector, each one is the variants BAF position
+str(snp_lrr) # List of n vector, each one is the normalized LRR for a SNP
+str(snp_lrr.pos) # List of n vector, each one is a SNP position
+str(snp_baf) # List of n vector, each one is the BAF for a SNP
+str(snp_baf.pos) # List of n vector, each one is the SNP BAF position
 
 ####################################################
 ####################################################
