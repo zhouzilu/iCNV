@@ -2,17 +2,16 @@ devtools::use_package('fields')
 devtools::use_package('truncnorm')
 devtools::use_package('ggplot2')
 #' Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
-#'
-#' @param r1L A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
-#' @param r2L A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
-#' @param baf1 A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.
-#' @param baf2 A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.
-#' @param rpos1 A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.
-#' @param rpos2 A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.
-#' @param bpos1 A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.
-#' @param bpos2 A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.
+#' @param ngs_plr A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
+#' @param snp_lrr A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
+#' @param ngs_baf A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.
+#' @param snp_baf A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.
+#' @param ngs_plr.pos A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.
+#' @param snp_lrr.pos A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.
+#' @param ngs_baf.pos A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.
+#' @param snp_baf.pos A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.
 #' @param maxIt An integer number indicate the maximum number of EM iteration if not converged during parameter inference. Default 50.
-#' @param visual An indicator variable with value {0,1,2}. 0 indicates no visualization, 1 indicates complete visualization, 2 indicates basic visualization
+#' @param visual An indicator variable with value {0,1,2}. 0 indicates no visualization, 1 indicates basic visualization, 2 indicates complete visualization (Note visual 2 only work for single platform and integer CN inferenced)
 #' @param projname A string as the name of this project. Default 'iCNV'
 #' @param CN An indicator variable with value {0,1} for whether wants to infer exact copy number. 0 no exact CN, 1 exact CN. Default 0.
 #' @param mu A length tree vectur specify means of intensity in mixture normal distribution (Deletion, Diploid, Duplification). Default c(-3,0,2)
@@ -23,7 +22,9 @@ devtools::use_package('ggplot2')
 #' @examples
 #' iCNV_detection()
 #' @export
-iCNV_detection = function(r1L=NULL,r2L=NULL,baf1=NULL,baf2=NULL,rpos1=NULL,rpos2=NULL,bpos1=NULL,bpos2=NULL,maxIt=50,visual=0,projname='iCNV',CN=0,mu=c(-3,0,2),cap=FALSE){
+iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ngs_plr.pos=NULL,snp_lrr.pos=NULL,ngs_baf.pos=NULL,snp_baf.pos=NULL,maxIt=50,visual=0,projname='iCNV',CN=0,mu=c(-3,0,2),cap=FALSE){
+  # Change variable name for easier code writing
+  r1L=ngs_plr;r2L=snp_lrr;baf1=ngs_baf;baf2=snp_baf;rpos1=ngs_plr.pos;rpos2=snp_lrr.pos;bpos1=ngs_baf.pos;bpos2=snp_baf.pos
   ptm <- proc.time()
   CNV=NULL
   c=checkdim(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
@@ -32,6 +33,22 @@ iCNV_detection = function(r1L=NULL,r2L=NULL,baf1=NULL,baf2=NULL,rpos1=NULL,rpos2
     n=length(r1L)
     indivd=seq(1,n)
     HMMcall = mapply(HMMEM,r1L,baf1,rpos1,bpos1,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r2i=r2L,baf2i=baf2,rpos2i=rpos2,bpos2i=bpos2,cap=cap),SIMPLIFY=F)
+    if (CN!=0){
+      bafzIs=novisualization_ngs(HMMcall,r1L,baf1,rpos1,bpos1)
+      CNV=exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
+      if (visual!=0){
+        pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
+        plotHMMscore(HMMcall,CNV,subj=projname)
+        dev.off()
+      }
+    }
+    else{
+      if (visual!=0){
+        pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
+        plotHMMscore(HMMcall,CNV,subj=projname)
+        dev.off()
+      }
+    }
     print(paste0('Inference time cost:',sum((proc.time() - ptm)[c(1,2)])))
   }
   else if(c[1]&c[3]){
@@ -39,6 +56,22 @@ iCNV_detection = function(r1L=NULL,r2L=NULL,baf1=NULL,baf2=NULL,rpos1=NULL,rpos2
     n=length(r2L)
     indivd=seq(1,n)
     HMMcall = mapply(HMMEM,r2L,baf2,rpos2,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r1i=r1L,baf1i=baf1,rpos1i=rpos1,bpos1i=bpos1,cap=cap),SIMPLIFY=F)
+    if (CN!=0){
+      bafzIs=novisualization_snp(HMMcall,r2L,baf2,rpos2,bpos2)
+      CNV=exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
+      if (visual!=0){
+        pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
+        plotHMMscore(HMMcall,CNV,subj=projname)
+        dev.off()
+      }
+    }
+    else{
+      if (visual!=0){
+        pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
+        plotHMMscore(HMMcall,CNV,subj=projname)
+        dev.off()
+      }
+    }
     print(paste0('Inference time cost:',sum((proc.time() - ptm)[c(1,2)])))
   }
   else{
@@ -47,26 +80,23 @@ iCNV_detection = function(r1L=NULL,r2L=NULL,baf1=NULL,baf2=NULL,rpos1=NULL,rpos2
     HMMcall = mapply(HMMEM,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),rep(list(cap),n),SIMPLIFY=F)
     print(paste0('Inference time cost:',sum((proc.time() - ptm)[c(1,2)])))
     ptm <- proc.time()
-    if (visual==1){
+    if (visual==2){
       pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
       if (CN!=0){
         bafzIs=visualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],bafzIs[[7]],bafzIs[[8]],bafzIs[[9]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        plotHMMscore(HMMcall,CNV)
+        plotHMMscore(HMMcall,CNV,subj=projname)
         visualization2(HMMcall,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
       dev.off()
     }
-    else if (visual==2){
+    else if (visual==1){
       pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
       if (CN!=0){
         bafzIs=novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        plotHMMscore(HMMcall,CNV)
+        CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)       
       }
-      else{
-        plotHMMscore1(HMMcall,subj=projname)
-      }
+      plotHMMscore(HMMcall,CNV,subj=projname)
       dev.off()
     }
     else{
@@ -533,6 +563,111 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
   return(CN)
 }
 
+# Infer exact Copy Number single platform
+exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
+  result=lapply(testres,function(x){x[[1]]})
+  Lpos=lapply(testres,function(x){x[[2]]})
+  # extract CNV region
+  res=mapply(function(I,pos){
+    It=I
+    post=pos
+    i=2
+    while(i<=length(It)){
+      if (It[i]!=2 & It[i]==It[i-1]){
+        It=It[-i]
+        temp=post[i,2]
+        post[i-1,2]=temp
+        post=post[-i,]
+      }
+      else{
+        i=i+1
+      }
+    }
+    return(list(It,post))
+  },result,Lpos,SIMPLIFY = F)
+  mresult=lapply(res,function(x){x[[1]]})
+  mLpos=lapply(res,function(x){x[[2]]})
+  # Distribution mean inference using K means
+  dz1=dzs[dI==1|dI==1.5]
+  dz1fit <- kmeans(dz1, 2)
+  dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
+  dzprob11=function(x){dnorm(x,max(dmu1),1,log=T)}
+  dzprob12=function(x){dnorm(x,min(dmu1),1,log=T)}
+  dbprob1=function(x){log(0.5*dtruncnorm(x,0,1,0,0.05)+0.5*dtruncnorm(x,0,1,1,0.05))}
+  dbprob2=function(x){log(0.4*dtruncnorm(x,0,1,0,0.05)+0.4*dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  pz1=pzs[pI==1|pI==1.5]
+  pz1fit <- kmeans(pz1, 2)
+  pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
+  pzprob11=function(x){dnorm(x,min(pmu1),1,log=T)}
+  pzprob12=function(x){dnorm(x,max(pmu1),1,log=T)}
+  pbprob1=function(x){log(0.25*dtruncnorm(x,0,1,0,0.1)+0.25*dtruncnorm(x,0,1,1,0.1)+0.25*dtruncnorm(x,0,1,0.33,0.1)+0.25*dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2=function(x){log(0.2*dtruncnorm(x,0,1,0,0.1)+0.2*dtruncnorm(x,0,1,1,0.1)+0.2*dtruncnorm(x,0,1,0.5,0.1)+0.2*dtruncnorm(x,0,1,0.25,0.1)+0.2*dtruncnorm(x,0,1,0.75,0.1))}
+  CN1=mapply(exactCNi_ngs,r1L,baf1,rpos1,bpos1,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
+  CN=mapply(function(CNs,mLpos,result,Lpos){
+    CNi=result
+      for (i in 1:length(CNs)){
+        if (CNs[i]!=2){
+          s=mLpos[i,1]
+          t=mLpos[i,2]
+          sel=which(Lpos[,1]>=s & Lpos[,2]<=t)
+          CNi[sel]=CNs[i]
+        }
+      }
+    return(CNi)
+    },CN1,mLpos,result,Lpos,SIMPLIFY = F)
+  return(CN)
+}
+
+# Likelihood estimator
+exactCNi_ngs = function(r1i,baf1i,rpos1i,bpos1i,resulti,Lposi,dzprob11,dzprob12,dbprob1,dbprob2,pzprob11,pzprob12,pbprob1,pbprob2){
+  CNi=resulti
+  z1i=(r1i-mean(r1i,na.rm=T))/sd(r1i,na.rm=T)
+  baf1i[is.na(baf1i)]=1
+  z1i[is.na(z1i)]=0
+  for (j in 1:length(resulti)){
+    if (CNi[j]<2){
+      s=Lposi[j,1]
+      t=Lposi[j,2]
+      del1=0
+      del2=0
+      sel1=which(rpos1i[,1]>=s&rpos1i[,2]<=t)
+      sel2=which(bpos1i>=s&bpos1i<=t)
+      if (length(sel2)>0){
+        del1=del1+sum(dzprob11(z1i[sel1]))+sum(dbprob1(baf1i[sel2]))
+        del2=del2+sum(dzprob12(z1i[sel1]))+sum(dbprob2(baf1i[sel2]))
+      }
+      else{
+        del1=del1+sum(dzprob11(z1i[sel1]))+sum(dbprob1(1))
+        del2=del2+sum(dzprob12(z1i[sel1]))+sum(dbprob2(1))
+      }
+      if (del2>del1){
+        CNi[j]=0
+      }
+    }
+    else if(CNi[j]>2){
+      s=Lposi[j,1]
+      t=Lposi[j,2]
+      dup1=0
+      dup2=0
+      sel1=which(rpos1i[,1]>=s&rpos1i[,2]<=t)
+      sel2=which(bpos1i>=s&bpos1i<=t)
+      if (length(sel2)>0){
+        dup1=dup1+sum(pzprob11(z1i[sel1]))+sum(pbprob1(baf1i[sel2]))
+        dup2=dup2+sum(pzprob12(z1i[sel1]))+sum(pbprob2(baf1i[sel2]))
+      }
+      else{
+        dup1=dup1+sum(pzprob11(z1i[sel1]))+sum(pbprob1(1))
+        dup2=dup2+sum(pzprob12(z1i[sel1]))+sum(pbprob2(1))
+      }
+      if (dup2>dup1){
+        CNi[j]=4
+      }
+    }
+  }
+  return (CNi)
+}
+
+
 # Likelihood estimator
 exactCNi = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,Lposi,dzprob11,dzprob12,dzprob21,dzprob22,dbprob1,dbprob2,pzprob11,pzprob12,pzprob21,pzprob22,pbprob1,pbprob2){
   CNi=resulti
@@ -615,64 +750,6 @@ exactCNi = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,Lpos
   return (CNi)
 }
 
-plotHMMscore=function(testres,CNV){
-  scores=lapply(testres,function(x){x[[7]]})
-  scores=t(sapply(scores,function(x)x, simplify = T))
-  toplot=scores
-  l=1
-  image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = "score plot",ylab='sample',xlab='')
-  addCNVtoplot(CNV)
-  legend("topright",c("0", "1", "3", "4"),
-    col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)
-}
-
-
-# plotHMMscore1=function(testres,h=min(testres[[1]][[2]]),t=max(testres[[1]][[2]]),subj="score plot"){
-#   sel=(h<=testres[[1]][[2]][,1] & testres[[1]][[2]][,2]<=t)
-#   scores=lapply(testres,function(x){x[[7]]})
-#   scores=t(sapply(scores,function(x)x, simplify = T))[,sel]
-#   result=lapply(testres,function(x){x[[1]]})
-#   result=t(sapply(result,function(x)x, simplify = T))[,sel]
-#   toplot=scores
-#   l=1
-#   image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = subj,ylab='sample',xlab='')
-#   addCNVtoplot1(result)
-#   legend("topright",c("del", "dup"),
-#     col = c('white','black'),text.col = "green4", pch = c(1,20),cex = 0.75)
-# }
-
-# addCNVtoplot1=function(result){
-#   for (i in 1:nrow(result)){
-#     del = which(result[i,]==1)
-#     dup = which(result[i,]==3)
-#     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
-#     sel=del
-#     points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
-#     sel=dup
-#     points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
-#   }
-# }
-
-
-addCNVtoplot=function(result){
-  for (i in 1:length(result)){
-    hemidel = which(result[[i]]==1)
-    homodel = which(result[[i]]==0)
-    cp1dup = which(result[[i]]==3)
-    cp2dup = which(result[[i]]==4)
-    del = which(result[[i]]<2)
-    dup = which(result[[i]]>2)
-    # cat(i,'del:',length(del),' dup:',length(dup),'\n')
-    sel=hemidel
-    points(x=sel,y=rep(i,length(sel)),col='grey',pch=16,cex=0.5)
-    sel=homodel
-    points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
-    sel=cp1dup
-    points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
-    sel=cp2dup
-    points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
-  }
-}
 
 visualization2 = function(testres,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
   cat('\n','Generating visualization2. This may take a while...','\n')
@@ -742,144 +819,184 @@ novisualization = function(testres,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
   return(list(dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
 }
 
+novisualization_ngs = function(testres,r1L,baf1,rpos1,bpos1){
+  cat('\n','Calculating novisualization...','\n')
+  result=lapply(testres,function(x){x[[1]]})
+  Lpos=lapply(testres,function(x){x[[2]]})
+  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=F)
+  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=F)
+  dzvsbaf=mapply(BAFvsZ_ngs,r1L,baf1,rpos1,bpos1,ttldelposlist,Lpos,SIMPLIFY = F)
+  dbafs=unlist(mapply(function(x){x[,2]},dzvsbaf))
+  dbafs[is.na(dbafs)]=0
+  dzs=unlist(mapply(function(x){x[,1]},dzvsbaf))
+  dI=unlist(mapply(function(x){x[,3]},dzvsbaf))
+  pzvsbaf=mapply(BAFvsZ_ngs,r1L,baf1,rpos1,bpos1,ttldupposlist,Lpos,SIMPLIFY = F)
+  pbafs=unlist(mapply(function(x){x[,2]},pzvsbaf))
+  pbafs[is.na(pbafs)]=0
+  pzs=unlist(mapply(function(x){x[,1]},pzvsbaf))
+  pI=unlist(mapply(function(x){x[,3]},pzvsbaf))
+  x.lim=range(c(range(pzs,na.rm=T),range(dzs,na.rm=T)))
+  return(list(dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
+}
 
-# plotindi = function(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,hmmcalls,I,h=min(hmmcalls[[2]]),t=max(hmmcalls[[2]])){
-#   r1i=r1L[[I]]
-#   r2i=r2L[[I]]
-#   baf1i=baf1[[I]]
-#   baf2i=baf2[[I]]
-#   rpos1i=rpos1[[I]]
-#   rpos2i=rpos2[[I]]
-#   bpos1i=bpos1[[I]]
-#   bpos2i=bpos2[[I]]
-#   res=hmmcalls[[I]]
-#   result=res[[1]]
-#   Lposi=res[[2]]
-#   rt=res[[3]]
-#   mu=res[[4]]
-#   sigma=res[[5]]
-#   score=res[[7]]
+# Pair intensity and BAF, NGS
+BAFvsZ_ngs=function(r1i,baf1i,rpos1i,bpos1i,CNVs,Lposi){
+  bafs=c()
+  rs=c()
+  I=c()
+  if (length(CNVs)>0){
+    z1i=(r1i-mean(r1i,na.rm=T))/sd(r1i,na.rm=T)
+    mbaf1i=0.5-abs(baf1i-0.5)
+    for (j in 1:length(CNVs)){
+      s=Lposi[CNVs[j],1]
+      t=Lposi[CNVs[j],2]
+      sel1=which(rpos1i[,1]>=s&rpos1i[,2]<=t)
+      sel2=which(bpos1i>=s&bpos1i<=t)
+      if (length(sel2)>0){
+        bafs=c(bafs,mbaf1i[sel2])
+        rs=c(rs,rep(z1i[sel1],length(sel2)))
+        I=c(I,rep(1,length(sel2)))
+      }
+      else{
+        bafs=c(bafs,0)
+        rs=c(rs,z1i[sel1])
+        I=c(I,1.5)
+      }
 
-#   sel=which(h<=Lposi[,1] & Lposi[,2]<=t)
-#   result=result[sel]
-#   score=score[sel]
-#   Lposi=Lposi[sel,]
-#   sel=which(h<=rpos1i[,1]&rpos1i[,2]<=t)
-#   r1i=r1i[sel]
-#   rpos1i=rpos1i[sel,]
-#   sel=which(h<=rpos2i & rpos2i<=t)
-#   r2i=r2i[sel]
-#   rpos2i=rpos2i[sel]
-#   sel=which(h<=bpos1i & bpos1i<=t)
-#   baf1i=baf1i[sel]
-#   bpos1i=bpos1i[sel]
-#   sel=which(h<=bpos2i & bpos2i<=t)
-#   baf2i=baf2i[sel]
-#   bpos2i=bpos2i[sel]
-#   b=1000
-#   ttlpos=seq(h,t,by=b)
-#   n=length(ttlpos)
-#   # row: z1, baf1, z2, baf2, score
-#   mat=matrix(NA,ncol=n-1,nrow=5)
-#   for (i in 1:(n-1)){
-#     sel=which(rpos2i>=ttlpos[i] & rpos2i<=ttlpos[i+1])
-#     if (length(sel)>0){
-#       mat[3,i]=mean(r2i[sel],na.rm=T)
-#     }
-#     sel=which(bpos1i>=ttlpos[i] & bpos1i<=ttlpos[i+1])
-#     if (length(sel)>0){
-#       mat[2,i]=mean(baf1i[sel],na.rm=T)
-#     }
-#     sel=which(bpos2i>=ttlpos[i] & bpos2i<=ttlpos[i+1])
-#     if (length(sel)>0){
-#       mat[4,i]=mean(baf2i[sel],na.rm=T)
-#     }
-#   }
-#   for (i in 1:length(r1i)){
-#     sel=which(ttlpos>=rpos1i[i,1] & ttlpos<=rpos1i[i,2])
-#     if (length(sel)>0){
-#       mat[1,sel-1]=r1i[i]
-#       for(j in 1:length(sel)){
-#         if (is.na(mat[2,sel[j]-1])){
-#           mat[2,sel[j]-1]=1
-#         }
-#       }
-#     }
-#     else{
-#       sel=max(which(ttlpos<=rpos1i[i,1]))
-#       # cat(sel)
-#       if (!is.infinite(sel)){
-#         mat[1,sel]=r1i[i]
-#         if (is.na(mat[2,sel])){
-#           mat[2,sel]=1
-#         }
-#       }
-#     }
-#   }
-#   for (i in 1:length(score)){
-#     a=Lposi[i,1]
-#     b=Lposi[i,2]
-#     if(a==b){
-#       sel=which(ttlpos<=a)
-#       mat[5,max(sel)]=score[i]
-#     }
-#     else {
-#       sel=which(ttlpos>=a & ttlpos<=b)
-#       if (length(sel>0)){
-#         mat[5,sel-1]=score[i]
-#       }
-#       else{
-#         sel=which(ttlpos<=a)
-#         mat[5,max(sel)]=score[i]
-#       }
-#     }
-#   }
+    }
+  }
+  return(cbind(rs,bafs,I))
+}
 
-#   sel=which(!is.na(mat[5,]))
-#   mat=mat[,sel]
-#   ttlpos=ttlpos[sel]
-#   n2=ncol(mat)
-#   rmax=max(abs(mat[c(1,3),]),na.rm=T)
-#   smax=max(abs(mat[5,]),na.rm=T)
-#   r1max=max(abs(mat[1,]),na.rm=T)
-#   r2max=max(abs(mat[3,]),na.rm=T)
-#   x=1:n2
-#   par(mfrow=c(1,1))
-#   l=3
-#   image.plot((as.matrix((pmin(pmax(mat[5,],-l),l)))),zlim=c(-l,l),axes=F,main='score',ylab=I)
-#   del = which(result<2)
-#   dup = which(result>2)
-#   cat(I,' del:',length(del),' dup:',length(dup),'\n')
-#   sel=unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},Lposi[del,1],Lposi[del,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = F)))-1
-#   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='white',pch=20,cex=1)
-#   sel=unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},Lposi[dup,1],Lposi[dup,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = F)))-1
-#   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='black',pch=20,cex=1)
-#   sel=unique(unlist(mapply(function(x,y,pos){which(x==y & abs(x-pos)<1000)},Lposi[del,1],Lposi[del,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = F)))-1
-#   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='white',pch=20,cex=1)
-#   sel=unique(unlist(mapply(function(x,y,pos){which(x==y & abs(x-pos)<1000)},Lposi[dup,1],Lposi[dup,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = F)))-1
-#   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='black',pch=20,cex=1)
-#   legend("topright",c("del", "dup"),
-#     col = c('white','black'),bg='green2',text.col = c('white','black'), pch = c(20,20),cex = 0.75)
+# Pair intensity and BAF
+BAFvsZ_snp=function(r2i,baf2i,rpos2i,bpos2i,CNVs,Lposi){
+  bafs=c()
+  rs=c()
+  I=c()
+  if (length(CNVs)>0){
+    z2i=(r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T)
+    mbaf2i=0.5-abs(baf2i-0.5)
+    for (j in 1:length(CNVs)){
+      s=Lposi[CNVs[j],1]
+      t=Lposi[CNVs[j],2]
+      sel1=which(rpos2i==s)
+      sel2=which(bpos2i==s)
+      bafs=c(bafs,mbaf2i[sel2])
+      rs=c(rs,z2i[sel1])
+      I=c(I,2)
+    }
+  }
+  return(cbind(rs,bafs,I))
+}
 
-#   par(xaxs='i')
-#   plot(x,y=mat[5,],pch=20,xlab="",type='l', axes=F,col='green',ylab="",ylim=c(-smax,smax),xlim=c(0,n2),lwd=2)
-#   par(new=T,xaxs='i')
-#   plot(x,y=mat[1,],pch=20,col='grey',cex=0.5,xlab="", ylab=I,ylim=c(-r1max,r1max),xlim=c(0,n2),main='Sequencing')
-#   par(new=T,xaxs='i')
-#   plot(x,y=mat[2,],pch=20,cex=0.5,axes=FALSE,xlab="", ylab="",ylim=c(0,1),xlim=c(0,n2))
-#   axis(side = 4)
-#   legend("topright",c("intensity", "BAF","score"),
-#     col = c('grey','black','green'), pch = c(20,20,20),cex = 0.75)
 
-#   par(xaxs='i')
-#   plot(x,y=mat[5,],pch=20,xlab="",type='l', axes=F,col='green',ylab="",ylim=c(-smax,smax),xlim=c(0,n2),lwd=2)
-#   par(new=T,xaxs='i')
-#   plot(x,y=mat[3,],pch=20,col='grey',cex=0.5,xlab="",ylab=I,ylim=c(-r2max,r2max),xlim=c(0,n2),main='SNP')
-#   par(new=T,xaxs='i')
-#   plot(x,y=mat[4,],pch=20,cex=0.5,axes=FALSE,xlab="", ylab="",ylim=c(0,1),xlim=c(0,n2))
-#   axis(side = 4)
-#   legend("topright",c("intensity", "BAF","score"),
-#     col = c('grey','black','green'), pch = c(20,20,20),cex = 0.75)
-#   par(mfrow=c(1,1))
-# }
+
+novisualization_snp = function(testres,r2L,baf2,rpos2,bpos2){
+  cat('\n','Calculating novisualization...','\n')
+  result=lapply(testres,function(x){x[[1]]})
+  Lpos=lapply(testres,function(x){x[[2]]})
+  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=F)
+  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=F)
+  dzvsbaf=mapply(BAFvsZ_snp,r2L,baf2,rpos2,bpos2,ttldelposlist,Lpos,SIMPLIFY = F)
+  dbafs=unlist(mapply(function(x){x[,2]},dzvsbaf))
+  dbafs[is.na(dbafs)]=0
+  dzs=unlist(mapply(function(x){x[,1]},dzvsbaf))
+  dI=unlist(mapply(function(x){x[,3]},dzvsbaf))
+  pzvsbaf=mapply(BAFvsZ_snp,r2L,baf2,rpos2,bpos2,ttldupposlist,Lpos,SIMPLIFY = F)
+  pbafs=unlist(mapply(function(x){x[,2]},pzvsbaf))
+  pbafs[is.na(pbafs)]=0
+  pzs=unlist(mapply(function(x){x[,1]},pzvsbaf))
+  pI=unlist(mapply(function(x){x[,3]},pzvsbaf))
+  x.lim=range(c(range(pzs,na.rm=T),range(dzs,na.rm=T)))
+  return(list(dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
+}
+
+
+# Infer exact Copy Number SNP
+exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
+  result=lapply(testres,function(x){x[[1]]})
+  Lpos=lapply(testres,function(x){x[[2]]})
+  # extract CNV region
+  res=mapply(function(I,pos){
+    It=I
+    post=pos
+    i=2
+    while(i<=length(It)){
+      if (It[i]!=2 & It[i]==It[i-1]){
+        It=It[-i]
+        temp=post[i,2]
+        post[i-1,2]=temp
+        post=post[-i,]
+      }
+      else{
+        i=i+1
+      }
+    }
+    return(list(It,post))
+  },result,Lpos,SIMPLIFY = F)
+  mresult=lapply(res,function(x){x[[1]]})
+  mLpos=lapply(res,function(x){x[[2]]})
+  # Distribution mean inference using K means
+  dz2=dzs[dI==2|dI==2.5]
+  dz2fit <- kmeans(dz2, 2)
+  dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
+  dzprob21=function(x){dnorm(x,max(dmu2),1,log=T)}
+  dzprob22=function(x){dnorm(x,min(dmu2),1,log=T)}
+  dbprob1=function(x){log(0.5*dtruncnorm(x,0,1,0,0.05)+0.5*dtruncnorm(x,0,1,1,0.05))}
+  dbprob2=function(x){log(0.4*dtruncnorm(x,0,1,0,0.05)+0.4*dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  pz2=pzs[pI==2|pI==2.5]
+  pz2fit <- kmeans(pz2, 2)
+  pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
+  pzprob21=function(x){dnorm(x,min(pmu2),1,log=T)}
+  pzprob22=function(x){dnorm(x,max(pmu2),1,log=T)}
+  pbprob1=function(x){log(0.25*dtruncnorm(x,0,1,0,0.1)+0.25*dtruncnorm(x,0,1,1,0.1)+0.25*dtruncnorm(x,0,1,0.33,0.1)+0.25*dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2=function(x){log(0.2*dtruncnorm(x,0,1,0,0.1)+0.2*dtruncnorm(x,0,1,1,0.1)+0.2*dtruncnorm(x,0,1,0.5,0.1)+0.2*dtruncnorm(x,0,1,0.25,0.1)+0.2*dtruncnorm(x,0,1,0.75,0.1))}
+  CN1=mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
+  CN=mapply(function(CNs,mLpos,result,Lpos){
+    CNi=result
+      for (i in 1:length(CNs)){
+        if (CNs[i]!=2){
+          s=mLpos[i,1]
+          t=mLpos[i,2]
+          sel=which(Lpos[,1]>=s & Lpos[,2]<=t)
+          CNi[sel]=CNs[i]
+        }
+      }
+    return(CNi)
+    },CN1,mLpos,result,Lpos,SIMPLIFY = F)
+  return(CN)
+}
+
+
+# Likelihood estimator
+exactCNi_snp = function(r2i,baf2i,rpos2i,bpos2i,resulti,Lposi,dzprob21,dzprob22,dbprob1,dbprob2,pzprob21,pzprob22,pbprob1,pbprob2){
+  CNi=resulti
+  z2i=(r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T)
+  baf2i[is.na(baf2i)]=1
+  z2i[is.na(z2i)]=0
+  for (j in 1:length(resulti)){
+    if (CNi[j]<2){
+      s=Lposi[j,1]
+      t=Lposi[j,2]
+      sel1=which(rpos2i==s)
+      sel2=which(bpos2i==s)
+      if ((dzprob21(z2i[sel1])+dbprob1(baf2i[sel2]))<(dzprob22(z2i[sel1])+dbprob2(baf2i[sel2]))){
+        CNi[j]=0
+      }
+    }
+    else if(CNi[j]>2){
+      s=Lposi[j,1]
+      t=Lposi[j,2]
+      sel1=which(rpos2i==s)
+      sel2=which(bpos2i==s)
+      if ((pzprob21(z2i[sel1])+pbprob1(baf2i[sel2]))<(pzprob22(z2i[sel1])+pbprob2(baf2i[sel2]))){
+        CNi[j]=4
+      }
+    }
+  }
+  return (CNi)
+}
+
+
+
 
