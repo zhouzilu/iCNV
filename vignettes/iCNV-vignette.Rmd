@@ -5,20 +5,21 @@
 Zilu Zhou, Nancy R. Zhang
 
 ## Maintainer
-Zilu Zhou <zhouzilu@upenn.edu>
+Zilu Zhou <zhouzilu@pennmedicine.upenn.edu>
 
 ## Date
 09/27/2017
 
-  This is a demo for using the **iCNV** package in R. **iCNV** is a normalization and copy number variation detection procedure for mutiple study designs: WES only, WGS only, SNP array only, or any combination of SNP and sequencing data. **iCNV** applies platform specific normalization, utilizes allele specific reads from sequencing and integrates matched NGS and SNP-array data by a Hidden Markov Model (HMM). Figure 1 shows the overall pipeline. This package specifically emphasizes on the steps within the red box. Below is an example on calling copy number variation using whole-exome sequencing data and array SNPs of 38 samples from Alzheimer's Disease Sequencing Project. Only second half of chromesome 22 are analysed for illustration purposes. We will seperately shows normalization for WES and SNP array. We will also introduce integrated calling procedure as well as single platform procedure. R packages are avaliable at github and the toy dataset.
+  This is a demo for using the **iCNV** package in R. **iCNV** is a normalization and copy number variation detection procedure for mutiple study designs: WES only, WGS only, SNP array only, or any combination of SNP and sequencing data. **iCNV** applies platform specific normalization, utilizes allele specific reads from sequencing and integrates matched NGS and SNP-array data by a Hidden Markov Model (HMM). Figure 1 shows the overall pipeline. This package specifically emphasizes on the steps within the red box. Below is an example on calling copy number variation using whole-exome sequencing data and array SNPs of 38 samples from Alzheimer's Disease Sequencing Project. Only second half of chromesome 22 are analysed for illustration purposes. We will seperately shows normalization for WES and SNP array. We will also introduce integrated calling procedure as well as single platform procedure. R packages are avaliable at github as well as the toy dataset.
 
+  We strongly recommend to combine platform when both WES data and SNP array are available. However, for high quality  WGS data, SNP information isn't so necessary.
 
 ## 1. Website and online forum
 
 iCNV's website with usage and installation information: https://github.com/zhouzilu/iCNV 
 
 ## 2. iCNV workflow
-We could seperate the basic iCNV workflow into 5 steps: **1.** package installation; **2.** .bam file normalization; **3.** sequence variants BAF calling; **4.** SNP array LRR normalization and BAF; **5.** CNV detection using `iCNV_detection` function. We will illustrate them one by one in the following sessions.
+We could seperate the basic iCNV workflow into 5 steps: **1.** package installation; **2.** .bam file normalization; **3.** sequence variants BAF calling; **4.** SNP array LRR normalization and BAF; **5.** CNV detection using `iCNV_detection` function. **6.** CNV detection using `iCNV_detection` function with single platform. We will illustrate them one by one in the following sessions.
 
 ### 2.1 Install iCNV.
 
@@ -135,7 +136,7 @@ for (K in 0:9){
 dev.off()
 ```
 
-### 2.5 CNV detection using **iCNV**
+### 2.5 Mutiple platform CNV detection using **iCNV**
 
 At this step, we should alreday have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array. Please make sure all the input are in list form. This is mainly to accomadate the fact that length for `ngs_baf` and `ngs_baf.pos` is sample specific
 Try out with the Demo code and sample dataset in https://github.com/zhouzilu/iCNV/tree/master/demo
@@ -156,7 +157,7 @@ icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
 icnv.output = output_list(icnv_res0,sample_id,CN=0)
 head(icnv.output)
 ```
@@ -164,3 +165,48 @@ The results plot looks are follow. Each row is a sample and each column is a hid
 
 ![](icnv.demo.png)
 
+We could also plot information in a single individual using function `plotindi`. Example shows below:
+```r
+icnv_call = icnv_res0[[1]]
+plotindi(ngs_plr,snp_lrr,
+         ngs_baf,snp_baf,
+         ngs_plr.pos,snp_lrr.pos,
+         ngs_baf.pos,snp_baf.pos,
+         icnv_call,1)
+```
+
+### 2.6 Single platform CNV detection using **iCNV** 
+
+At this step, we should alreday have PLR and variants BAF from sequencing OR normalized LRR and BAF from SNP array. Please make sure all the input are in list form. 
+Try out with the Demo code and sample dataset in https://github.com/zhouzilu/iCNV/tree/master/demo
+NGS only CNV detection using **iCNV** 
+```r
+library(iCNV)
+load('demo_data.rda')
+ls()
+str(ngs_plr) # List of n vector, each one is the PLR for an exon
+str(ngs_plr.pos) # List of n matrix (p x 2), each one is the start and end location for an exon
+str(ngs_baf) # List of n vector, each one is the variants BAF from .bam
+str(ngs_baf.pos) # List of n vector, each one is the variants BAF position
+projname='icnv.demo.ngs'
+icnv_res0_ngs=iCNV_detection(ngs_plr=ngs_plr, ngs_baf = ngs_baf, ngs_plr.pos = ngs_plr.pos,ngs_baf.pos = ngs_baf.pos, projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+icnv.output = output_list(icnv_res0,sample_id,CN=0)
+head(icnv.output)
+```
+![](icnv.demo.ngs.png)
+
+SNP array only CNV detection using **iCNV** 
+```r
+library(iCNV)
+load('demo_data.rda')
+ls()
+str(snp_lrr) # List of n vector, each one is the normalized LRR for a SNP
+str(snp_lrr.pos) # List of n vector, each one is a SNP position
+str(snp_baf) # List of n vector, each one is the BAF for a SNP
+str(snp_baf.pos) # List of n vector, each one is the SNP BAF position
+projname='icnv.demo.snp'
+icnv_res0_snp=iCNV_detection(snp_lrr=snp_lrr, snp_baf = snp_baf, snp_lrr.pos = snp_lrr.pos,snp_baf.pos = snp_baf.pos, projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+icnv.output = output_list(icnv_res0,sample_id,CN=0)
+head(icnv.output)
+```
+![](icnv.demo.snp.png)
