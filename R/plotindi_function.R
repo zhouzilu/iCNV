@@ -1,23 +1,31 @@
-#' Plot relationship between platforms and features for each individual.
-#' @param r1L A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
-#' @param r2L A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
-#' @param baf1 A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.
-#' @param baf2 A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.
-#' @param rpos1 A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.
-#' @param rpos2 A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.
-#' @param bpos1 A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.
-#' @param bpos2 A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.
-#' @param hmmcalls CNV inference result. First entry of the output from iCNV_detection()
+#' Plot relationship between platforms and features for each individual. Only work for muli-platform inference.
+#' @param ngs_plr A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
+#' @param snp_lrr A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
+#' @param ngs_baf A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.
+#' @param snp_baf A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.
+#' @param ngs_plr.pos A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.
+#' @param snp_lrr.pos A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.
+#' @param ngs_baf.pos A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.
+#' @param snp_baf.pos A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.
+#' @param icnvres CNV inference result. The output from iCNV_detection()
 #' @param I Indicating the position of the individual to plot
 #' @param h start position of this plot. Default Start of the whole chromosome
 #' @param t end position of this plot. Default End of the whole chromosome
 #' @return void
 #' @examples
 #' pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-#' plotindi(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,hmmcalls,I,h=100000, t=200000)
+#' plotindi(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,icnvres,I,h=100000, t=200000)
 #' dev.off()
 #' @export
-plotindi = function(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,hmmcalls,I,h=min(hmmcalls[[1]][[2]]),t=max(hmmcalls[[1]][[2]])){
+plotindi = function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,icnvres,I,h=NULL,t=NULL){
+  r1L=ngs_plr;r2L=snp_lrr;baf1=ngs_baf;baf2=snp_baf;rpos1=ngs_plr.pos;rpos2=snp_lrr.pos;bpos1=ngs_baf.pos;bpos2=snp_baf.pos
+  hmmcalls = icnvres[[1]]
+  if (is.null(h)){
+    h=min(hmmcalls[[1]][[2]])
+  }
+  if (is.null(t)){
+    t=max(hmmcalls[[1]][[2]])
+  }
   r1i=r1L[[I]]
   r2i=r2L[[I]]
   baf1i=baf1[[I]]
