@@ -45,7 +45,7 @@ icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
 
 ####################################################
 ####################################################
@@ -55,12 +55,11 @@ icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
 ####################################################
 ####################################################
 
-icnv_call = icnv_res0[[1]]
 plotindi(ngs_plr,snp_lrr,
          ngs_baf,snp_baf,
          ngs_plr.pos,snp_lrr.pos,
          ngs_baf.pos,snp_baf.pos,
-         icnv_call,1)
+         icnv_res0,1)
 
 ####################################################
 ####################################################
@@ -75,7 +74,7 @@ icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
 
 ####################################################
 ####################################################
@@ -90,7 +89,7 @@ icnv_res2=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
 
 
 ####################################################
@@ -103,3 +102,69 @@ icnv_res2=iCNV_detection(ngs_plr,snp_lrr,
 
 icnv.output = output_list(icnv_res2,sample_id,CN=1)
 head(icnv.output)
+
+####################################################
+####################################################
+##########                                ##########
+##########  iCNV without genotype (NGS)   ##########
+##########                                ##########
+####################################################
+####################################################
+
+projname='icnv.demo.ngs'
+icnv_res0=iCNV_detection(ngs_plr=ngs_plr,
+                         ngs_baf=ngs_baf,
+                         ngs_plr.pos=ngs_plr.pos,
+                         ngs_baf.pos=ngs_baf.pos,
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 0)
+
+projname='icnv.demo.geno.ngs'
+icnv_res1=iCNV_detection(ngs_plr=ngs_plr,
+                         ngs_baf=ngs_baf,
+                         ngs_plr.pos=ngs_plr.pos,
+                         ngs_baf.pos=ngs_baf.pos,
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
+
+projname='icnv.demo.geno.allplot.ngs'
+icnv_res2=iCNV_detection(ngs_plr=ngs_plr,
+                         ngs_baf=ngs_baf,
+                         ngs_plr.pos=ngs_plr.pos,
+                         ngs_baf.pos=ngs_baf.pos,
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
+
+icnv.output = output_list(icnv_res2,sample_id,CN=1)
+head(icnv.output)
+
+####################################################
+####################################################
+##########                                ##########
+##########  iCNV without genotype (SNP)   ##########
+##########                                ##########
+####################################################
+####################################################
+
+projname='icnv.demo.snp'
+icnv_res0=iCNV_detection(snp_lrr=snp_lrr,
+                         snp_baf=snp_baf,
+                         snp_lrr.pos=snp_lrr.pos,
+                         snp_baf.pos=snp_baf.pos,
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 0)
+
+
+projname='icnv.demo.geno.snp'
+icnv_res1=iCNV_detection(snp_lrr=snp_lrr,
+                         snp_baf=snp_baf,
+                         snp_lrr.pos=snp_lrr.pos,
+                         snp_baf.pos=snp_baf.pos,
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
+
+projname='icnv.demo.geno.allplot.snp'
+icnv_res2=iCNV_detection(snp_lrr=snp_lrr,
+                         snp_baf=snp_baf,
+                         snp_lrr.pos=snp_lrr.pos,
+                         snp_baf.pos=snp_baf.pos,
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
+
+icnv.output = output_list(icnv_res2,sample_id,CN=1)
+head(icnv.output)
+
