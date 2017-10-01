@@ -4,31 +4,31 @@
 \alias{iCNV_detection}
 \title{Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.}
 \usage{
-iCNV_detection(r1L = NULL, r2L = NULL, baf1 = NULL, baf2 = NULL,
-  rpos1 = NULL, rpos2 = NULL, bpos1 = NULL, bpos2 = NULL, maxIt = 50,
-  visual = 0, projname = "iCNV", CN = 0, mu = c(-3, 0, 2),
-  cap = FALSE)
+iCNV_detection(ngs_plr = NULL, snp_lrr = NULL, ngs_baf = NULL,
+  snp_baf = NULL, ngs_plr.pos = NULL, snp_lrr.pos = NULL,
+  ngs_baf.pos = NULL, snp_baf.pos = NULL, maxIt = 50, visual = 0,
+  projname = "iCNV", CN = 0, mu = c(-3, 0, 2), cap = FALSE)
 }
 \arguments{
-\item{r1L}{A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.}
+\item{ngs_plr}{A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.}
 
-\item{r2L}{A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.}
+\item{snp_lrr}{A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.}
 
-\item{baf1}{A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.}
+\item{ngs_baf}{A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.}
 
-\item{baf2}{A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.}
+\item{snp_baf}{A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.}
 
-\item{rpos1}{A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.}
+\item{ngs_plr.pos}{A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.}
 
-\item{rpos2}{A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.}
+\item{snp_lrr.pos}{A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.}
 
-\item{bpos1}{A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.}
+\item{ngs_baf.pos}{A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.}
 
-\item{bpos2}{A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.}
+\item{snp_baf.pos}{A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.}
 
 \item{maxIt}{An integer number indicate the maximum number of EM iteration if not converged during parameter inference. Default 50.}
 
-\item{visual}{An indicator variable with value {0,1,2}. 0 indicates no visualization, 1 indicates complete visualization, 2 indicates basic visualization}
+\item{visual}{An indicator variable with value {0,1,2}. 0 indicates no visualization, 1 indicates basic visualization, 2 indicates complete visualization (Note visual 2 only work for single platform and integer CN inferenced)}
 
 \item{projname}{A string as the name of this project. Default 'iCNV'}
 
@@ -53,18 +53,17 @@ icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
-
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
 # icnv call with genotype inference and complete plot
 projname='icnv.demo.geno'
 icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 1)
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
 }
-\keyword{CNV}
-\keyword{BAF}
+\keyword{BAF,}
+\keyword{CNV,}
 \keyword{Intensity}
-\keyword{Multi-platform}
-\keyword{integration}
+\keyword{Platform}
+\keyword{integration,}

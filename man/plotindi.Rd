@@ -2,29 +2,29 @@
 % Please edit documentation in R/plotindi_function.R
 \name{plotindi}
 \alias{plotindi}
-\title{Plot relationship between platforms and features for each individual.}
+\title{Plot relationship between platforms and features for each individual. Only work for muli-platform inference.}
 \usage{
-plotindi(r1L, r2L, baf1, baf2, rpos1, rpos2, bpos1, bpos2, hmmcalls, I,
-  h = min(hmmcalls[[1]][[2]]), t = max(hmmcalls[[1]][[2]]))
+plotindi(ngs_plr, snp_lrr, ngs_baf, snp_baf, ngs_plr.pos, snp_lrr.pos,
+  ngs_baf.pos, snp_baf.pos, icnvres, I, h = NULL, t = NULL)
 }
 \arguments{
-\item{r1L}{A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.}
+\item{ngs_plr}{A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.}
 
-\item{r2L}{A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.}
+\item{snp_lrr}{A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.}
 
-\item{baf1}{A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.}
+\item{ngs_baf}{A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.}
 
-\item{baf2}{A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.}
+\item{snp_baf}{A list of SNP array BAF data. Each entry is an individual. If no SNP array data, no need to specify.}
 
-\item{rpos1}{A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.}
+\item{ngs_plr.pos}{A list of NGS intensity postion data. Each entry is an individual with dimension= (#of bins or exons, 2(start and end position)). If no NGS data, no need to specify.}
 
-\item{rpos2}{A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.}
+\item{snp_lrr.pos}{A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.}
 
-\item{bpos1}{A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.}
+\item{ngs_baf.pos}{A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.}
 
-\item{bpos2}{A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.}
+\item{snp_baf.pos}{A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.}
 
-\item{hmmcalls}{CNV inference result. First entry of the output from iCNV_detection()}
+\item{icnvres}{CNV inference result. The output from iCNV_detection()}
 
 \item{I}{Indicating the position of the individual to plot}
 
@@ -36,10 +36,10 @@ plotindi(r1L, r2L, baf1, baf2, rpos1, rpos2, bpos1, bpos2, hmmcalls, I,
 void
 }
 \description{
-Plot relationship between platforms and features for each individual.
+Plot relationship between platforms and features for each individual. Only work for muli-platform inference.
 }
 \examples{
 pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-plotindi(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,hmmcalls,I,h=100000, t=200000)
+plotindi(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,icnvres,I,h=100000, t=200000)
 dev.off()
 }
