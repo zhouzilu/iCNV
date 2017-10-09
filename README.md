@@ -31,3 +31,5 @@ install_github("zhouzilu/iCNV")
 * [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
 * [Demo](https://github.com/zhouzilu/iCNV/tree/master/demo)
 
+## Utils
+There are a couple of useful functions in [Utils](https://github.com/zhouzilu/iCNV/tree/master/utils). See each function for more information.

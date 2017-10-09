@@ -106,7 +106,7 @@ head(icnv.output)
 ####################################################
 ####################################################
 ##########                                ##########
-##########  iCNV without genotype (NGS)   ##########
+##########       iCNV with NGS only       ##########
 ##########                                ##########
 ####################################################
 ####################################################
@@ -135,10 +135,15 @@ icnv_res2=iCNV_detection(ngs_plr=ngs_plr,
 icnv.output = output_list(icnv_res2,sample_id,CN=1)
 head(icnv.output)
 
+# Note for WGS
+# You could easily generate BED file of all location using bed_generator function in iCNV/utils/bed_generator.R
+bed_generator(chr=22,hg=19)
+bed_generator(chr=22,hg=19,start=5001,end=10000,by=500)
+
 ####################################################
 ####################################################
 ##########                                ##########
-##########  iCNV without genotype (SNP)   ##########
+##########       iCNV with SNP only       ##########
 ##########                                ##########
 ####################################################
 ####################################################
