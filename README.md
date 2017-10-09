@@ -32,4 +32,4 @@ install_github("zhouzilu/iCNV")
 * [Demo](https://github.com/zhouzilu/iCNV/tree/master/demo)
 
 ## Utils
-There are a couple of useful function in [Utils](https://github.com/zhouzilu/iCNV/tree/master/utils). See each function for more information.
+There are a couple of useful functions in [Utils](https://github.com/zhouzilu/iCNV/tree/master/utils). See each function for more information.
