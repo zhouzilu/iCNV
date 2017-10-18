@@ -101,8 +101,9 @@ ref_qc=qcObj$ref_qc # IRanges object for exon target
 sampname_qc=qcObj$sampname_qc # sample names
 Y_norm=normObj$Yhat[[optK]] # normalized read count under null (no CNV)
 plr=log(pmax(Y_qc,0.0001)/pmax(Y_norm,0.0001)) # log transformed z-scores
-plrObj=list(ref_qc,sampname,sampname_qc,Y_norm,Y_qc,plr)
-save(plrObj,file=paste0(projectname,'plrObj',chr,'_',optK,'.rda'))
+ngs_plr=lapply(seq_len(col(plr)), function(i) plr[,i])
+ngs_plr.pos=lapply(seq(1,length(ngs.plr)),function(x){cbind(start(ref_qc),end(ref_qc))})
+save(ref_qc,sampname_qc,Y_norm,Y_qc,ngs_plr,ngs_plr.pos,file=paste0(projectname,'_plrObj_',chr,'_',optK,'.rda'))
 ```
 For detailed illustration of CODEX, please check https://github.com/yuchaojiang/CODEX
 
