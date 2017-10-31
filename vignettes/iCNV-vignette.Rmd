@@ -159,7 +159,7 @@ icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
                          projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
-icnv.output = output_list(icnv_res0,sample_id,CN=0)
+icnv.output = output_list(icnv_res0,sampname_qc,CN=0)
 head(icnv.output)
 ```
 The results plot looks are follow. Each row is a sample and each column is a hidden state. The color indicates hidden state Z-score (large positive number prefers amplification, low negative number prefers deletion). Black dots represent amplification detected, while white dots show deletion detected.
@@ -191,7 +191,7 @@ str(ngs_baf) # List of n vector, each one is the variants BAF from .bam
 str(ngs_baf.pos) # List of n vector, each one is the variants BAF position
 projname='icnv.demo.ngs'
 icnv_res0_ngs=iCNV_detection(ngs_plr=ngs_plr, ngs_baf = ngs_baf, ngs_plr.pos = ngs_plr.pos,ngs_baf.pos = ngs_baf.pos, projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
-icnv.output = output_list(icnv_res0,sample_id,CN=0)
+icnv.output = output_list(icnv_res0,sampname_qc,CN=0)
 head(icnv.output)
 ```
 ![](icnv.demo.ngs.png)
@@ -207,7 +207,7 @@ str(snp_baf) # List of n vector, each one is the BAF for a SNP
 str(snp_baf.pos) # List of n vector, each one is the SNP BAF position
 projname='icnv.demo.snp'
 icnv_res0_snp=iCNV_detection(snp_lrr=snp_lrr, snp_baf = snp_baf, snp_lrr.pos = snp_lrr.pos,snp_baf.pos = snp_baf.pos, projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 2)
-icnv.output = output_list(icnv_res0,sample_id,CN=0)
+icnv.output = output_list(icnv_res0,sampname_qc,CN=0)
 head(icnv.output)
 ```
 ![](icnv.demo.snp.png)

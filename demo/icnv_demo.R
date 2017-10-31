@@ -19,7 +19,7 @@ library(ggplot2)
 # sequencing baf and position: ngs_baf, ngs_baf.pos
 # snp array lrr and position: snp_lrr, snp_lrr.pos
 # snp array snp and position: snp_baf, snp_baf.pos
-# sample id: sample_id
+# sample id: sampname_qc
 
 load('demo_data.rda')
 ls()
@@ -31,6 +31,7 @@ str(snp_lrr) # List of n vector, each one is the normalized LRR for a SNP
 str(snp_lrr.pos) # List of n vector, each one is a SNP position
 str(snp_baf) # List of n vector, each one is the BAF for a SNP
 str(snp_baf.pos) # List of n vector, each one is the SNP BAF position
+str(sampname_qc) # Vector of sample id or name
 
 ####################################################
 ####################################################
@@ -100,7 +101,7 @@ icnv_res2=iCNV_detection(ngs_plr,snp_lrr,
 ####################################################
 ####################################################
 
-icnv.output = output_list(icnv_res2,sample_id,CN=1)
+icnv.output = output_list(icnv_res2,sampname_qc,CN=1)
 head(icnv.output)
 
 ####################################################
@@ -132,7 +133,7 @@ icnv_res2=iCNV_detection(ngs_plr=ngs_plr,
                          ngs_baf.pos=ngs_baf.pos,
                          projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
 
-icnv.output = output_list(icnv_res2,sample_id,CN=1)
+icnv.output = output_list(icnv_res2,sampname_qc,CN=1)
 head(icnv.output)
 
 # Note for WGS
@@ -170,6 +171,6 @@ icnv_res2=iCNV_detection(snp_lrr=snp_lrr,
                          snp_baf.pos=snp_baf.pos,
                          projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
 
-icnv.output = output_list(icnv_res2,sample_id,CN=1)
+icnv.output = output_list(icnv_res2,sampname_qc,CN=1)
 head(icnv.output)
 

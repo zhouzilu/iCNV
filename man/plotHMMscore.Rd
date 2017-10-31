@@ -4,13 +4,11 @@
 \alias{plotHMMscore}
 \title{Plot CNV inference score.}
 \usage{
-plotHMMscore(HMMcalls, CNV, h = min(HMMcalls[[1]][[2]]),
-  t = max(HMMcalls[[1]][[2]]), subj = "score plot")
+plotHMMscore(icnv_res, h = min(icnv_res[[1]][[1]][[2]]),
+  t = max(icnv_res[[1]][[1]][[2]]), subj = "score plot")
 }
 \arguments{
-\item{HMMcalls}{CNV inference result. First entry from iCNV_detection() result (i.e. iCNV_detection(...)[[1]])}
-
-\item{CNV}{Genotype inference result. Second entry from iCNV_detection() result (i.e. iCNV_detection(...)[[2]])}
+\item{icnv_res}{CNV inference result. Result from iCNV_detection() (i.e. iCNV_detection(...))}
 
 \item{h}{start position of this plot. Default Start of the whole chromosome}
 
@@ -25,9 +23,8 @@ void
 Plot CNV inference score.
 }
 \examples{
-testres = iCNV_detection(...)
-HMMcalls = testres[[1]]
+icnv_res = iCNV_detection(...)
 pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-plotHMMscore1(HMMcalls,h=100000, t=200000, subj='my favorite subject')
+plotHMMscore(icnv_res,h=100000, t=200000, subj='my favorite subject')
 dev.off()
 }

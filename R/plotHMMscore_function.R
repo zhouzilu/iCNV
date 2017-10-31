@@ -10,7 +10,13 @@
 #' plotHMMscore(icnv_res,h=100000, t=200000, subj='my favorite subject')
 #' dev.off()
 #' @export
-plotHMMscore=function(icnv_res,h=min(icnv_res[[1]][[1]][[2]]),t=max(icnv_res[[1]][[1]][[2]]),subj="score plot"){
+plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot"){
+  if(is.null(h)){
+    h=min(icnv_res[[1]][[1]][[2]])
+  }
+  if(is.null(t)){
+    t=max(icnv_res[[1]][[1]][[2]])
+  }
   HMMcalls=icnv_res[[1]]
   CNV=icnv_res[[2]]
   sel=(h<=HMMcalls[[1]][[2]][,1] & HMMcalls[[1]][[2]][,2]<=t)
