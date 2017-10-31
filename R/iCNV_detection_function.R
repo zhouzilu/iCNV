@@ -20,7 +20,21 @@ devtools::use_package('ggplot2')
 #' @return (1) CNV inference, contains CNV inference, Start and end position for each inference, Conditional probability for each inference, mu for mixture normal, sigma for mixture normal, probability of CNVs, Z score for each inference.
 #' @return (2) exact copy number for each CNV inference, if CN=1.
 #' @examples
-#' iCNV_detection()
+#' # icnv call without genotype (just infer deletion, duplication)
+#' projname='icnv.demo'
+#' icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
+#'                          ngs_baf,snp_baf,
+#'                          ngs_plr.pos,snp_lrr.pos,
+#'                          ngs_baf.pos,snp_baf.pos,
+#'                          projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
+
+#' # icnv call with genotype inference and complete plot
+#' projname='icnv.demo.geno'
+#' icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
+#'                          ngs_baf,snp_baf,
+#'                          ngs_plr.pos,snp_lrr.pos,
+#'                          ngs_baf.pos,snp_baf.pos,
+#'                          projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
 #' @export
 iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ngs_plr.pos=NULL,snp_lrr.pos=NULL,ngs_baf.pos=NULL,snp_baf.pos=NULL,maxIt=50,visual=0,projname='iCNV',CN=0,mu=c(-3,0,2),cap=FALSE){
   # Change variable name for easier code writing
@@ -38,14 +52,14 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
       CNV=exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(HMMcall,CNV,subj=projname)
+        plotHMMscore(list(HMMcall,CNV),subj=projname)
         dev.off()
       }
     }
     else{
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(HMMcall,CNV,subj=projname)
+        plotHMMscore(list(HMMcall,CNV),subj=projname)
         dev.off()
       }
     }
@@ -61,14 +75,14 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
       CNV=exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(HMMcall,CNV,subj=projname)
+        plotHMMscore(list(HMMcall,CNV),subj=projname)
         dev.off()
       }
     }
     else{
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(HMMcall,CNV,subj=projname)
+        plotHMMscore(list(HMMcall,CNV),subj=projname)
         dev.off()
       }
     }
@@ -85,7 +99,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
       if (CN!=0){
         bafzIs=visualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],bafzIs[[7]],bafzIs[[8]],bafzIs[[9]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        plotHMMscore(HMMcall,CNV,subj=projname)
+        plotHMMscore(list(HMMcall,CNV),subj=projname)
         visualization2(HMMcall,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
       dev.off()
@@ -96,7 +110,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
         bafzIs=novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)       
       }
-      plotHMMscore(HMMcall,CNV,subj=projname)
+      plotHMMscore(list(HMMcall,CNV),subj=projname)
       dev.off()
     }
     else{
@@ -261,22 +275,28 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     cat('Intensity and BAF emission probability are null.')
   }
 
+  # cat('emission 1 range:', range(emission1),'emission 2 range:', range(emission2),'emission 3 range:', range(emission3),'\n')
+
   n = nrow(Lposi)
   D=70000
   d=pmax(rowMeans(Lposi)[2:n]-rowMeans(Lposi)[1:(n-1)],1)
   f=exp(-d/D)
   # p=10^-8
   q=1/6
-  transition11=log(f*(1-q)+(1-f)*p)
-  transition12=log(f*q+(1-f)*(1-2*p))
-  transition13=log((1-f)*p)
-  transition21=log(rep(p,length(d)))
-  transition22=log(rep(1-2*p,length(d)))
-  transition23=log(rep(p,length(d)))
-  transition31=log((1-f)*p)
-  transition32=log(f*q+(1-f)*(1-2*p))
-  transition33=log(f*(1-q)+(1-f)*p)
-
+  transitionarray = array(NA,dim=c(3,3,n-1))
+  transitionarray[1,1,]=transition11=log(f*(1-q)+(1-f)*p)
+  transitionarray[1,2,]=transition12=log(f*q+(1-f)*(1-2*p))
+  transitionarray[1,3,]=transition13=log((1-f)*p)
+  transitionarray[2,1,]=transition21=log(rep(p,length(d)))
+  transitionarray[2,2,]=transition22=log(rep(1-2*p,length(d)))
+  transitionarray[2,3,]=transition23=log(rep(p,length(d)))
+  transitionarray[3,1,]=transition31=log((1-f)*p)
+  transitionarray[3,2,]=transition32=log(f*q+(1-f)*(1-2*p))
+  transitionarray[3,3,]=transition33=log(f*(1-q)+(1-f)*p)
+  emissionmatrix = matrix(NA,nrow=3,ncol=n)
+  emissionmatrix[1,]=emission1
+  emissionmatrix[2,]=emission2
+  emissionmatrix[3,]=emission3
   # viterbi algorithm
   v=matrix(NA,nrow=n,ncol=3)
   pointer=matrix(NA,nrow=(n+1),ncol=3)
@@ -288,7 +308,8 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   pointer[1,3]=0
 
   for (i in 2:n){
-    max1=max((v[i-1,1]+(transition11[i-1])),(v[i-1,2]+(transition21[i-1])),(v[i-1,3]+(transition31[i-1])))
+    # max1=max((v[i-1,1]+(transition11[i-1])),(v[i-1,2]+(transition21[i-1])),(v[i-1,3]+(transition31[i-1])))
+    max1=max(v[i-1,]+transitionarray[,1,i-1])
     v[i,1]=emission1[i]+max1
     if ((v[i-1,1]+(transition11[i-1]))==max1){
       pointer[i,1]=1
@@ -297,7 +318,8 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     } else{
       pointer[i,1]=3
     }
-    max2=max((v[i-1,1]+(transition12[i-1])),(v[i-1,2]+(transition22[i-1])),(v[i-1,3]+(transition32[i-1])))
+    # max2=max((v[i-1,1]+(transition12[i-1])),(v[i-1,2]+(transition22[i-1])),(v[i-1,3]+(transition32[i-1])))
+    max2=max(v[i-1,]+transitionarray[,2,i-1])
     v[i,2]=emission2[i]+max2
     if ((v[i-1,1]+(transition12[i-1]))==max2){
       pointer[i,2]=1
@@ -306,7 +328,8 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     } else {
       pointer[i,2]=3
     }
-    max3=max((v[i-1,1]+(transition13[i-1])),(v[i-1,2]+(transition23[i-1])),(v[i-1,3]+(transition33[i-1])))
+    # max3=max((v[i-1,1]+(transition13[i-1])),(v[i-1,2]+(transition23[i-1])),(v[i-1,3]+(transition33[i-1])))
+    max3=max(v[i-1,]+transitionarray[,3,i-1])
     v[i,3]=emission3[i]+max3
     if ((v[i-1,1]+(transition13[i-1]))==max3){
       pointer[i,3]=1
@@ -316,6 +339,7 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
       pointer[i,3]=3
     }
   }
+
   # termination
   max4=max(v[n,1],v[n,2],v[n,3])
   if (v[n,1]==max4){
@@ -348,6 +372,9 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   I[which(result==3),3]=1
 
   # posterior probability
+  # fast pmin and pmax function
+  pmin. <- function(k,x) (x+k - abs(x-k))/2 
+  pmax. <- function(k,x) (x+k + abs(x-k))/2 
   # Or E step
   # Forward Algorithm
   at=matrix(NA,nrow=n,ncol=3)
@@ -357,14 +384,18 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   at[1,3]=(emission3[1])+log(p)
   for (i in 2:n){
     wt=sum(range(at[i-1,]))/2
-    s1=wt+log(exp(at[i-1,1]+transition11[i-1]-wt)+exp(at[i-1,2]+transition21[i-1]-wt)+exp(at[i-1,3]+transition31[i-1]-wt))
+    #s1=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition11[i-1]-wt,at[i-1,2]+transition21[i-1]-wt,at[i-1,3]+transition31[i-1]-wt),-745),709))))
+    s1=wt+log(sum(exp(pmin.(pmax.(at[i-1,]+transitionarray[,1,i-1]-wt,-745),709))))
+    
     at[i,1]=emission1[i]+s1
-    s2=wt+log(exp(at[i-1,1]+transition12[i-1]-wt)+exp(at[i-1,2]+transition22[i-1]-wt)+exp(at[i-1,3]+transition32[i-1]-wt))
+    #s2=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition12[i-1]-wt,at[i-1,2]+transition22[i-1]-wt,at[i-1,3]+transition32[i-1]-wt),-745),709))))
+    s2=wt+log(sum(exp(pmin.(pmax.(at[i-1,]+transitionarray[,2,i-1]-wt,-745),709))))
     at[i,2]=emission2[i]+s2
-    s3=wt+log(exp(at[i-1,1]+transition13[i-1]-wt)+exp(at[i-1,2]+transition23[i-1]-wt)+exp(at[i-1,3]+transition33[i-1]-wt))
+    #s3=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition13[i-1]-wt,at[i-1,2]+transition23[i-1]-wt,at[i-1,3]+transition33[i-1]-wt),-745),709))))
+    s3=wt+log(sum(exp(pmin.(pmax.(at[i-1,]+transitionarray[,3,i-1]-wt,-745),709))))
     at[i,3]=emission3[i]+s3
     wt=sum(range(at[i,]))/2
-    cta[i]=-(wt+log(exp(at[i,1]-wt)+exp(at[i,2]-wt)+exp(at[i,3]-wt)))
+    cta[i]=-(wt+log(sum(exp(pmin.(pmax.(at[i,]-wt,-745),709)))))
     at[i,]=at[i,]+cta[i]
   }
 
@@ -376,14 +407,14 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   bt[n,3]=0
   for (i in seq(n-1,1,-1)){
     wt=mean(range(c(emission1[i+1],emission2[i+1],emission3[i+1])))
-    s1=wt+log(exp(transition11[i]+emission1[i+1]+bt[i+1,1]-wt)+exp(transition12[i]+emission2[i+1]+bt[i+1,2]-wt)+exp(transition13[i]+emission3[i+1]+bt[i+1,3]-wt))
-    s2=wt+log(exp(transition21[i]+emission1[i+1]+bt[i+1,1]-wt)+exp(transition22[i]+emission2[i+1]+bt[i+1,2]-wt)+exp(transition23[i]+emission3[i+1]+bt[i+1,3]-wt))
-    s3=wt+log(exp(transition31[i]+emission1[i+1]+bt[i+1,1]-wt)+exp(transition32[i]+emission2[i+1]+bt[i+1,2]-wt)+exp(transition33[i]+emission3[i+1]+bt[i+1,3]-wt))
+    s1=wt+log(sum(exp(pmin.(pmax.(transitionarray[1,,i]+emissionmatrix[,i+1]+bt[i+1,]-wt,-745),709))))
+    s2=wt+log(sum(exp(pmin.(pmax.(transitionarray[2,,i]+emissionmatrix[,i+1]+bt[i+1,]-wt,-745),709))))
+    s3=wt+log(sum(exp(pmin.(pmax.(transitionarray[3,,i]+emissionmatrix[,i+1]+bt[i+1,]-wt,-745),709))))
     wt=mean(range(c(s1,s2,s3)))
-    ctb[i]=-(wt+log(exp(s1-wt)+exp(s2-wt)+exp(s3-wt)))
+    ctb[i]=-(wt+log(sum(exp(pmin.(pmax.(c(s1-wt,s2-wt,s3-wt),-745),709)))))
     bt[i,]=ctb[i]+(c(s1,s2,s3))
   }
-  rt=exp(at+bt)/rowSums(exp(at+bt))
+  rt=(exp(at+bt)+1e-323)/(rowSums(exp(at+bt))+1e-323)
   rt=rt/rowSums(rt)
   ct=cta+ctb
 
