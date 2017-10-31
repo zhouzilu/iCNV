@@ -4,7 +4,7 @@
 \alias{output_list}
 \title{Generate ouput list.}
 \usage{
-output_list(icnv_res, sampleid, CN = 0)
+output_list(icnv_res, sampleid = NULL, CN = 0)
 }
 \arguments{
 \item{sampleid}{the name of the sample, same order as the input}
@@ -20,5 +20,5 @@ output CNV list of each individual
 Generate ouput list.
 }
 \examples{
-output = output_list(icnv_res=icnv_res,sampleid=sample_id, CN=0)
+output = output_list(icnv_res=icnv_res,sampleid=sampname_qc, CN=0)
 }
