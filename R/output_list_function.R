@@ -4,9 +4,9 @@
 #' @param CN An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Default 0.
 #' @return output CNV list of each individual
 #' @examples
-#' output = output_list(icnv_res=icnv_res,sampleid=sample_id, CN=0)
+#' output = output_list(icnv_res=icnv_res,sampleid=sampname_qc, CN=0)
 #' @export
-output_list=function(icnv_res,sampleid,CN=0){
+output_list=function(icnv_res,sampleid=NULL,CN=0){
   if (CN!=0){
     testres=icnv_res[[1]]
     result=lapply(icnv_res[[2]],function(x){x})
@@ -17,7 +17,9 @@ output_list=function(icnv_res,sampleid,CN=0){
     result=lapply(testres,function(x){x[[1]]})
     Lpos=lapply(testres,function(x){x[[2]]})
   }
-
+  if(is.null(sampleid)){
+      sampleid = seq(1,length(testres))
+  }
   # extract CNV region
   res=mapply(function(I,pos){
     It=I
