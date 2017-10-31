@@ -33,6 +33,7 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot"){
     col = c('white','black'),text.col = "green4", pch = c(1,20),cex = 0.75)
   }
   else{
+    CNV=t(sapply(CNV,function(x)x, simplify = T))[,sel]
     addCNVtoplot(CNV)
     legend("topright",c("0", "1", "3", "4"),
     col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)
@@ -53,13 +54,11 @@ addCNVtoplot1=function(result){
 }
 
 addCNVtoplot=function(result){
-  for (i in 1:length(result)){
-    hemidel = which(result[[i]]==1)
-    homodel = which(result[[i]]==0)
-    cp1dup = which(result[[i]]==3)
-    cp2dup = which(result[[i]]==4)
-    del = which(result[[i]]<2)
-    dup = which(result[[i]]>2)
+  for (i in 1:nrow(result)){
+    hemidel = which(result[i,]==1)
+    homodel = which(result[i,]==0)
+    cp1dup = which(result[i,]==3)
+    cp2dup = which(result[i,]==4)
     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
     sel=hemidel
     points(x=sel,y=rep(i,length(sel)),col='grey',pch=16,cex=0.5)
