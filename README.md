@@ -27,6 +27,19 @@ install.packages("devtools")
 library(devtools)
 install_github("zhouzilu/iCNV")
 ```
+## Update
+**iCNV** has made a lot of changes on 10/31/2017 for stability, bug fixing and computation power. We strongly recommend you update iCNV to the newest version using the following command.
+* Update instruction
+```r
+# Remove iCNV
+remove.packages('iCNV')
+
+# reinstall iCNV
+install.packages("devtools")
+library(devtools)
+install_github("zhouzilu/iCNV")
+```
+
 
 ## Demo code & Vignettes
 * [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
