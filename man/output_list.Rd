@@ -4,12 +4,14 @@
 \alias{output_list}
 \title{Generate ouput list.}
 \usage{
-output_list(icnv_res, sampleid = NULL, CN = 0)
+output_list(icnv_res, sampleid = NULL, CN = 0, min_size = 0)
 }
 \arguments{
 \item{sampleid}{the name of the sample, same order as the input}
 
 \item{CN}{An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Default 0.}
+
+\item{min_size}{A integer which indicate the minimum length of the CNV you are interested in. This could remove super short CNVs due to noise. Default 0. Recommend 1000.}
 
 \item{testres}{CNV inference result. Output from iCNV_detection()}
 }

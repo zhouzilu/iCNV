@@ -4,8 +4,7 @@
 \alias{plotHMMscore}
 \title{Plot CNV inference score.}
 \usage{
-plotHMMscore(icnv_res, h = min(icnv_res[[1]][[1]][[2]]),
-  t = max(icnv_res[[1]][[1]][[2]]), subj = "score plot")
+plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot")
 }
 \arguments{
 \item{icnv_res}{CNV inference result. Result from iCNV_detection() (i.e. iCNV_detection(...))}
