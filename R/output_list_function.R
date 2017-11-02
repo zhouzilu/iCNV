@@ -45,11 +45,10 @@ output_list=function(icnv_res,sampleid=NULL,CN=0,min_size=0){
     pos=res[[2]]
     ind= cnv!=2
     cnv=cnv[ind]
-    pos=pos[ind,]
+    pos=matrix(pos[ind,],ncol=2)
     filt=(pos[,2]-pos[,1]>=min_size)
     cnv=cnv[filt]
-    pos=pos[filt,]
-    print(pos)
+    pos=matrix(pos[filt,],ncol=2)
     return(cbind(cnv,pos))
   },res,SIMPLIFY = T)
 

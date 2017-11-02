@@ -115,6 +115,10 @@ icnv_res2=iCNV_detection(ngs_plr,snp_lrr,
 icnv.output = output_list(icnv_res2,sampname_qc,CN=1)
 head(icnv.output)
 
+# Wanna exclude short CNVs to increase robustness.
+icnv.output1 = output_list(icnv_res2,sampname_qc,CN=1,min_size=1000)
+head(icnv.output1)
+
 
 ####################################################
 ####################################################
@@ -147,6 +151,10 @@ icnv_res2=iCNV_detection(ngs_plr=ngs_plr,
 
 icnv.output = output_list(icnv_res2,sampname_qc,CN=1)
 head(icnv.output)
+
+# Wanna exclude short CNVs to increase robustness.
+icnv.output1 = output_list(icnv_res2,sampname_qc,CN=1,min_size=1000)
+head(icnv.output1)
 
 # Note for WGS
 # You could easily generate BED file of all location using bed_generator function in iCNV/utils/bed_generator.R
