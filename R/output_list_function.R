@@ -2,11 +2,12 @@
 #' @param testres CNV inference result. Output from iCNV_detection()
 #' @param sampleid the name of the sample, same order as the input
 #' @param CN An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Default 0.
+#' @param min_size A integer which indicate the minimum length of the CNV you are interested in. This could remove super short CNVs due to noise. Default 0. Recommend 1000.
 #' @return output CNV list of each individual
 #' @examples
 #' output = output_list(icnv_res=icnv_res,sampleid=sampname_qc, CN=0)
 #' @export
-output_list=function(icnv_res,sampleid=NULL,CN=0){
+output_list=function(icnv_res,sampleid=NULL,CN=0,min_size=0){
   if (CN!=0){
     testres=icnv_res[[1]]
     result=lapply(icnv_res[[2]],function(x){x})
@@ -39,12 +40,13 @@ output_list=function(icnv_res,sampleid=NULL,CN=0){
     return(list(It,post))
   },result,Lpos,SIMPLIFY = F)
 
-  icnv_res = mapply(function(res){
+  icnv_res = mapply(function(res,min_size){
     cnv=res[[1]]
     pos=res[[2]]
-    ind = cnv!=2
+    ind= cnv!=2
     cnv=cnv[ind]
     pos=pos[ind,]
+    filt=pos[]
     return(cbind(cnv,pos))
   },res,SIMPLIFY = T)
 
