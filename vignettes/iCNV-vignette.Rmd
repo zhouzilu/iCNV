@@ -8,7 +8,7 @@ Zilu Zhou, Nancy R. Zhang
 Zilu Zhou <zhouzilu@pennmedicine.upenn.edu>
 
 ## Date
-09/27/2017
+11/02/2017
 
   This is a demo for using the **iCNV** package in R. **iCNV** is a normalization and copy number variation detection procedure for mutiple study designs: WES only, WGS only, SNP array only, or any combination of SNP and sequencing data. **iCNV** applies platform specific normalization, utilizes allele specific reads from sequencing and integrates matched NGS and SNP-array data by a Hidden Markov Model (HMM). Figure 1 shows the overall pipeline. This package specifically emphasizes on the steps within the red box. Below is an example on calling copy number variation using whole-exome sequencing data and array SNPs of 38 samples from Alzheimer's Disease Sequencing Project. Only second half of chromesome 22 are analysed for illustration purposes. We will seperately shows normalization for WES and SNP array. We will also introduce integrated calling procedure as well as single platform procedure. R packages are avaliable at github as well as the toy dataset.
 
@@ -102,7 +102,7 @@ sampname_qc=qcObj$sampname_qc # sample names
 Y_norm=normObj$Yhat[[optK]] # normalized read count under null (no CNV)
 plr=log(pmax(Y_qc,0.0001)/pmax(Y_norm,0.0001)) # log transformed z-scores
 ngs_plr=lapply(seq_len(ncol(plr)), function(i) plr[,i])
-ngs_plr.pos=lapply(seq(1,length(ngs_plr)),function(x){cbind(start(ref_qc),end(ref_qc))})
+ngs_plr.pos=lapply(seq_len(ncol(plr)),function(x){return(cbind(start(ref_qc),end(ref_qc)))})
 save(ref_qc,sampname_qc,Y_norm,Y_qc,ngs_plr,ngs_plr.pos,file=paste0(projectname,'_plrObj_',chr,'_',optK,'.rda'))
 ```
 For detailed illustration of CODEX, please check https://github.com/yuchaojiang/CODEX
