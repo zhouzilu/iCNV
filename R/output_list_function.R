@@ -40,13 +40,16 @@ output_list=function(icnv_res,sampleid=NULL,CN=0,min_size=0){
     return(list(It,post))
   },result,Lpos,SIMPLIFY = F)
 
-  icnv_res = mapply(function(res,min_size){
+  icnv_res = mapply(function(res){
     cnv=res[[1]]
     pos=res[[2]]
     ind= cnv!=2
     cnv=cnv[ind]
     pos=pos[ind,]
-    filt=pos[]
+    filt=(pos[,2]-pos[,1]>=min_size)
+    cnv=cnv[filt]
+    pos=pos[filt,]
+    print(pos)
     return(cbind(cnv,pos))
   },res,SIMPLIFY = T)
 
