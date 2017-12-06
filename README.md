@@ -47,7 +47,7 @@ Number in the parentheses referring to different section in [Vignettes](https://
                     NGS                                                 |                   Array
        BAM              BED (UCSC for WES or bed_generator.R for WGS)   |               SNP Intensity(in standard format)
         |----------------|                                              |                    |
-        |                |                                              |                    |icnv_array_input.R
+        |                |                                              |                    |icnv_array_input.R (2.4)
         |SAMTools(2.3)   |CODEX(2.2)                                    |                    |
         |                |                                              |              |-----------|
 Variants BAF(vcf)       PLR                                             |         Array LRR   Array BAF
