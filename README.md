@@ -44,19 +44,19 @@ install_github("zhouzilu/iCNV")
 ## Workflow overview
 Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd) and function in the parenthesese can be found in [Utils](https://github.com/zhouzilu/iCNV/tree/master/utils).
 ```
-                    NGS                                                 |                   Array
-       BAM              BED (UCSC for WES or bed_generator.R for WGS)   |               SNP Intensity(in standard format)
-        |----------------|                                              |                    |
-        |                |                                              |                    |icnv_array_input.R (2.4)
-        |SAMTools(2.3)   |CODEX(2.2)                                    |                    |
-        |                |                                              |              |-----------|
-Variants BAF(vcf)       PLR                                             |         Array LRR   Array BAF
-        |                |                                              |              |           |
-        |                |                                              |              |PCA(2.4)   |
-        |                |                                              |              |           |
-        |                |                                              |      Normalized LRR      |
-        |                |                                              |              |           |
-        --------------------------------------------------------------------------------------------
+                    NGS                                                 |               Array
+       BAM              BED(UCSC for WES or bed_generator.R for WGS 2.2)|        SNP Intensity(in standard format)
+        |----------------|                                              |             |
+        |                |                                              |             |icnv_array_input.R (2.4)
+        |SAMTools(2.3)   |CODEX(2.2)                                    |             |
+        |                |                                              |             |-----------|
+Variants BAF(vcf)       PLR                                             |        Array LRR   Array BAF
+        |                |                                              |             |           |
+        |                |                                              |             |PCA(2.4)   |
+        |                |                                              |             |           |
+        |                |                                              |     Normalized LRR      |
+        |                |                                              |             |           |
+        -------------------------------------------------------------------------------------------
                                                         |
                                                         |iCNV_detection
                                                         |
