@@ -86,7 +86,9 @@ CODEX reports all three statistical metrics (AIC, BIC, percent of Variance expla
 default method to determine the number of Poisson factors. Since false positives can be screened out through
 a closer examination of the post-segmentation data, whereas CNV signals removed in the normalization step
 cannot be recovered, CODEX opts for a more conservative normalization that, when in doubt, uses a smaller
-value of K.
+value of K. For example,
+![](icnv.codex.optK.png)
+Here we pick `optK=2`
 ```r
 optK = K[which.max(BIC)]
 load(paste0(projectname,"_",chr,".rda"))
@@ -116,25 +118,75 @@ cd PATH/TO/BAM
 for i in *bam; do PATH/TO/SAMTOOLS/samtools mpileup -ugI -t DP -t DV -f PATH/TO/REF/human_hg37.fasta $i | ~/bcftools-1.3.1/bcftools call -cv -O z -o PATH/TO/OUTPUT/$i.vcf.gz; done
 ```
 
+We could further extract variants BAF info from vcf file by applying [bambaf_from_vcf.R](https://github.com/zhouzilu/iCNV/blob/master/utils/bambaf_from_vcf.R). 
+```r
+Prerequest: tidyr, data.table, dplyr
+library(tidyr);library(data.table);library(dplyr)
+bambaf_from_vcf('example_vcf.list')
+bambaf_from_vcf('example_vcf.list',chr=22)
+load('bambaf_22.rda')
+str(ngs_baf)
+str(ngs_baf.pos)
+```
+
 ### 2.4 SNP array LRR normalization and BAF
+Due to the fact that signal intensity files varies from platform, we set a standard signal intensity file format for each individual. For example 
+```
+Name,Chr,POS,sample1.Log R Ratio,sample1.B Allele Freq
+rs6010348,22,15462739,-0.096390619874,0.0443964861333
+rs4321465,22,15520991,-0.154103130102,0.963218688965
+rs4145526,22,15780940,-0.110297381878,0.0457459762692
+rs12157537,22,15863717,-0.21270519495,0.957377910614
+rs9604821,22,16532045,-0.0330782271922,0.0300635993481
+```
+First row is the rsid (Name), followed by chromosome (Chr) and position (POS), then the log R ratio (sample1.Log R Ratio) and BAF (sample1.B Allele Freq). We could use function [icnv_array_input.R](https://github.com/zhouzilu/iCNV/blob/master/utils/icnv_array_input.R) For example:
+```r
+###################################################
+### 2.4 code chunk number 1: icnv_array_input
+###################################################
+library(data.table)
+dir='PATH/TO/FOLDER'
+pattern=paste0('*.csv.arrayicnv$')
+icnv_array_intput(dir,pattern,chr=22)
+load('icnv_array_input_22.rda')
+str(snp_lrr)
+str(snp_lrr.pos)
+str(snp_baf)
+str(snp_baf.pos)
+```
 
 For some of the SNP array LRR data, we need to apply SVD normalization to remove high dimension noisy and preserve low dimension signal. The best way to decide data senity is by plotting out the data. Noisy data has the feature of local strip across samples. Conventional way for identifying elbow points can also apply here. Example code for remove high dimension noisy and plot:
 ```r
-# lrr is LRR matrix, with row as sample and column as positions
+###################################################
+### 2.4 code chunk number 2: svd
+###################################################
+# standardize LRR
+lrr.sd = mapply(function(x){x=pmax(pmin(x,100),-100);(x-mean(x,na.rm=T))/sd(x,na.rm = T)},snp_lrr,SIMPLIFY = T)
 # You may want to substitute all the NAs in lrr by rowMeans
-lrr.svd = svd (lrr)
-pdf(paste0(projectname,'_SVD.pdf'),height=10,width=14)
-plot(x=seq(0,9),y=diag(lrr.svd$d),xlab='K,',ylab='D',main='')
-for (K in 0:9){
-	D=diag(lrr.svd$d)
-	D.lowrank=diag(c(rep(0,K),lrr.svd$d[-(seq(1,K,1))]))
-	lowrank=t(lrr.svd$u %*% D.lowrank %*% t(lrr.svd$v))
-	toplot=apply(lowrank,2,function(x){(x-mean(x,na.rm=T))/sd(x,na.rm=T)})
-	l=3
-	image.plot(x=seq(1,nrow(toplot)),y=seq(1,ncol(toplot)),z=pmin(pmax(toplot,-l),l),
-	  xlab=paste0('chr',chr),ylab='samples',main=paste0('K=',K)
-}
+lrr.sd.dena = apply(lrr.sd,2,function(x){x[is.na(x)]=mean(x,na.rm=T);return(x)})
+
+# lrr is LRR matrix, with row as sample and column as positions
+lrr.svd = svd (t(lrr.sd.dena))
+save(lrr.svd,file=paste0('array_icnv_input_svd_',chr,'.rda'))
+
+pdf(paste0('array_icnv_input_svd_',chr,'.pdf'),height=8,width=10)
+plot(x=seq(1,10,1),y=(lrr.svd$d[1:10])^2/sum(lrr.svd$d^2),xlab='rank',ylab='D square',main='Variance explained',type='l')
 dev.off()
+```
+
+There is no universal rule of picking the optK. Usually we prefer those "elbow points". For example,
+![](icnv.array.optK.png)
+We pick `optK=5`
+```r
+###################################################
+### 2.4 code chunk number 3: normalization
+###################################################
+optK = 5
+D=diag(lrr.svd$d)
+D.lowrank=diag(c(rep(0,optK),lrr.svd$d[-(seq(1,optK,1))]))
+lrr.denoise=t(lrr.svd$u %*% D.lowrank %*% t(lrr.svd$v))
+snp_lrr = lapply(seq_len(ncol(lrr.denoise)), function(i) lrr.denoise[,i])
+save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, file=file.path(dirPath,paste0('icnv_array_input_',chr,'_svded.rda')))
 ```
 
 ### 2.5 Mutiple platform CNV detection using **iCNV**
