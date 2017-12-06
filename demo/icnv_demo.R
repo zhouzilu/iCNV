@@ -4,7 +4,8 @@ library(fields)
 library(ggplot2)
 
 ##### IMPORTANT #####
-# For detailed notation and pipeline, please visit https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd
+# This demo mainly demonstrate function in the iCNV packages.
+# For detailed notation and pipeline function, please visit https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd
 
 ####################################################
 ####################################################
