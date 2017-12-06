@@ -1,18 +1,18 @@
 #' If your vcf follow the format in the example, you could use this function to extract NGS baf from vcf files. Remember to load library before hands.
 #' Save 6 lists, each list has N entry. N = # of individuals (or vcf file)
-#' bambafnm: name of the bamfiles; bambafchrls: the chromosome; bambafposls: the position of the variants; 
-#' bambafls: the BAF of the variants; bambafidls: the ID of the variants; filenm:the file name
+#' ngs_baf.nm: name of the bamfiles; ngs_baf.chr: the chromosome; ngs_baf.pos: the position of the variants; 
+#' ngs_baf: the BAF of the variants; ngs_baf.id: the ID of the variants; filenm:the file name
 #' @param vcf_list All the vcf names stored in vcf.list; could use command:"ls *.vcf > vcf.list" to generate.
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes.
-#' @return void
+#' @return void 
 #' @examples
 #' setwd('PATH/TO/FOLDER')
 #' library(tidyr);library(data.table);library(dplyr)
 #' bambaf_from_vcf('example_vcf.list')
 #' bambaf_from_vcf('example_vcf.list',chr=22)
 #' load('bambaf_22.rda')
-#' ngs_baf = bambafls
-#' ngs_baf.pos = bambafposls
+#' str(ngs_baf)
+#' str(ngs_baf.pos)
 #' @export
 bambaf_from_vcf = function(vcf_list,chr=NULL){
 
@@ -25,37 +25,37 @@ bambaf_from_vcf = function(vcf_list,chr=NULL){
 	if(is.null(chr)){
 		for (chr in 1:22){
 			baf.all.chr=sapply(baf.all,function(x){return(x %>% filter(`#CHROM`==chr))},simplify=F)
-			bambafnm=list()
-			bambafchrls=list()
-			bambafposls=list()
-			bambafidls=list()
-			bambafls=list()
+			ngs_baf.nm=list()
+			ngs_baf.chr=list()
+			ngs_baf.pos=list()
+			ngs_baf.id=list()
+			ngs_baf=list()
 			for (i in seq(1:length(baf.all.chr))){
 				x=baf.all.chr[[i]]
-				bambafnm[[i]]=names(x)[4]
-				bambafchrls[[i]]=x$`#CHROM`
-				bambafposls[[i]]=x$POS
-				bambafidls[[i]]=x$ID
-				bambafls[[i]]=x[[4]]
+				ngs_baf.nm[[i]]=names(x)[4]
+				ngs_baf.chr[[i]]=x$`#CHROM`
+				ngs_baf.pos[[i]]=x$POS
+				ngs_baf.id[[i]]=x$ID
+				ngs_baf[[i]]=x[[4]]
 			}
-			save(bambafnm,bambafchrls,bambafposls,bambafls,bambafidls,filenm,file=paste0('bambaf_',chr,'.rda'))
+			save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0('bambaf_',chr,'.rda'))
 		}
 	}else{
 		baf.all.chr=sapply(baf.all,function(x){return(x %>% filter(`#CHROM`==chr))},simplify=F)
-		bambafnm=list()
-		bambafchrls=list()
-		bambafposls=list()
-		bambafidls=list()
-		bambafls=list()
+		ngs_baf.nm=list()
+		ngs_baf.chr=list()
+		ngs_baf.pos=list()
+		ngs_baf.id=list()
+		ngs_baf=list()
 		for (i in seq(1:length(baf.all.chr))){
 			x=baf.all.chr[[i]]
-			bambafnm[[i]]=names(x)[4]
-			bambafchrls[[i]]=x$`#CHROM`
-			bambafposls[[i]]=x$POS
-			bambafidls[[i]]=x$ID
-			bambafls[[i]]=x[[4]]
+			ngs_baf.nm[[i]]=names(x)[4]
+			ngs_baf.chr[[i]]=x$`#CHROM`
+			ngs_baf.pos[[i]]=x$POS
+			ngs_baf.id[[i]]=x$ID
+			ngs_baf[[i]]=x[[4]]
 		}
-		save(bambafnm,bambafchrls,bambafposls,bambafls,bambafidls,filenm,file=paste0('bambaf_',chr,'.rda'))
+		save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0('bambaf_',chr,'.rda'))
 	}
 }
 
