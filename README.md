@@ -52,7 +52,7 @@ Number in the parentheses referring to different section in [Vignettes](https://
         |                |                                              |             |-----------|
 Variants BAF(vcf)       PLR                                             |        Array LRR   Array BAF
         |                |                                              |             |           |
-        |                |                                              |             |PCA(2.4)   |
+        |                |                                              |             |SVD(2.4)   |
         |                |                                              |             |           |
         |                |                                              |     Normalized LRR      |
         |                |                                              |             |           |
