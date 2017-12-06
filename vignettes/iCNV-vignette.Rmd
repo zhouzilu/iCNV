@@ -38,7 +38,11 @@ install.packages("devtools")
 library(devtools)
 install_github("zhouzilu/iCNV")
 ```
+
 ### 2.2 .bam file normalization using CODEX
+For researchers work on WGS data, you need to generate your own BED file for CODEX normalization. We made a function [bed_generator.R](https://github.com/zhouzilu/iCNV/blob/master/utils/bed_generator.R) to help you with this.
+
+After you have BAM file and BED file available, follow code below (code modified from https://github.com/yuchaojiang/CODEX with permission):
 ```r
 ###################################################
 ### 2.2 code chunk number 1: bambedObj1
@@ -107,7 +111,7 @@ ngs_plr=lapply(seq_len(ncol(plr)), function(i) plr[,i])
 ngs_plr.pos=lapply(seq_len(ncol(plr)),function(x){return(cbind(start(ref_qc),end(ref_qc)))})
 save(ref_qc,sampname_qc,Y_norm,Y_qc,ngs_plr,ngs_plr.pos,file=paste0(projectname,'_plrObj_',chr,'_',optK,'.rda'))
 ```
-For detailed illustration of CODEX, please check https://github.com/yuchaojiang/CODEX
+For detailed illustration of CODEX, please visit https://github.com/yuchaojiang/CODEX
 
 ### 2.3 sequence variants BAF calling
 
