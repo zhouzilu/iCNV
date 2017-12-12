@@ -3,6 +3,7 @@
 #' @param h start position of this plot. Default Start of the whole chromosome
 #' @param t end position of this plot. Default End of the whole chromosome
 #' @param title of this plot. Default "score plot"
+#' @param output generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL
 #' @return void
 #' @examples
 #' icnv_res = iCNV_detection(...)
@@ -10,7 +11,7 @@
 #' plotHMMscore(icnv_res,h=100000, t=200000, subj='my favorite subject')
 #' dev.off()
 #' @export
-plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot"){
+plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot",output=NULL){
   if(is.null(h)){
     h=min(icnv_res[[1]][[1]][[2]])
   }
@@ -20,14 +21,18 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot"){
   HMMcalls=icnv_res[[1]]
   CNV=icnv_res[[2]]
   sel=(h<=HMMcalls[[1]][[2]][,1] & HMMcalls[[1]][[2]][,2]<=t)
+  Lpos=HMMcalls[[1]][[2]][sel,]
   scores=lapply(HMMcalls,function(x){x[[7]]})
   scores=t(sapply(scores,function(x)x, simplify = T))[,sel]
   result=lapply(HMMcalls,function(x){x[[1]]})
   result=t(sapply(result,function(x)x, simplify = T))[,sel]
   toplot=scores
   l=1
-  image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = subj,ylab='sample',xlab='')
-  if (is.null(CNV)){
+  fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = subj,ylab='sample',xlab='')
+  if (!is.null(output)){
+    addCNVtoplot2(output,Lpos)
+  }
+  else if (is.null(CNV)){
     addCNVtoplot1(result)
     legend("topright",c("del", "dup"),
     col = c('white','black'),text.col = "green4", pch = c(1,20),cex = 0.75)
@@ -38,7 +43,25 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot"){
     legend("topright",c("0", "1", "3", "4"),
     col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)
   }
+}
 
+addCNVtoplot2=function(output,Lpos){
+  for (i in 1:length(output)){
+    outputi=output[[i]]
+    if(length(outputi)>0){
+      apply(outputi,1,function(x){
+        if(x[1]==1){
+          del=which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
+          points(x=del,y=rep(i,length(del)),col='white',pch=16,cex=0.5)
+        }
+        if(x[1]==3){
+          dup=which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
+          points(x=dup,y=rep(i,length(dup)),col='black',pch=16,cex=0.5)
+        }
+      })
+      # cat(i,'del:',length(del),' dup:',length(dup),'\n')
+    }
+  }
 }
 
 addCNVtoplot1=function(result){
