@@ -10,5 +10,5 @@ plot_ngs_plr = function(ngs_plr,chr){
   plr = do.call(cbind,ngs_plr)
   l=4
   toplot=(plr-rowMeans(plr,na.rm=T))/apply(plr,1,function(x){sd(x,na.rm=T)})
-  image.plot(x=seq(1,nrow(toplot)),y=seq(1,ncol(toplot)),z=pmin(pmax(toplot,-l),l),zlim=c(-l,l),xlab=paste0('chr',chr),ylab='samples')
+  fields::image.plot(x=seq(1,nrow(toplot)),y=seq(1,ncol(toplot)),z=pmin(pmax(toplot,-l),l),zlim=c(-l,l),xlab=paste0('chr',chr),ylab='samples')
 }

@@ -1,7 +1,0 @@
-##otherinfo
-#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT    SAMPLEID
-1       826893  rs3115849       G       A       258771  .       someinfo   GT:AD:DP:GQ:PL  0/1:77,66:143:99:1866,0,2313
-1       826950  rs74045217      G       T       29470.20        .       someinfo    GT:AD:DP:GQ:PL  0/1:123,52:175:99:1215,0,3648
-1       826965  rs74045218      A       G       44330.90        .       someinfo      GT:AD:DP:GQ:PL  0/1:118,43:161:99:1033,0,3476
-1       827114  rs758032623     C       G       8554.33 .       someinfo   GT:AD:DP:GQ:PL  0/1:197,68:265:99:1174,0,5372
-1       827209  rs3115848       G       C       553787  .       someinfo        GT:AD:DP:GQ:PGT:PID:PL  1/1:2,67:69:54:1|1:827209_G_C:2826,54,0

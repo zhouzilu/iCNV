@@ -7,7 +7,6 @@
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate files for all chromosomes.
 #' @return void 
 #' @examples
-#' library(data.table)
 #' dir='PATH/TO/FOLDER'
 #' pattern=paste0('*.csv.arrayicnv$')
 #' icnv_array_intput(dir,pattern,chr=22)
@@ -25,7 +24,7 @@ icnv_array_intput=function(dir,pattern,chr=NULL){
 			dirPath=paste0(dir,"/chr",chr)
 			signalFile= list.files(dirPath, pattern = pattern)
 			signaldir <- file.path(dirPath, signalFile)
-			signal.DT <- lapply(signaldir, fread, sep=",")
+			signal.DT <- lapply(signaldir, data.table::fread, sep=",")
 			snp_lrr = sapply(signal.DT,function(t){t[[4]]},simplify = F)
 			names(snp_lrr)=signalFile
 			snp_baf = sapply(signal.DT,function(t){t[[5]]},simplify = F)
@@ -39,14 +38,14 @@ icnv_array_intput=function(dir,pattern,chr=NULL){
 		dirPath=paste0(dir,"/chr",chr)
 		signalFile= list.files(dirPath, pattern = pattern)
 		signaldir <- file.path(dirPath, signalFile)
-		signal.DT <- lapply(signaldir, fread, sep=",")
+		signal.DT <- lapply(signaldir, data.table::fread, sep=",")
 		snp_lrr = sapply(signal.DT,function(t){t[[4]]},simplify = F)
 		names(snp_lrr)=signalFile
 		snp_baf = sapply(signal.DT,function(t){t[[5]]},simplify = F)
 		names(snp_baf)=signalFile
 		snp_lrr.pos = lapply(seq_len(length(snp_lrr)), function(i) signal.DT[[1]]$POS)
 		snp_baf.pos = lapply(seq_len(length(snp_baf)), function(i) signal.DT[[1]]$POS)
-		save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, file=file.path(dirPath,paste0('icnv_array_input_',chr,'.rda')))
+		save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, file=file.path(dir,paste0('icnv_array_input_',chr,'.rda')))
 	}
 
 }

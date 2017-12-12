@@ -134,7 +134,7 @@ plotindi = function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_
   x=1:n2
   par(mfrow=c(1,1))
   l=3
-  image.plot((as.matrix((pmin(pmax(mat[5,],-l),l)))),zlim=c(-l,l),axes=F,main='score',ylab=I)
+  fields::image.plot((as.matrix((pmin(pmax(mat[5,],-l),l)))),zlim=c(-l,l),axes=F,main='score',ylab=I)
   del = which(result<2)
   dup = which(result>2)
   cat(I,' del:',length(del),' dup:',length(dup),'\n')

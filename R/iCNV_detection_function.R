@@ -1,6 +1,3 @@
-devtools::use_package('fields')
-devtools::use_package('truncnorm')
-devtools::use_package('ggplot2')
 #' Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
 #' @param ngs_plr A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
 #' @param snp_lrr A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
@@ -178,12 +175,12 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   # BAF function
   # 0 or 1
   bsig1=0.05
-  emissionB1=function(x){log(0.5*dtruncnorm(x,0,1,0,bsig1)+0.5*dtruncnorm(x,0,1,1,bsig1))}
+  emissionB1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,bsig1)+0.5*truncnorm::dtruncnorm(x,0,1,1,bsig1))}
   # 0 or 0.5 or 1
   bsig=0.1
-  emissionB2=function(x){log(0.25*dtruncnorm(x,0,1,0,bsig)+0.25*dtruncnorm(x,0,1,1,bsig)+0.5*dtruncnorm(x,0,1,0.5,bsig))}
+  emissionB2=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,bsig)+0.25*truncnorm::dtruncnorm(x,0,1,1,bsig)+0.5*truncnorm::dtruncnorm(x,0,1,0.5,bsig))}
   # 0 or 0.25 or 0.33 or 0.5 or 0.67 or 0.75 or 1
-  emissionB3=function(x){log(0.14*dtruncnorm(x,0,1,0,bsig)+0.14*dtruncnorm(x,0,1,1,bsig)+0.16*dtruncnorm(x,0,1,0.5,bsig)+0.14*dtruncnorm(x,0,1,0.25,bsig)+0.14*dtruncnorm(x,0,1,0.33,bsig)+0.14*dtruncnorm(x,0,1,0.67,bsig)+0.14*dtruncnorm(x,0,1,0.75,bsig))}
+  emissionB3=function(x){log(0.14*truncnorm::dtruncnorm(x,0,1,0,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,1,bsig)+0.16*truncnorm::dtruncnorm(x,0,1,0.5,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.25,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.33,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.67,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.75,bsig))}
 
   # 1
   emission11=NULL
@@ -564,8 +561,8 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
   dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
   dzprob21=function(x){dnorm(x,max(dmu2),1,log=T)}
   dzprob22=function(x){dnorm(x,min(dmu2),1,log=T)}
-  dbprob1=function(x){log(0.5*dtruncnorm(x,0,1,0,0.05)+0.5*dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*dtruncnorm(x,0,1,0,0.05)+0.4*dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
+  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
   pz1=pzs[pI==1|pI==1.5]
   pz1fit <- kmeans(pz1, 2)
   pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
@@ -576,8 +573,8 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
   pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
   pzprob21=function(x){dnorm(x,min(pmu2),1,log=T)}
   pzprob22=function(x){dnorm(x,max(pmu2),1,log=T)}
-  pbprob1=function(x){log(0.25*dtruncnorm(x,0,1,0,0.1)+0.25*dtruncnorm(x,0,1,1,0.1)+0.25*dtruncnorm(x,0,1,0.33,0.1)+0.25*dtruncnorm(x,0,1,0.67,0.1))}
-  pbprob2=function(x){log(0.2*dtruncnorm(x,0,1,0,0.1)+0.2*dtruncnorm(x,0,1,1,0.1)+0.2*dtruncnorm(x,0,1,0.5,0.1)+0.2*dtruncnorm(x,0,1,0.25,0.1)+0.2*dtruncnorm(x,0,1,0.75,0.1))}
+  pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1=mapply(exactCNi,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
   CN=mapply(function(CNs,mLpos,result,Lpos){
     CNi=result
@@ -624,15 +621,15 @@ exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
   dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
   dzprob11=function(x){dnorm(x,max(dmu1),1,log=T)}
   dzprob12=function(x){dnorm(x,min(dmu1),1,log=T)}
-  dbprob1=function(x){log(0.5*dtruncnorm(x,0,1,0,0.05)+0.5*dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*dtruncnorm(x,0,1,0,0.05)+0.4*dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
+  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
   pz1=pzs[pI==1|pI==1.5]
   pz1fit <- kmeans(pz1, 2)
   pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
   pzprob11=function(x){dnorm(x,min(pmu1),1,log=T)}
   pzprob12=function(x){dnorm(x,max(pmu1),1,log=T)}
-  pbprob1=function(x){log(0.25*dtruncnorm(x,0,1,0,0.1)+0.25*dtruncnorm(x,0,1,1,0.1)+0.25*dtruncnorm(x,0,1,0.33,0.1)+0.25*dtruncnorm(x,0,1,0.67,0.1))}
-  pbprob2=function(x){log(0.2*dtruncnorm(x,0,1,0,0.1)+0.2*dtruncnorm(x,0,1,1,0.1)+0.2*dtruncnorm(x,0,1,0.5,0.1)+0.2*dtruncnorm(x,0,1,0.25,0.1)+0.2*dtruncnorm(x,0,1,0.75,0.1))}
+  pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1=mapply(exactCNi_ngs,r1L,baf1,rpos1,bpos1,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
   CN=mapply(function(CNs,mLpos,result,Lpos){
     CNi=result
@@ -824,8 +821,8 @@ visualization2 = function(testres,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
   CNV=c(rep(2,length(nI)),rep(1,length(d1I)),rep(0,length(d2I)),rep(3,length(p1I)),rep(4,length(p2I)))
   d.f=data.frame(zs=c(nzs,d1zs,d2zs,p1zs,p2zs),bafs=c(nbafs,d1bafs,d2bafs,p1bafs,p2bafs),Is=factor(c(nI,d1I,d2I,p1I,p2I),labels=c("SNPs only", "SNPs in Exon", "Exon w/ BAFs", "Exon w/ no BAF")),CNV=c(rep(2,length(nI)),rep(1,length(d1I)),rep(0,length(d2I)),rep(3,length(p1I)),rep(4,length(p2I))))
   # save(d.f,file='ggplot_df.rda')
-  p=ggplot(d.f,aes(x=zs,y=bafs))+geom_point(aes(colour=factor(CNV),shape=Is),alpha=0.75)+
-    scale_colour_manual(name="", values = c("0"="blue", "1"="cyan", "2"="grey","3"="orange", "4"="red"))+stat_density2d(aes(colour=factor(CNV),linetype=Is),h=c(8,0.3))
+  p=ggplot2::ggplot(d.f,ggplot2::aes(x=zs,y=bafs))+ggplot2::geom_point(ggplot2::aes(colour=factor(CNV),shape=Is),alpha=0.75)+
+    ggplot2::scale_colour_manual(name="", values = c("0"="blue", "1"="cyan", "2"="grey","3"="orange", "4"="red"))+ggplot2::stat_density2d(ggplot2::aes(colour=factor(CNV),linetype=Is),h=c(8,0.3))
   print(p)
   cat('\n','Finish generating visualization2 plot...','\n')
 }
@@ -973,15 +970,15 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
   dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
   dzprob21=function(x){dnorm(x,max(dmu2),1,log=T)}
   dzprob22=function(x){dnorm(x,min(dmu2),1,log=T)}
-  dbprob1=function(x){log(0.5*dtruncnorm(x,0,1,0,0.05)+0.5*dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*dtruncnorm(x,0,1,0,0.05)+0.4*dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
+  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
   pz2=pzs[pI==2|pI==2.5]
   pz2fit <- kmeans(pz2, 2)
   pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
   pzprob21=function(x){dnorm(x,min(pmu2),1,log=T)}
   pzprob22=function(x){dnorm(x,max(pmu2),1,log=T)}
-  pbprob1=function(x){log(0.25*dtruncnorm(x,0,1,0,0.1)+0.25*dtruncnorm(x,0,1,1,0.1)+0.25*dtruncnorm(x,0,1,0.33,0.1)+0.25*dtruncnorm(x,0,1,0.67,0.1))}
-  pbprob2=function(x){log(0.2*dtruncnorm(x,0,1,0,0.1)+0.2*dtruncnorm(x,0,1,1,0.1)+0.2*dtruncnorm(x,0,1,0.5,0.1)+0.2*dtruncnorm(x,0,1,0.25,0.1)+0.2*dtruncnorm(x,0,1,0.75,0.1))}
+  pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1=mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
   CN=mapply(function(CNs,mLpos,result,Lpos){
     CNi=result
