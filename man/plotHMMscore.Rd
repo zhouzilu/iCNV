@@ -4,7 +4,8 @@
 \alias{plotHMMscore}
 \title{Plot CNV inference score.}
 \usage{
-plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot")
+plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot",
+  output = NULL)
 }
 \arguments{
 \item{icnv_res}{CNV inference result. Result from iCNV_detection() (i.e. iCNV_detection(...))}
@@ -12,6 +13,8 @@ plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot")
 \item{h}{start position of this plot. Default Start of the whole chromosome}
 
 \item{t}{end position of this plot. Default End of the whole chromosome}
+
+\item{output}{generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL}
 
 \item{title}{of this plot. Default "score plot"}
 }
