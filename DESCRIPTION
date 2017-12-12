@@ -4,14 +4,17 @@ Version: 0.1
 Authors@R: person("Zilu", "Zhou", email = "zhouzilu@pennmedicine.upenn.edu", role = c("aut", "cre"))
 Description: Integrative copy number variation (CNV) detection from multiple platform and experimental design.
 Depends: R (>= 3.3.1)
-License: UPenn
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Imports:
   fields,
   ggplot2,
-  truncnorm
+  truncnorm,
+  tidyr,
+  data.table,
+  dplyr
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
