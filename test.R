@@ -1,5 +1,5 @@
 library("devtools")
-setwd("C:/Users/zhouzilu/Dropbox (Penn)")
+setwd("C:/Users/zhouzilu/Desktop/")
 
 setwd('iCNV')
 document()
@@ -7,4 +7,5 @@ setwd('..')
 install('iCNV')
 ?iCNV_detection
 ?plotindi
-?plotHMMscore1
+?plotHMMscore
+
