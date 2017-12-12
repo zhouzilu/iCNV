@@ -14,10 +14,6 @@ Please comment on the *Issues* section for addtional questions.
 ## Installation
 * Install from GitHub
 ```r
-# Install dependent packages first
-install.packages("fields")
-install.packages("truncnorm")
-install.packages("ggplot2")
 # try http:// if https:// URLs are not supported
 source("https://bioconductor.org/biocLite.R")
 biocLite("CODEX")
