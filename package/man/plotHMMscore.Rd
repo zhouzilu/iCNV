@@ -22,7 +22,8 @@ plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot",
 void
 }
 \description{
-Plot CNV inference score.
+Plot out CNV inference score. Each row is a sample, each column is a SNP or, exon (WES) or bin (WGS). Red color indicate score
+favor duplication whereas blue favor deletion.
 }
 \examples{
 icnv_res = iCNV_detection(...)

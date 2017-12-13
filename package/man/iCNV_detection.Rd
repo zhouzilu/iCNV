@@ -2,7 +2,7 @@
 % Please edit documentation in R/iCNV_detection_function.R
 \name{iCNV_detection}
 \alias{iCNV_detection}
-\title{Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.}
+\title{CNV detection}
 \usage{
 iCNV_detection(ngs_plr = NULL, snp_lrr = NULL, ngs_baf = NULL,
   snp_baf = NULL, ngs_plr.pos = NULL, snp_lrr.pos = NULL,

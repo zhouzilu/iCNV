@@ -19,8 +19,8 @@ output_list(icnv_res, sampleid = NULL, CN = 0, min_size = 0)
 output CNV list of each individual
 }
 \description{
-Generate ouput list.
+Generate human readable output from result calculated by iCNV_detection function
 }
 \examples{
-output = output_list(icnv_res=icnv_res,sampleid=sampname_qc, CN=0)
+icnv.output = output_list(icnv_res=icnv_res,sampleid=sampname_qc, CN=0)
 }
