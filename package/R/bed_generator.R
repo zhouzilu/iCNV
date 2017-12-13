@@ -1,4 +1,7 @@
-#' Generate BED file for WGS dataset. Default position generated from USCS genome browser
+#' Generate BED file for WGS dataset. 
+#' 
+#' Default position generated from USCS genome browser
+#' 
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22
 #' @param hg Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented.
 #' @param start The start position of your BED file.
