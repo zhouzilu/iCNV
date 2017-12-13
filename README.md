@@ -21,7 +21,7 @@ biocLite("CODEX")
 # Install iCNV
 install.packages("devtools")
 library(devtools)
-install_github("zhouzilu/iCNV")
+install_github("zhouzilu/iCNV/package")
 ```
 
 ## Update
@@ -34,11 +34,11 @@ remove.packages('iCNV')
 # reinstall iCNV
 install.packages("devtools")
 library(devtools)
-install_github("zhouzilu/iCNV")
+install_github("zhouzilu/iCNV/package")
 ```
 
 ## Workflow overview
-Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd) and function in the parenthesese can be found in [Utils](https://github.com/zhouzilu/iCNV/tree/master/utils).
+Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd) and function details can be found https://github.com/zhouzilu/iCNV/tree/master/utils
 ```
                     NGS                                                 |               Array
        BAM              BED(UCSC for WES or bed_generator.R for WGS 2.2)|        SNP Intensity(in standard format)
@@ -59,6 +59,6 @@ Variants BAF(vcf)       PLR                                             |       
                                                    CNV calling
 ```
 ## Demo code & Vignettes
-* [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
+* [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/package/vignettes/iCNV-vignette.Rmd)
 * [Demo](https://github.com/zhouzilu/iCNV/tree/master/demo)
 

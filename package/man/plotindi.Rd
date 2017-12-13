@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotindi_function.R
 \name{plotindi}
 \alias{plotindi}
-\title{Plot relationship between platforms and features for each individual. Only work for muli-platform inference.}
+\title{Individual sample plot}
 \usage{
 plotindi(ngs_plr, snp_lrr, ngs_baf, snp_baf, ngs_plr.pos, snp_lrr.pos,
   ngs_baf.pos, snp_baf.pos, icnvres, I, h = NULL, t = NULL)

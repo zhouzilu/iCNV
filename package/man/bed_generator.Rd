@@ -2,7 +2,7 @@
 % Please edit documentation in R/bed_generator.R
 \name{bed_generator}
 \alias{bed_generator}
-\title{Generate BED file for WGS dataset. Default position generated from USCS genome browser}
+\title{Generate BED file for WGS dataset.}
 \usage{
 bed_generator(chr, hg, start = NULL, end = NULL, by = 1000)
 }
@@ -21,7 +21,7 @@ bed_generator(chr, hg, start = NULL, end = NULL, by = 1000)
 void
 }
 \description{
-Generate BED file for WGS dataset. Default position generated from USCS genome browser
+Default position generated from USCS genome browser
 }
 \examples{
 bed_generator(chr=22,hg=38)

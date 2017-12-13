@@ -1,4 +1,7 @@
+#' CNV detection
+#' 
 #' Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
+#' 
 #' @param ngs_plr A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
 #' @param snp_lrr A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
 #' @param ngs_baf A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.
