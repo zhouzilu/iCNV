@@ -58,7 +58,7 @@ install_github("zhouzilu/iCNV/package")
 ```
 
 ### 2.2 .bam file normalization using CODEX
-For researchers work on WGS data, you need to generate your own BED file for CODEX normalization. We made a function [bed_generator](https://github.com/zhouzilu/iCNV/package/man/bed_generator.R) to help you with this.
+For researchers work on WGS data, you need to generate your own BED file for CODEX normalization. We made a function [bed_generator](https://github.com/zhouzilu/iCNV/blob/master/iCNV_rdoc.pdf) to help you with this.
 
 After you have BAM file and BED file available, follow code below to get normalized NGS PLR. Code modified from https://github.com/yuchaojiang/CODEX with permission. Due to the file upload size restriction, raw demo BAM file isn't uploaded to Github. Please email zhouzilu@pennmedicine.upenn.edu to request BAM data.
 ```r
