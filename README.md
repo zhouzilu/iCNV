@@ -38,7 +38,7 @@ install_github("zhouzilu/iCNV/package")
 ```
 
 ## Workflow overview
-Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd) and function details can be found https://github.com/zhouzilu/iCNV/tree/master/utils
+Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd) and function details can be found https://github.com/zhouzilu/iCNV/blob/master/iCNV_rdoc.pdf
 ```
                     NGS                                                 |               Array
        BAM              BED(UCSC for WES or bed_generator.R for WGS 2.2)|        SNP Intensity(in standard format)
