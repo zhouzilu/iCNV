@@ -21,7 +21,7 @@ biocLite("CODEX")
 # Install iCNV
 install.packages("devtools")
 library(devtools)
-install_github("zhouzilu/iCNV")
+install_github("zhouzilu/iCNV/package")
 ```
 
 ## Update
@@ -34,7 +34,7 @@ remove.packages('iCNV')
 # reinstall iCNV
 install.packages("devtools")
 library(devtools)
-install_github("zhouzilu/iCNV")
+install_github("zhouzilu/iCNV/package")
 ```
 
 ## Workflow overview
@@ -59,6 +59,6 @@ Variants BAF(vcf)       PLR                                             |       
                                                    CNV calling
 ```
 ## Demo code & Vignettes
-* [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
+* [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/package/vignettes/iCNV-vignette.Rmd)
 * [Demo](https://github.com/zhouzilu/iCNV/tree/master/demo)
 
