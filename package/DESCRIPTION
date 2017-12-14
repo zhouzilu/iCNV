@@ -1,7 +1,10 @@
 Package: iCNV
 Title: Integrated Copy Number Variation detection
 Version: 0.1
-Authors@R: person("Zilu", "Zhou", email = "zhouzilu@pennmedicine.upenn.edu", role = c("aut", "cre"))
+Authors@R: c(person("Zilu", "Zhou", email = "zhouzilu@pennmedicine.upenn.edu", role = c("aut", "cre")),
+				person('Nancy','Zhang', email='nzh@wharton.upenn.edu'), role = c("aut"))
+Author: Zilu Zhou, Nancy Zhang
+Maintainer: Zilu Zhou <zhouzilu@pennmedicine.upenn.edu>
 Description: Integrative copy number variation (CNV) detection from multiple platform and experimental design.
 Depends: R (>= 3.3.1)
 License: GPL-2
