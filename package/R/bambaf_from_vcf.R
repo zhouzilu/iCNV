@@ -11,12 +11,14 @@
 #' @param projectname Name of the project
 #' @return void 
 #' @examples
+#' \dontrun{
 #' dir='PATH/TO/FOLDER'
 #' bambaf_from_vcf(dir,'example_vcf.list')
 #' bambaf_from_vcf(dir,'example_vcf.list',chr=22)
 #' load('bambaf_22.rda')
 #' str(ngs_baf)
 #' str(ngs_baf.pos)
+#' }
 #' @export
 bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
 	`%>%`=tidyr::`%>%`

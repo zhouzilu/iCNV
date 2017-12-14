@@ -10,12 +10,11 @@
 #' @param output generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL
 #' @return void
 #' @examples
-#' icnv_res = iCNV_detection(...)
 #' pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-#' plotHMMscore(icnv_res,h=100000, t=200000, subj='my favorite subject')
+#' plotHMMscore(icnv_res,h=20000000, t=30000000, title='my favorite subject')
 #' dev.off()
 #' @export
-plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot",output=NULL){
+plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL){
   if(is.null(h)){
     h=min(icnv_res[[1]][[1]][[2]])
   }
@@ -32,7 +31,7 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,subj="score plot",output=NULL){
   result=t(sapply(result,function(x)x, simplify = T))[,sel]
   toplot=scores
   l=1
-  fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = subj,ylab='sample',xlab='')
+  fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
   if (!is.null(output)){
     addCNVtoplot2(output,Lpos)
   }
