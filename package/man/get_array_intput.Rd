@@ -25,6 +25,7 @@ snp_lrr: SNP LRR intensity; snp_lrr.pos: the position of the SNPs
 snp_baf: the BAF of the SNPs; snp_baf.pos: the position of the SNPs
 }
 \examples{
+\dontrun{
 dir='PATH/TO/FOLDER'
 pattern=paste0('*.csv.arrayicnv$')
 icnv_array_intput(dir,pattern,chr=22)
@@ -33,4 +34,5 @@ str(snp_lrr)
 str(snp_lrr.pos)
 str(snp_baf)
 str(snp_baf.pos)
+}
 }

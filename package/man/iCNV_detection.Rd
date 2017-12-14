@@ -53,14 +53,16 @@ icnv_res0=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
+                         projname=projname,CN=0,mu=c(-3,0,2),cap=TRUE,visual = 1)
 # icnv call with genotype inference and complete plot
+\dontrun{
 projname='icnv.demo.geno'
 icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
                          ngs_baf,snp_baf,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
-                         projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
+                         projname=projname,CN=1,mu=c(-3,0,2),cap=TRUE,visual = 2)
+}
 }
 \keyword{BAF,}
 \keyword{CNV,}
