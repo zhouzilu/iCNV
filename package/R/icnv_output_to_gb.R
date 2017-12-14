@@ -10,7 +10,7 @@
 #' @examples
 #' icnv.output = output_list(icnv_res=icnv_res,sampleid=sampname_qc, CN=0, min_size=10000)
 #' gb_input = icnv_output_to_gb(chr=22,icnv.output)
-#' write.table(gb_input,file='icnv_res_gb_chr22.tab',quote=F,col.names=F,row.names=F)
+#' write.table(gb_input,file='icnv_res_gb_chr22.tab',quote=FALSE,col.names=FALSE,row.names=FALSE)
 #' @export
 icnv_output_to_gb = function(chr,icnv.output){
 	ids = names(icnv.output)

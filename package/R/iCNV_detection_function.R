@@ -26,15 +26,16 @@
 #'                          ngs_baf,snp_baf,
 #'                          ngs_plr.pos,snp_lrr.pos,
 #'                          ngs_baf.pos,snp_baf.pos,
-#'                          projname=projname,CN=0,mu=c(-3,0,2),cap=T,visual = 1)
-
+#'                          projname=projname,CN=0,mu=c(-3,0,2),cap=TRUE,visual = 1)
 #' # icnv call with genotype inference and complete plot
+#' \dontrun{
 #' projname='icnv.demo.geno'
 #' icnv_res1=iCNV_detection(ngs_plr,snp_lrr,
 #'                          ngs_baf,snp_baf,
 #'                          ngs_plr.pos,snp_lrr.pos,
 #'                          ngs_baf.pos,snp_baf.pos,
-#'                          projname=projname,CN=1,mu=c(-3,0,2),cap=T,visual = 2)
+#'                          projname=projname,CN=1,mu=c(-3,0,2),cap=TRUE,visual = 2)
+#' }
 #' @export
 iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ngs_plr.pos=NULL,snp_lrr.pos=NULL,ngs_baf.pos=NULL,snp_baf.pos=NULL,maxIt=50,visual=0,projname='iCNV',CN=0,mu=c(-3,0,2),cap=FALSE){
   # Change variable name for easier code writing
@@ -52,14 +53,14 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
       CNV=exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(list(HMMcall,CNV),subj=projname)
+        plotHMMscore(list(HMMcall,CNV),title=projname)
         dev.off()
       }
     }
     else{
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(list(HMMcall,CNV),subj=projname)
+        plotHMMscore(list(HMMcall,CNV),title=projname)
         dev.off()
       }
     }
@@ -75,14 +76,14 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
       CNV=exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(list(HMMcall,CNV),subj=projname)
+        plotHMMscore(list(HMMcall,CNV),title=projname)
         dev.off()
       }
     }
     else{
       if (visual!=0){
         pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-        plotHMMscore(list(HMMcall,CNV),subj=projname)
+        plotHMMscore(list(HMMcall,CNV),title=projname)
         dev.off()
       }
     }
@@ -99,7 +100,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
       if (CN!=0){
         bafzIs=visualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],bafzIs[[7]],bafzIs[[8]],bafzIs[[9]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        plotHMMscore(list(HMMcall,CNV),subj=projname)
+        plotHMMscore(list(HMMcall,CNV),title=projname)
         visualization2(HMMcall,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
       dev.off()
@@ -110,7 +111,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
         bafzIs=novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)       
       }
-      plotHMMscore(list(HMMcall,CNV),subj=projname)
+      plotHMMscore(list(HMMcall,CNV),title=projname)
       dev.off()
     }
     else{

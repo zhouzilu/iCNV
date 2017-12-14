@@ -11,6 +11,7 @@
 #' @param projectname Name of the project
 #' @return void 
 #' @examples
+#' \dontrun{
 #' dir='PATH/TO/FOLDER'
 #' pattern=paste0('*.csv.arrayicnv$')
 #' icnv_array_intput(dir,pattern,chr=22)
@@ -19,6 +20,7 @@
 #' str(snp_lrr.pos)
 #' str(snp_baf)
 #' str(snp_baf.pos)
+#' }
 #' @export
 
 get_array_intput=function(dir,pattern,chr=NULL,projectname=''){

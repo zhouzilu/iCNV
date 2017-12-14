@@ -17,7 +17,9 @@
 #' @return void
 #' @examples
 #' pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-#' plotindi(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,icnvres,I,h=100000, t=200000)
+#' plotindi(ngs_plr,snp_lrr,ngs_baf,snp_baf,
+#'  ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,
+#'  icnv_res,I=1,h=20000000, t=30000000)
 #' dev.off()
 #' @export
 plotindi = function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,icnvres,I,h=NULL,t=NULL){

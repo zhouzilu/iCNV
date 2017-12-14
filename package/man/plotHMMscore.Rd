@@ -4,7 +4,7 @@
 \alias{plotHMMscore}
 \title{Plot CNV inference score.}
 \usage{
-plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot",
+plotHMMscore(icnv_res, h = NULL, t = NULL, title = "score plot",
   output = NULL)
 }
 \arguments{
@@ -14,9 +14,9 @@ plotHMMscore(icnv_res, h = NULL, t = NULL, subj = "score plot",
 
 \item{t}{end position of this plot. Default End of the whole chromosome}
 
-\item{output}{generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL}
-
 \item{title}{of this plot. Default "score plot"}
+
+\item{output}{generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL}
 }
 \value{
 void
@@ -26,8 +26,7 @@ Plot out CNV inference score. Each row is a sample, each column is a SNP or, exo
 favor duplication whereas blue favor deletion.
 }
 \examples{
-icnv_res = iCNV_detection(...)
 pdf(file=paste0(projname,'.pdf'),width=13,height = 10)
-plotHMMscore(icnv_res,h=100000, t=200000, subj='my favorite subject')
+plotHMMscore(icnv_res,h=20000000, t=30000000, title='my favorite subject')
 dev.off()
 }
