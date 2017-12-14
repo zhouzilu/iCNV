@@ -47,7 +47,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     r2L=NULL;baf2=NULL;rpos2=NULL;bpos2=NULL
     n=length(r1L)
     indivd=seq(1,n)
-    HMMcall = mapply(HMMEM,r1L,baf1,rpos1,bpos1,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r2i=r2L,baf2i=baf2,rpos2i=rpos2,bpos2i=bpos2,cap=cap),SIMPLIFY=F)
+    HMMcall = mapply(HMMEM,r1L,baf1,rpos1,bpos1,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r2i=r2L,baf2i=baf2,rpos2i=rpos2,bpos2i=bpos2,cap=cap),SIMPLIFY=FALSE)
     if (CN!=0){
       bafzIs=novisualization_ngs(HMMcall,r1L,baf1,rpos1,bpos1)
       CNV=exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
@@ -70,7 +70,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     r1L=NULL;baf1=NULL;rpos1=NULL;bpos1=NULL
     n=length(r2L)
     indivd=seq(1,n)
-    HMMcall = mapply(HMMEM,r2L,baf2,rpos2,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r1i=r1L,baf1i=baf1,rpos1i=rpos1,bpos1i=bpos1,cap=cap),SIMPLIFY=F)
+    HMMcall = mapply(HMMEM,r2L,baf2,rpos2,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r1i=r1L,baf1i=baf1,rpos1i=rpos1,bpos1i=bpos1,cap=cap),SIMPLIFY=FALSE)
     if (CN!=0){
       bafzIs=novisualization_snp(HMMcall,r2L,baf2,rpos2,bpos2)
       CNV=exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
@@ -92,7 +92,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
   else{
     n=length(r1L)
     indivd=seq(1,n)
-    HMMcall = mapply(HMMEM,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),rep(list(cap),n),SIMPLIFY=F)
+    HMMcall = mapply(HMMEM,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),rep(list(cap),n),SIMPLIFY=FALSE)
     print(paste0('Inference time cost:',sum((proc.time() - ptm)[c(1,2)])))
     ptm <- proc.time()
     if (visual==2){
@@ -173,9 +173,9 @@ HMMEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,maxIt,ind,mu,ca
 HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sigma,p,cap){
   # 1 for exome and 2 for array
   # logR function
-  emissionR1=function(x){dnorm(x,mu[1],sigma[1],log = T)}
-  emissionR2=function(x){dnorm(x,mu[2],sigma[2],log = T)}
-  emissionR3=function(x){dnorm(x,mu[3],sigma[3],log = T)}
+  emissionR1=function(x){dnorm(x,mu[1],sigma[1],log = TRUE)}
+  emissionR2=function(x){dnorm(x,mu[2],sigma[2],log = TRUE)}
+  emissionR3=function(x){dnorm(x,mu[3],sigma[3],log = TRUE)}
   # BAF function
   # 0 or 1
   bsig1=0.05
@@ -192,8 +192,8 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   emission13=NULL
   if(!is.null(r1i)){
     #normalize log ratio
-    z1i = (r1i - mean(r1i,na.rm=T))/sd(r1i,na.rm=T);baf1i[is.na(baf1i)]=1;z1i[is.na(z1i)]=0
-    if (cap==T){
+    z1i = (r1i - mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE);baf1i[is.na(baf1i)]=1;z1i[is.na(z1i)]=0
+    if (cap==TRUE){
       # Cap intensity
       z1i=pmax(pmin(z1i,30),-30)
     }
@@ -207,7 +207,7 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     calexomeP = function(x,y,posb,baf,fx){
       b = baf[posb>=x & posb<=y]
       if(length(b>0)){
-        return(sum(c(fx(b)),na.rm=T))
+        return(sum(c(fx(b)),na.rm=TRUE))
       }
       else{
         return(fx(0))
@@ -227,8 +227,8 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   emission23=NULL
   if(!is.null(r2i)){
     #normalize log ratio
-    z2i = (r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T);baf2i[is.na(baf2i)]=1;z2i[is.na(z2i)]=0
-    if (cap==T){
+    z2i = (r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE);baf2i[is.na(baf2i)]=1;z2i[is.na(z2i)]=0
+    if (cap==TRUE){
       # Cap intensity
       z2i=pmax(pmin(z2i,30),-30)
     }
@@ -247,15 +247,15 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
 
   if(!is.null(emission11)&!is.null(emission21)){
     # match position
-    sel= unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},rpos1is,rpos1ie,MoreArgs = list(pos=rpos2i),SIMPLIFY = F)))
+    sel= unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},rpos1is,rpos1ie,MoreArgs = list(pos=rpos2i),SIMPLIFY = FALSE)))
     rpos2iUexon = rpos2i[-sel]
-    rpos2iUexon = matrix(rep(rpos2iUexon,2),ncol=2,byrow=F)
+    rpos2iUexon = matrix(rep(rpos2iUexon,2),ncol=2,byrow=FALSE)
     Lposi = rbind(rpos2iUexon,rpos1i)
     Lposi = Lposi[order(Lposi[,1]),]
     pos_exom=floor((rpos1is+rpos1ie)/2)
 
     calem12 = function(x,y,em1,em2,pos1,pos2){
-      r=sum(c(sum(em1[pos1>=x & pos1<=y]),sum(em2[pos2>=x & pos2<=y])),na.rm=T)
+      r=sum(c(sum(em1[pos1>=x & pos1<=y]),sum(em2[pos2>=x & pos2<=y])),na.rm=TRUE)
       return(r)
     }
     # total emission probability
@@ -268,7 +268,7 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     emission2=emission12
     emission3=emission13
   }else if (is.null(emission11)&!is.null(emission21)){
-    Lposi = matrix(rep(rpos2i,2),ncol=2,byrow=F)
+    Lposi = matrix(rep(rpos2i,2),ncol=2,byrow=FALSE)
     emission1=emission21
     emission2=emission22
     emission3=emission23
@@ -433,7 +433,7 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
 
   # M step
   getZs = function(x,y,z1,z2,pos1,pos2){
-    return(mean(c((z1[pos1>=x & pos1<=y]),(z2[pos2>=x & pos2<=y])),na.rm=T))
+    return(mean(c((z1[pos1>=x & pos1<=y]),(z2[pos2>=x & pos2<=y])),na.rm=TRUE))
   }
   if(!is.null(emission11)&!is.null(emission21)){
     zs=mapply(getZs, Lposi[,1],Lposi[,2], MoreArgs = list(pos1=pos_exom,pos2=rpos2i,z1=z1i,z2=z2i))
@@ -451,24 +451,24 @@ visualization = function(testres,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
   cat('\n','Generating visualization plot. This may take a while...','\n')
   result=lapply(testres,function(x){x[[1]]})
   Lpos=lapply(testres,function(x){x[[2]]})
-  ttldipposlist=mapply(function(x){which(x==2)},result,SIMPLIFY=F)
-  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=F)
-  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=F)
-  nzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldipposlist,Lpos,SIMPLIFY = F)
+  ttldipposlist=mapply(function(x){which(x==2)},result,SIMPLIFY=FALSE)
+  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=FALSE)
+  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=FALSE)
+  nzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldipposlist,Lpos,SIMPLIFY = FALSE)
   nbafs=unlist(mapply(function(x){x[,2]},nzvsbaf))
   nzs=unlist(mapply(function(x){x[,1]},nzvsbaf))
   nI=unlist(mapply(function(x){x[,3]},nzvsbaf))
-  dzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldelposlist,Lpos,SIMPLIFY = F)
+  dzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldelposlist,Lpos,SIMPLIFY = FALSE)
   dbafs=unlist(mapply(function(x){x[,2]},dzvsbaf))
   dbafs[is.na(dbafs)]=0
   dzs=unlist(mapply(function(x){x[,1]},dzvsbaf))
   dI=unlist(mapply(function(x){x[,3]},dzvsbaf))
-  pzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldupposlist,Lpos,SIMPLIFY = F)
+  pzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldupposlist,Lpos,SIMPLIFY = FALSE)
   pbafs=unlist(mapply(function(x){x[,2]},pzvsbaf))
   pbafs[is.na(pbafs)]=0
   pzs=unlist(mapply(function(x){x[,1]},pzvsbaf))
   pI=unlist(mapply(function(x){x[,3]},pzvsbaf))
-  x.lim=range(c(range(pzs,na.rm=T),range(dzs,na.rm=T),range(nzs,na.rm=T)))
+  x.lim=range(c(range(pzs,na.rm=TRUE),range(dzs,na.rm=TRUE),range(nzs,na.rm=TRUE)))
   plot(x=nzs,y=nbafs,pch=20,cex=0.5,xlim=x.lim,ylim=c(0,0.5),col='grey',xlab='log ratio zscore',ylab='mBAF')
   grid()
   points(x=dzs[dI==2],y=dbafs[dI==2],pch=20,cex=0.8,col='blue')
@@ -490,8 +490,8 @@ BAFvsZ=function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,CNVs,Lposi){
   rs=c()
   I=c()
   if (length(CNVs)>0){
-    z1i=(r1i-mean(r1i,na.rm=T))/sd(r1i,na.rm=T)
-    z2i=(r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T)
+    z1i=(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
+    z2i=(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
     mbaf1i=0.5-abs(baf1i-0.5)
     mbaf2i=0.5-abs(baf2i-0.5)
     for (j in 1:length(CNVs)){
@@ -551,35 +551,35 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
       }
     }
     return(list(It,post))
-  },result,Lpos,SIMPLIFY = F)
+  },result,Lpos,SIMPLIFY = FALSE)
   mresult=lapply(res,function(x){x[[1]]})
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz1=dzs[dI==1|dI==1.5]
   dz1fit <- kmeans(dz1, 2)
   dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
-  dzprob11=function(x){dnorm(x,max(dmu1),1,log=T)}
-  dzprob12=function(x){dnorm(x,min(dmu1),1,log=T)}
+  dzprob11=function(x){dnorm(x,max(dmu1),1,log=TRUE)}
+  dzprob12=function(x){dnorm(x,min(dmu1),1,log=TRUE)}
   dz2=dzs[dI==2|dI==2.5]
   dz2fit <- kmeans(dz2, 2)
   dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
-  dzprob21=function(x){dnorm(x,max(dmu2),1,log=T)}
-  dzprob22=function(x){dnorm(x,min(dmu2),1,log=T)}
+  dzprob21=function(x){dnorm(x,max(dmu2),1,log=TRUE)}
+  dzprob22=function(x){dnorm(x,min(dmu2),1,log=TRUE)}
   dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
   pz1=pzs[pI==1|pI==1.5]
   pz1fit <- kmeans(pz1, 2)
   pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
-  pzprob11=function(x){dnorm(x,min(pmu1),1,log=T)}
-  pzprob12=function(x){dnorm(x,max(pmu1),1,log=T)}
+  pzprob11=function(x){dnorm(x,min(pmu1),1,log=TRUE)}
+  pzprob12=function(x){dnorm(x,max(pmu1),1,log=TRUE)}
   pz2=pzs[pI==2|pI==2.5]
   pz2fit <- kmeans(pz2, 2)
   pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
-  pzprob21=function(x){dnorm(x,min(pmu2),1,log=T)}
-  pzprob22=function(x){dnorm(x,max(pmu2),1,log=T)}
+  pzprob21=function(x){dnorm(x,min(pmu2),1,log=TRUE)}
+  pzprob22=function(x){dnorm(x,max(pmu2),1,log=TRUE)}
   pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
   pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
-  CN1=mapply(exactCNi,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
+  CN1=mapply(exactCNi,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
   CN=mapply(function(CNs,mLpos,result,Lpos){
     CNi=result
       for (i in 1:length(CNs)){
@@ -591,7 +591,7 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
         }
       }
     return(CNi)
-    },CN1,mLpos,result,Lpos,SIMPLIFY = F)
+    },CN1,mLpos,result,Lpos,SIMPLIFY = FALSE)
   return(CN)
 }
 
@@ -616,25 +616,25 @@ exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
       }
     }
     return(list(It,post))
-  },result,Lpos,SIMPLIFY = F)
+  },result,Lpos,SIMPLIFY = FALSE)
   mresult=lapply(res,function(x){x[[1]]})
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz1=dzs[dI==1|dI==1.5]
   dz1fit <- kmeans(dz1, 2)
   dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
-  dzprob11=function(x){dnorm(x,max(dmu1),1,log=T)}
-  dzprob12=function(x){dnorm(x,min(dmu1),1,log=T)}
+  dzprob11=function(x){dnorm(x,max(dmu1),1,log=TRUE)}
+  dzprob12=function(x){dnorm(x,min(dmu1),1,log=TRUE)}
   dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
   pz1=pzs[pI==1|pI==1.5]
   pz1fit <- kmeans(pz1, 2)
   pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
-  pzprob11=function(x){dnorm(x,min(pmu1),1,log=T)}
-  pzprob12=function(x){dnorm(x,max(pmu1),1,log=T)}
+  pzprob11=function(x){dnorm(x,min(pmu1),1,log=TRUE)}
+  pzprob12=function(x){dnorm(x,max(pmu1),1,log=TRUE)}
   pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
   pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
-  CN1=mapply(exactCNi_ngs,r1L,baf1,rpos1,bpos1,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
+  CN1=mapply(exactCNi_ngs,r1L,baf1,rpos1,bpos1,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
   CN=mapply(function(CNs,mLpos,result,Lpos){
     CNi=result
       for (i in 1:length(CNs)){
@@ -646,14 +646,14 @@ exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
         }
       }
     return(CNi)
-    },CN1,mLpos,result,Lpos,SIMPLIFY = F)
+    },CN1,mLpos,result,Lpos,SIMPLIFY = FALSE)
   return(CN)
 }
 
 # Likelihood estimator
 exactCNi_ngs = function(r1i,baf1i,rpos1i,bpos1i,resulti,Lposi,dzprob11,dzprob12,dbprob1,dbprob2,pzprob11,pzprob12,pbprob1,pbprob2){
   CNi=resulti
-  z1i=(r1i-mean(r1i,na.rm=T))/sd(r1i,na.rm=T)
+  z1i=(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
   baf1i[is.na(baf1i)]=1
   z1i[is.na(z1i)]=0
   for (j in 1:length(resulti)){
@@ -703,8 +703,8 @@ exactCNi_ngs = function(r1i,baf1i,rpos1i,bpos1i,resulti,Lposi,dzprob11,dzprob12,
 # Likelihood estimator
 exactCNi = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,Lposi,dzprob11,dzprob12,dzprob21,dzprob22,dbprob1,dbprob2,pzprob11,pzprob12,pzprob21,pzprob22,pbprob1,pbprob2){
   CNi=resulti
-  z1i=(r1i-mean(r1i,na.rm=T))/sd(r1i,na.rm=T)
-  z2i=(r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T)
+  z1i=(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
+  z2i=(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
   baf1i[is.na(baf1i)]=1
   baf2i[is.na(baf2i)]=1
   z1i[is.na(z1i)]=0
@@ -786,36 +786,36 @@ exactCNi = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,Lpos
 visualization2 = function(testres,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
   cat('\n','Generating visualization2. This may take a while...','\n')
   Lpos=lapply(testres,function(x){x[[2]]})
-  ttldipposlist=mapply(function(x){which(x==2)},CNV,SIMPLIFY=F)
-  ttldel1poslist=mapply(function(x){which(x==1)},CNV,SIMPLIFY=F)
-  ttldel2poslist=mapply(function(x){which(x==0)},CNV,SIMPLIFY=F)
-  ttldup1poslist=mapply(function(x){which(x==3)},CNV,SIMPLIFY=F)
-  ttldup2poslist=mapply(function(x){which(x==4)},CNV,SIMPLIFY=F)
-  nzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldipposlist,Lpos,SIMPLIFY = F)
+  ttldipposlist=mapply(function(x){which(x==2)},CNV,SIMPLIFY=FALSE)
+  ttldel1poslist=mapply(function(x){which(x==1)},CNV,SIMPLIFY=FALSE)
+  ttldel2poslist=mapply(function(x){which(x==0)},CNV,SIMPLIFY=FALSE)
+  ttldup1poslist=mapply(function(x){which(x==3)},CNV,SIMPLIFY=FALSE)
+  ttldup2poslist=mapply(function(x){which(x==4)},CNV,SIMPLIFY=FALSE)
+  nzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldipposlist,Lpos,SIMPLIFY = FALSE)
   nbafs=unlist(mapply(function(x){x[,2]},nzvsbaf))
   nbafs[is.na(nbafs)]=0
   nzs=unlist(mapply(function(x){x[,1]},nzvsbaf))
   nI=unlist(mapply(function(x){x[,3]},nzvsbaf))
   cat('step1 of 5','\n')
-  d1zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldel1poslist,Lpos,SIMPLIFY = F)
+  d1zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldel1poslist,Lpos,SIMPLIFY = FALSE)
   d1bafs=unlist(mapply(function(x){x[,2]},d1zvsbaf))
   d1bafs[is.na(d1bafs)]=0
   d1zs=unlist(mapply(function(x){x[,1]},d1zvsbaf))
   d1I=unlist(mapply(function(x){x[,3]},d1zvsbaf))
   cat('step2 of 5','\n')
-  d2zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldel2poslist,Lpos,SIMPLIFY = F)
+  d2zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldel2poslist,Lpos,SIMPLIFY = FALSE)
   d2bafs=unlist(mapply(function(x){x[,2]},d2zvsbaf))
   d2bafs[is.na(d2bafs)]=0
   d2zs=unlist(mapply(function(x){x[,1]},d2zvsbaf))
   d2I=unlist(mapply(function(x){x[,3]},d2zvsbaf))
   cat('step3 of 5','\n')
-  p1zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldup1poslist,Lpos,SIMPLIFY = F)
+  p1zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldup1poslist,Lpos,SIMPLIFY = FALSE)
   p1bafs=unlist(mapply(function(x){x[,2]},p1zvsbaf))
   p1bafs[is.na(p1bafs)]=0
   p1zs=unlist(mapply(function(x){x[,1]},p1zvsbaf))
   p1I=unlist(mapply(function(x){x[,3]},p1zvsbaf))
   cat('step4 of 5','\n')
-  p2zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldup2poslist,Lpos,SIMPLIFY = F)
+  p2zvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldup2poslist,Lpos,SIMPLIFY = FALSE)
   p2bafs=unlist(mapply(function(x){x[,2]},p2zvsbaf))
   p2bafs[is.na(p2bafs)]=0
   p2zs=unlist(mapply(function(x){x[,1]},p2zvsbaf))
@@ -835,19 +835,19 @@ novisualization = function(testres,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
   cat('\n','Calculating novisualization...','\n')
   result=lapply(testres,function(x){x[[1]]})
   Lpos=lapply(testres,function(x){x[[2]]})
-  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=F)
-  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=F)
-  dzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldelposlist,Lpos,SIMPLIFY = F)
+  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=FALSE)
+  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=FALSE)
+  dzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldelposlist,Lpos,SIMPLIFY = FALSE)
   dbafs=unlist(mapply(function(x){x[,2]},dzvsbaf))
   dbafs[is.na(dbafs)]=0
   dzs=unlist(mapply(function(x){x[,1]},dzvsbaf))
   dI=unlist(mapply(function(x){x[,3]},dzvsbaf))
-  pzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldupposlist,Lpos,SIMPLIFY = F)
+  pzvsbaf=mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldupposlist,Lpos,SIMPLIFY = FALSE)
   pbafs=unlist(mapply(function(x){x[,2]},pzvsbaf))
   pbafs[is.na(pbafs)]=0
   pzs=unlist(mapply(function(x){x[,1]},pzvsbaf))
   pI=unlist(mapply(function(x){x[,3]},pzvsbaf))
-  x.lim=range(c(range(pzs,na.rm=T),range(dzs,na.rm=T)))
+  x.lim=range(c(range(pzs,na.rm=TRUE),range(dzs,na.rm=TRUE)))
   return(list(dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
 }
 
@@ -855,19 +855,19 @@ novisualization_ngs = function(testres,r1L,baf1,rpos1,bpos1){
   cat('\n','Calculating novisualization...','\n')
   result=lapply(testres,function(x){x[[1]]})
   Lpos=lapply(testres,function(x){x[[2]]})
-  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=F)
-  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=F)
-  dzvsbaf=mapply(BAFvsZ_ngs,r1L,baf1,rpos1,bpos1,ttldelposlist,Lpos,SIMPLIFY = F)
+  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=FALSE)
+  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=FALSE)
+  dzvsbaf=mapply(BAFvsZ_ngs,r1L,baf1,rpos1,bpos1,ttldelposlist,Lpos,SIMPLIFY = FALSE)
   dbafs=unlist(mapply(function(x){x[,2]},dzvsbaf))
   dbafs[is.na(dbafs)]=0
   dzs=unlist(mapply(function(x){x[,1]},dzvsbaf))
   dI=unlist(mapply(function(x){x[,3]},dzvsbaf))
-  pzvsbaf=mapply(BAFvsZ_ngs,r1L,baf1,rpos1,bpos1,ttldupposlist,Lpos,SIMPLIFY = F)
+  pzvsbaf=mapply(BAFvsZ_ngs,r1L,baf1,rpos1,bpos1,ttldupposlist,Lpos,SIMPLIFY = FALSE)
   pbafs=unlist(mapply(function(x){x[,2]},pzvsbaf))
   pbafs[is.na(pbafs)]=0
   pzs=unlist(mapply(function(x){x[,1]},pzvsbaf))
   pI=unlist(mapply(function(x){x[,3]},pzvsbaf))
-  x.lim=range(c(range(pzs,na.rm=T),range(dzs,na.rm=T)))
+  x.lim=range(c(range(pzs,na.rm=TRUE),range(dzs,na.rm=TRUE)))
   return(list(dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
 }
 
@@ -877,7 +877,7 @@ BAFvsZ_ngs=function(r1i,baf1i,rpos1i,bpos1i,CNVs,Lposi){
   rs=c()
   I=c()
   if (length(CNVs)>0){
-    z1i=(r1i-mean(r1i,na.rm=T))/sd(r1i,na.rm=T)
+    z1i=(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
     mbaf1i=0.5-abs(baf1i-0.5)
     for (j in 1:length(CNVs)){
       s=Lposi[CNVs[j],1]
@@ -906,7 +906,7 @@ BAFvsZ_snp=function(r2i,baf2i,rpos2i,bpos2i,CNVs,Lposi){
   rs=c()
   I=c()
   if (length(CNVs)>0){
-    z2i=(r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T)
+    z2i=(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
     mbaf2i=0.5-abs(baf2i-0.5)
     for (j in 1:length(CNVs)){
       s=Lposi[CNVs[j],1]
@@ -927,19 +927,19 @@ novisualization_snp = function(testres,r2L,baf2,rpos2,bpos2){
   cat('\n','Calculating novisualization...','\n')
   result=lapply(testres,function(x){x[[1]]})
   Lpos=lapply(testres,function(x){x[[2]]})
-  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=F)
-  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=F)
-  dzvsbaf=mapply(BAFvsZ_snp,r2L,baf2,rpos2,bpos2,ttldelposlist,Lpos,SIMPLIFY = F)
+  ttldelposlist=mapply(function(x){which(x==1)},result,SIMPLIFY=FALSE)
+  ttldupposlist=mapply(function(x){which(x==3)},result,SIMPLIFY=FALSE)
+  dzvsbaf=mapply(BAFvsZ_snp,r2L,baf2,rpos2,bpos2,ttldelposlist,Lpos,SIMPLIFY = FALSE)
   dbafs=unlist(mapply(function(x){x[,2]},dzvsbaf))
   dbafs[is.na(dbafs)]=0
   dzs=unlist(mapply(function(x){x[,1]},dzvsbaf))
   dI=unlist(mapply(function(x){x[,3]},dzvsbaf))
-  pzvsbaf=mapply(BAFvsZ_snp,r2L,baf2,rpos2,bpos2,ttldupposlist,Lpos,SIMPLIFY = F)
+  pzvsbaf=mapply(BAFvsZ_snp,r2L,baf2,rpos2,bpos2,ttldupposlist,Lpos,SIMPLIFY = FALSE)
   pbafs=unlist(mapply(function(x){x[,2]},pzvsbaf))
   pbafs[is.na(pbafs)]=0
   pzs=unlist(mapply(function(x){x[,1]},pzvsbaf))
   pI=unlist(mapply(function(x){x[,3]},pzvsbaf))
-  x.lim=range(c(range(pzs,na.rm=T),range(dzs,na.rm=T)))
+  x.lim=range(c(range(pzs,na.rm=TRUE),range(dzs,na.rm=TRUE)))
   return(list(dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
 }
 
@@ -965,25 +965,25 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
       }
     }
     return(list(It,post))
-  },result,Lpos,SIMPLIFY = F)
+  },result,Lpos,SIMPLIFY = FALSE)
   mresult=lapply(res,function(x){x[[1]]})
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz2=dzs[dI==2|dI==2.5]
   dz2fit <- kmeans(dz2, 2)
   dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
-  dzprob21=function(x){dnorm(x,max(dmu2),1,log=T)}
-  dzprob22=function(x){dnorm(x,min(dmu2),1,log=T)}
+  dzprob21=function(x){dnorm(x,max(dmu2),1,log=TRUE)}
+  dzprob22=function(x){dnorm(x,min(dmu2),1,log=TRUE)}
   dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=T))}
+  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
   pz2=pzs[pI==2|pI==2.5]
   pz2fit <- kmeans(pz2, 2)
   pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
-  pzprob21=function(x){dnorm(x,min(pmu2),1,log=T)}
-  pzprob22=function(x){dnorm(x,max(pmu2),1,log=T)}
+  pzprob21=function(x){dnorm(x,min(pmu2),1,log=TRUE)}
+  pzprob22=function(x){dnorm(x,max(pmu2),1,log=TRUE)}
   pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
   pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
-  CN1=mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = F)
+  CN1=mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
   CN=mapply(function(CNs,mLpos,result,Lpos){
     CNi=result
       for (i in 1:length(CNs)){
@@ -995,7 +995,7 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
         }
       }
     return(CNi)
-    },CN1,mLpos,result,Lpos,SIMPLIFY = F)
+    },CN1,mLpos,result,Lpos,SIMPLIFY = FALSE)
   return(CN)
 }
 
@@ -1003,7 +1003,7 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
 # Likelihood estimator
 exactCNi_snp = function(r2i,baf2i,rpos2i,bpos2i,resulti,Lposi,dzprob21,dzprob22,dbprob1,dbprob2,pzprob21,pzprob22,pbprob1,pbprob2){
   CNi=resulti
-  z2i=(r2i-mean(r2i,na.rm=T))/sd(r2i,na.rm=T)
+  z2i=(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
   baf2i[is.na(baf2i)]=1
   z2i[is.na(z2i)]=0
   for (j in 1:length(resulti)){
