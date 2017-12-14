@@ -11,26 +11,26 @@
 #' @param projectname Name of the project
 #' @return void 
 #' @examples
+#' load('icnv.demobambaf_22.rda')
+#' str(ngs_baf)
+#' str(ngs_baf.pos)
 #' \dontrun{
 #' dir='PATH/TO/FOLDER'
 #' bambaf_from_vcf(dir,'example_vcf.list')
-#' bambaf_from_vcf(dir,'example_vcf.list',chr=22)
-#' load('bambaf_22.rda')
-#' str(ngs_baf)
-#' str(ngs_baf.pos)
+#' bambaf_from_vcf(dir,'example_vcf.list',chr=22,projectname='icnv.demo')
 #' }
 #' @export
 bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
 	`%>%`=tidyr::`%>%`
-	filenm=file.path(dir,read.table(file.path(dir,vcf_list),header=F,as.is=T)[[1]])
+	filenm=file.path(dir,read.table(file.path(dir,vcf_list),header=FALSE,as.is=TRUE)[[1]])
 
 	# Read all the VCF data
-	baf.all=sapply(filenm,bam.baf,simplify=F)
+	baf.all=sapply(filenm,bam.baf,simplify=FALSE)
 
 	# Seperate the data into different chromosome
 	if(is.null(chr)){
 		for (chr in 1:22){
-			baf.all.chr=sapply(baf.all,function(x){x1=x %>% dplyr::filter(`#CHROM`==chr); return(x1)},simplify=F)
+			baf.all.chr=sapply(baf.all,function(x){x1=x %>% dplyr::filter(`#CHROM`==chr); return(x1)},simplify=FALSE)
 			ngs_baf.nm=list()
 			ngs_baf.chr=list()
 			ngs_baf.pos=list()
@@ -44,10 +44,10 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
 				ngs_baf.id[[i]]=x$ID
 				ngs_baf[[i]]=x[[4]]
 			}
-			save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=file.path(dir,paste0(projectname,'bambaf_',chr,'.rda')))
+			save(chr,ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=file.path(dir,paste0(projectname,'bambaf_',chr,'.rda')))
 		}
 	}else{
-		baf.all.chr=sapply(baf.all,function(x){return(x %>% dplyr::filter(`#CHROM`==chr))},simplify=F)
+		baf.all.chr=sapply(baf.all,function(x){return(x %>% dplyr::filter(`#CHROM`==chr))},simplify=FALSE)
 		ngs_baf.nm=list()
 		ngs_baf.chr=list()
 		ngs_baf.pos=list()

@@ -22,7 +22,7 @@ icnv_output_to_gb = function(chr,icnv.output){
 		}else{
 			return(matrix(rep(NA,9),ncol=9))
 		}
-	},icnv.output,ids,SIMPLIFY = F)
+	},icnv.output,ids,SIMPLIFY = FALSE)
 	gb=do.call(rbind,gb.list)
 	ind <- apply(gb, 1, function(x) all(is.na(x)))
 	gb=gb[!ind,]

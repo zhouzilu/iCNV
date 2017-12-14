@@ -25,12 +25,12 @@ ngs_baf.nm: name of the bamfiles; ngs_baf.chr: the chromosome; ngs_baf.pos: the 
 ngs_baf: the BAF of the variants; ngs_baf.id: the ID of the variants; filenm:the file name
 }
 \examples{
+load('icnv.demobambaf_22.rda')
+str(ngs_baf)
+str(ngs_baf.pos)
 \dontrun{
 dir='PATH/TO/FOLDER'
 bambaf_from_vcf(dir,'example_vcf.list')
-bambaf_from_vcf(dir,'example_vcf.list',chr=22)
-load('bambaf_22.rda')
-str(ngs_baf)
-str(ngs_baf.pos)
+bambaf_from_vcf(dir,'example_vcf.list',chr=22,projectname='icnv.demo')
 }
 }

@@ -26,9 +26,9 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL){
   sel=(h<=HMMcalls[[1]][[2]][,1] & HMMcalls[[1]][[2]][,2]<=t)
   Lpos=HMMcalls[[1]][[2]][sel,]
   scores=lapply(HMMcalls,function(x){x[[7]]})
-  scores=t(sapply(scores,function(x)x, simplify = T))[,sel]
+  scores=t(sapply(scores,function(x)x, simplify = TRUE))[,sel]
   result=lapply(HMMcalls,function(x){x[[1]]})
-  result=t(sapply(result,function(x)x, simplify = T))[,sel]
+  result=t(sapply(result,function(x)x, simplify = TRUE))[,sel]
   toplot=scores
   l=1
   fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
@@ -41,7 +41,7 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL){
     col = c('white','black'),text.col = "green4", pch = c(1,20),cex = 0.75)
   }
   else{
-    CNV=t(sapply(CNV,function(x)x, simplify = T))[,sel]
+    CNV=t(sapply(CNV,function(x)x, simplify = TRUE))[,sel]
     addCNVtoplot(CNV)
     legend("topright",c("0", "1", "3", "4"),
     col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)

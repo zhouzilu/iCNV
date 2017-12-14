@@ -1,6 +1,6 @@
 Package: iCNV
 Title: Integrated Copy Number Variation detection
-Version: 0.1
+Version: 0.0.2
 Authors@R: c(person("Zilu", "Zhou", email = "zhouzilu@pennmedicine.upenn.edu", role = c("aut", "cre")),
 				person('Nancy','Zhang', email='nzh@wharton.upenn.edu'), role = c("aut"))
 Author: Zilu Zhou, Nancy Zhang
@@ -21,3 +21,4 @@ Imports:
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+biocViews: ExomeSeq, WholeGenome, SNP, CopyNumberVariation, HiddenMarkovModel

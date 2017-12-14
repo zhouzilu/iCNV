@@ -11,15 +11,15 @@
 #' @param projectname Name of the project
 #' @return void 
 #' @examples
-#' \dontrun{
-#' dir='PATH/TO/FOLDER'
-#' pattern=paste0('*.csv.arrayicnv$')
-#' icnv_array_intput(dir,pattern,chr=22)
-#' load('icnv_array_input_22.rda')
+#' load('icnv.demoarray_lrrbaf_22.rda')
 #' str(snp_lrr)
 #' str(snp_lrr.pos)
 #' str(snp_baf)
 #' str(snp_baf.pos)
+#' \dontrun{
+#' dir='PATH/TO/FOLDER'
+#' pattern=paste0('*.csv.arrayicnv$')
+#' icnv_array_intput(dir,pattern,chr=22,projectname='icnv.demo')
 #' }
 #' @export
 
@@ -31,9 +31,9 @@ get_array_intput=function(dir,pattern,chr=NULL,projectname=''){
 			signalFile= list.files(dirPath, pattern = pattern)
 			signaldir <- file.path(dirPath, signalFile)
 			signal.DT <- lapply(signaldir, data.table::fread, sep=",")
-			snp_lrr = sapply(signal.DT,function(t){t[[4]]},simplify = F)
+			snp_lrr = sapply(signal.DT,function(t){t[[4]]},simplify = FALSE)
 			names(snp_lrr)=signalFile
-			snp_baf = sapply(signal.DT,function(t){t[[5]]},simplify = F)
+			snp_baf = sapply(signal.DT,function(t){t[[5]]},simplify = FALSE)
 			names(snp_baf)=signalFile
 			snp_lrr.pos = lapply(seq_len(length(snp_lrr)), function(i) signal.DT[[1]]$POS)
 			snp_baf.pos = lapply(seq_len(length(snp_baf)), function(i) signal.DT[[1]]$POS)
@@ -45,9 +45,9 @@ get_array_intput=function(dir,pattern,chr=NULL,projectname=''){
 		signalFile= list.files(dirPath, pattern = pattern)
 		signaldir <- file.path(dirPath, signalFile)
 		signal.DT <- lapply(signaldir, data.table::fread, sep=",")
-		snp_lrr = sapply(signal.DT,function(t){t[[4]]},simplify = F)
+		snp_lrr = sapply(signal.DT,function(t){t[[4]]},simplify = FALSE)
 		names(snp_lrr)=signalFile
-		snp_baf = sapply(signal.DT,function(t){t[[5]]},simplify = F)
+		snp_baf = sapply(signal.DT,function(t){t[[5]]},simplify = FALSE)
 		names(snp_baf)=signalFile
 		snp_lrr.pos = lapply(seq_len(length(snp_lrr)), function(i) signal.DT[[1]]$POS)
 		snp_baf.pos = lapply(seq_len(length(snp_baf)), function(i) signal.DT[[1]]$POS)

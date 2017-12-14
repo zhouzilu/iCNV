@@ -41,7 +41,7 @@ output_list=function(icnv_res,sampleid=NULL,CN=0,min_size=0){
       }
     }
     return(list(It,post))
-  },result,Lpos,SIMPLIFY = F)
+  },result,Lpos,SIMPLIFY = FALSE)
 
   icnv_res = mapply(function(res){
     cnv=res[[1]]
@@ -53,7 +53,7 @@ output_list=function(icnv_res,sampleid=NULL,CN=0,min_size=0){
     cnv=cnv[filt]
     pos=matrix(pos[filt,],ncol=2)
     return(cbind(cnv,pos))
-  },res,SIMPLIFY = T)
+  },res,SIMPLIFY = TRUE)
 
   names(icnv_res)=sampleid
   return(icnv_res)
