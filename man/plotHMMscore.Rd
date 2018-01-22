@@ -5,7 +5,7 @@
 \title{Plot CNV inference score.}
 \usage{
 plotHMMscore(icnv_res, h = NULL, t = NULL, title = "score plot",
-  output = NULL, col = NULL)
+  output = NULL, col = "")
 }
 \arguments{
 \item{icnv_res}{CNV inference result. Result from iCNV_detection() (i.e. iCNV_detection(...))}

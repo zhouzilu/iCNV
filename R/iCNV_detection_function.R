@@ -644,17 +644,28 @@ exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz1=dzs[dI==1|dI==1.5]
-  dz1fit <- kmeans(dz1, 2)
-  dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
-  dzprob11=function(x){dnorm(x,max(dmu1),1,log=TRUE)}
-  dzprob12=function(x){dnorm(x,min(dmu1),1,log=TRUE)}
+  if(length(dz1<3)){
+    dzprob11=function(x){log(1)}
+    dzprob12=function(x){log(0)}
+  }else{
+    dz1fit <- kmeans(dz1, 2)
+    dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
+    dzprob11=function(x){dnorm(x,max(dmu1),1,log=TRUE)}
+    dzprob12=function(x){dnorm(x,min(dmu1),1,log=TRUE)}
+  }
   dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
   dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
+  
   pz1=pzs[pI==1|pI==1.5]
-  pz1fit <- kmeans(pz1, 2)
-  pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
-  pzprob11=function(x){dnorm(x,min(pmu1),1,log=TRUE)}
-  pzprob12=function(x){dnorm(x,max(pmu1),1,log=TRUE)}
+  if(length(pz1<3)){
+    pzprob11=function(x){log(1)}
+    pzprob12=function(x){log(0)}
+  }else{
+    pz1fit <- kmeans(pz1, 2)
+    pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
+    pzprob11=function(x){dnorm(x,min(pmu1),1,log=TRUE)}
+    pzprob12=function(x){dnorm(x,max(pmu1),1,log=TRUE)}    
+  }
   pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
   pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1=mapply(exactCNi_ngs,r1L,baf1,rpos1,bpos1,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
@@ -993,17 +1004,27 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz2=dzs[dI==2|dI==2.5]
-  dz2fit <- kmeans(dz2, 2)
-  dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
-  dzprob21=function(x){dnorm(x,max(dmu2),1,log=TRUE)}
-  dzprob22=function(x){dnorm(x,min(dmu2),1,log=TRUE)}
+  if(length(dz2<3)){
+    dzprob21=function(x){log(1)}
+    dzprob22=function(x){log(0)}
+  }else{
+    dz2fit <- kmeans(dz2, 2)
+    dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
+    dzprob21=function(x){dnorm(x,max(dmu2),1,log=TRUE)}
+    dzprob22=function(x){dnorm(x,min(dmu2),1,log=TRUE)}
+  }
   dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
   dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
   pz2=pzs[pI==2|pI==2.5]
-  pz2fit <- kmeans(pz2, 2)
-  pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
-  pzprob21=function(x){dnorm(x,min(pmu2),1,log=TRUE)}
-  pzprob22=function(x){dnorm(x,max(pmu2),1,log=TRUE)}
+  if(pz2<3){
+    pzprob21=function(x){log(1)}
+    pzprob22=function(x){log(0)}
+  }else{
+    pz2fit <- kmeans(pz2, 2)
+    pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
+    pzprob21=function(x){dnorm(x,min(pmu2),1,log=TRUE)}
+    pzprob22=function(x){dnorm(x,max(pmu2),1,log=TRUE)}
+  }
   pbprob1=function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
   pbprob2=function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1=mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
