@@ -6,7 +6,8 @@ Authors@R: c(person("Zilu", "Zhou", email = "zhouzilu@pennmedicine.upenn.edu", r
 Author: Zilu Zhou, Nancy Zhang
 Maintainer: Zilu Zhou <zhouzilu@pennmedicine.upenn.edu>
 Description: Integrative copy number variation (CNV) detection from multiple platform and experimental design.
-Depends: R (>= 3.3.1)
+Depends: R (>= 3.3.1),
+  CODEX
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
@@ -17,9 +18,7 @@ Imports:
   truncnorm,
   tidyr,
   data.table,
-  dplyr
-Depends:
-  CODEX
+  dplyr 
 Suggests: knitr,
     rmarkdown,
     WES.1KG.WUGSC
