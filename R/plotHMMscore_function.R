@@ -14,7 +14,7 @@
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject')
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject',col='DGV')
 #' @export
-plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=NULL){
+plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=''){
   if(is.null(h)){
     h=min(icnv_res[[1]][[1]][[2]])
   }
