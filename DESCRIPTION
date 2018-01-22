@@ -18,7 +18,10 @@ Imports:
   tidyr,
   data.table,
   dplyr
+Depends:
+  CODEX
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    WES.1KG.WUGSC
 VignetteBuilder: knitr
 biocViews: ExomeSeq, WholeGenome, SNP, CopyNumberVariation, HiddenMarkovModel
