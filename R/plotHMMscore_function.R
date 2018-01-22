@@ -8,11 +8,13 @@
 #' @param t end position of this plot. Default End of the whole chromosome
 #' @param title of this plot. Default "score plot"
 #' @param output generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL
+#' @param col Specify if would like to plot in DGV color scheme (red for deletion, blue for duplication and grey for diploid) or default color scheme (blue for deletion, red for duplicatin and and green for diploid) Default NULL
 #' @return void
 #' @examples
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject')
+#' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject',col='DGV')
 #' @export
-plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL){
+plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=NULL){
   if(is.null(h)){
     h=min(icnv_res[[1]][[1]][[2]])
   }
@@ -29,35 +31,58 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL){
   result=t(sapply(result,function(x)x, simplify = TRUE))[,sel]
   toplot=scores
   l=1
-  fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
+  if(col=='DGV'){
+    colfunc<-colorRampPalette(c("red","lightgrey","blue"))
+    fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),col=colfunc(256),main = title,ylab='sample',xlab='')
+  }else{
+    fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
+  }
   if (!is.null(output)){
-    addCNVtoplot2(output,Lpos)
+    addCNVtoplot2(output,Lpos,col)
   }
   else if (is.null(CNV)){
-    addCNVtoplot1(result)
-    legend("topright",c("del", "dup"),
-    col = c('white','black'),text.col = "green4", pch = c(1,20),cex = 0.75)
+    addCNVtoplot1(result,col)
+    if(col=='DGV'){
+      legend("topright",c("del", "dup"),
+             col = c('darkred','darkblue'),text.col = "green4", pch = c(20,20),cex = 0.75)
+    }else{
+      legend("topright",c("del", "dup"),
+             col = c('white','black'),text.col = "green4", pch = c(1,20),cex = 0.75)
+    }
   }
   else{
     CNV=t(sapply(CNV,function(x)x, simplify = TRUE))[,sel]
-    addCNVtoplot(CNV)
-    legend("topright",c("0", "1", "3", "4"),
-    col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)
+    addCNVtoplot(CNV,col)
+    if(col=='DGV'){
+      legend("topright",c("0", "1", "3", "4"),
+             col = c('darkred','magenta','cyan','blue'),text.col = "green4", pch = c(20,20,20,20),cex = 0.75)
+    }else{
+      legend("topright",c("0", "1", "3", "4"),
+             col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)
+    }
   }
 }
 
-addCNVtoplot2=function(output,Lpos){
+addCNVtoplot2=function(output,Lpos,col){
   for (i in 1:length(output)){
     outputi=output[[i]]
     if(length(outputi)>0){
       apply(outputi,1,function(x){
         if(x[1]==1){
           del=which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
-          points(x=del,y=rep(i,length(del)),col='white',pch=16,cex=0.5)
+          if(col=='DGV'){
+            points(x=del,y=rep(i,length(del)),col='darkred',pch=16,cex=0.5)
+          }else{
+            points(x=del,y=rep(i,length(del)),col='white',pch=16,cex=0.5)
+          }
         }
         if(x[1]==3){
           dup=which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
-          points(x=dup,y=rep(i,length(dup)),col='black',pch=16,cex=0.5)
+          if(col=='DGV'){
+            points(x=dup,y=rep(i,length(dup)),col='darkblue',pch=16,cex=0.5)
+          }else{
+            points(x=dup,y=rep(i,length(dup)),col='black',pch=16,cex=0.5)
+          }
         }
       })
       # cat(i,'del:',length(del),' dup:',length(dup),'\n')
@@ -65,19 +90,27 @@ addCNVtoplot2=function(output,Lpos){
   }
 }
 
-addCNVtoplot1=function(result){
+addCNVtoplot1=function(result,col){
   for (i in 1:nrow(result)){
     del = which(result[i,]==1)
     dup = which(result[i,]==3)
     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
     sel=del
-    points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
+    if(col=='DGV'){
+      points(x=sel,y=rep(i,length(sel)),col='darkred',pch=16,cex=0.5)
+    }else{
+      points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
+    }
     sel=dup
-    points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
+    if(col=='DGV'){
+      points(x=sel,y=rep(i,length(sel)),col='darkblue',pch=16,cex=0.5)
+    }else{
+      points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
+    }
   }
 }
 
-addCNVtoplot=function(result){
+addCNVtoplot=function(result,col){
   for (i in 1:nrow(result)){
     hemidel = which(result[i,]==1)
     homodel = which(result[i,]==0)
@@ -85,12 +118,23 @@ addCNVtoplot=function(result){
     cp2dup = which(result[i,]==4)
     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
     sel=hemidel
-    points(x=sel,y=rep(i,length(sel)),col='grey',pch=16,cex=0.5)
-    sel=homodel
-    points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
-    sel=cp1dup
-    points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
-    sel=cp2dup
-    points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
+    if(col=='DGV'){
+      points(x=sel,y=rep(i,length(sel)),col='darkred',pch=16,cex=0.5)
+      sel=homodel
+      points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
+      sel=cp1dup
+      points(x=sel,y=rep(i,length(sel)),col='cyan',pch=16,cex=0.5)
+      sel=cp2dup
+      points(x=sel,y=rep(i,length(sel)),col='darkblue',pch=16,cex=0.5)
+    }
+    else{
+      points(x=sel,y=rep(i,length(sel)),col='grey',pch=16,cex=0.5)
+      sel=homodel
+      points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
+      sel=cp1dup
+      points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
+      sel=cp2dup
+      points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
+    }
   }
 }
