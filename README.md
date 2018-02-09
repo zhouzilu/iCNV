@@ -38,7 +38,7 @@ install_github("zhouzilu/iCNV")
 ```
 
 ## Workflow overview
-Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/package/vignettes/iCNV-vignette.Rmd) and function details can be found https://github.com/zhouzilu/iCNV/blob/master/iCNV_rdoc.pdf
+Number in the parentheses referring to different section in [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd) and function details can be found https://github.com/zhouzilu/iCNV/tree/master/R
 ```
         NGS                                             |           Array
 BAM    BED(UCSC for WES or bed_generator.R for WGS 2.2) |    SNP Intensity(in standard format)
@@ -64,6 +64,5 @@ Variants BAF(vcf) PLR                                   |        Array LRR   Arr
                               Genome Browser input
 ```
 ## Demo code & Vignettes
-* [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/package/vignettes/iCNV-vignette.Rmd)
-* [Demo](https://github.com/zhouzilu/iCNV/tree/master/demo)
-* [Demo data](https://github.com/zhouzilu/iCNV/tree/master/demo.zip)
+* [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
+* [Vignettes.pdf](https://github.com/zhouzilu/iCNV/blob/master/inst/doc/iCNV-vignette.pdf)
