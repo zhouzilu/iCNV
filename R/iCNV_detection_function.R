@@ -151,14 +151,20 @@ HMMEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,maxIt,ind,mu,ca
   p=10^-8
   sigmaM=matrix(NA,ncol=3,nrow=maxIt)
   sigmaM[1,]=sigma
+  emissionBLoc = NULL # Use for NGS emission probability
+  em1Loc = NULL # Use for combine NGS and ARRAY emission probability
+  em2Loc = NULL # Use for combine NGS and ARRAY emission probability
   cat('iteration',1,': p=',p,'; mu=',mu,'; sigma=',sigma,'; sum of difference',Inf,'\n')
   for (i in 2:maxIt){
-    res=HMMiEM(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sigma,p,cap)
+    res=HMMiEM(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sigma,p,cap,emissionBLoc,em1Loc,em2Loc)
     result=res[[1]]
     Lposi=res[[2]]
     rt=res[[3]]
     sigmaM[i,]=sigma=res[[4]]
     score=res[[5]]
+    emissionBLoc=res[[6]]
+    em1Loc=res[[7]]
+    em2Loc=res[[8]]
     dif=sum((sigma-sigmaM[i-1,])^2)
     cat('iteration',i,': p=',p,'; mu=',mu,'; sigma=',sigma,'; sum of difference',dif,'\n')
     if( dif< 0.001){
@@ -168,7 +174,7 @@ HMMEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,maxIt,ind,mu,ca
   return(list(result,Lposi,rt,mu,sigma,p,score))
 }
 
-HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sigma,p,cap){
+HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sigma,p,cap,emissionBLoc,em1Loc,em2Loc){
   # 1 for exome and 2 for array
   # logR function
   emissionR1=function(x){dnorm(x,mu[1],sigma[1],log = TRUE)}
@@ -202,8 +208,15 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     # emission probability baf1
     rpos1is = rpos1i[,1]
     rpos1ie = rpos1i[,2]
-    calexomeP = function(x,y,posb,baf,fx){
-      b = baf[posb>=x & posb<=y]
+
+    calexomeLoc = function(x,y,posb){
+      return(which(posb>=x & posb<=y))
+    }
+    if(is.null(emissionBLoc)){
+      emissionBLoc = mapply(calexomeLoc,rpos1is,rpos1ie,MoreArgs = list(posb = bpos1i),SIMPLIFY = FALSE)
+    }
+    calexomeP = function(indb,baf,fx){
+      b = baf[indb]
       if(length(b>0)){
         return(sum(c(fx(b)),na.rm=TRUE))
       }
@@ -211,9 +224,10 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
         return(fx(0))
       }
     }
-    emissionB11 = (mapply(calexomeP,rpos1is,rpos1ie,MoreArgs = list(posb = bpos1i, baf = baf1i, fx=emissionB1)))
-    emissionB12 = (mapply(calexomeP,rpos1is,rpos1ie,MoreArgs = list(posb = bpos1i, baf = baf1i, fx=emissionB2)))
-    emissionB13 = (mapply(calexomeP,rpos1is,rpos1ie,MoreArgs = list(posb = bpos1i, baf = baf1i, fx=emissionB3)))
+    emissionB11 = (mapply(calexomeP,emissionBLoc,MoreArgs = list(baf = baf1i, fx=emissionB1)))
+    emissionB12 = (mapply(calexomeP,emissionBLoc,MoreArgs = list(baf = baf1i, fx=emissionB2)))
+    emissionB13 = (mapply(calexomeP,emissionBLoc,MoreArgs = list(baf = baf1i, fx=emissionB3)))
+
     # combine emission from r and baf
     emission11=emissionR11+emissionB11
     emission12=emissionR12+emissionB12
@@ -252,14 +266,28 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     Lposi = Lposi[order(Lposi[,1]),]
     pos_exom=floor((rpos1is+rpos1ie)/2)
 
-    calem12 = function(x,y,em1,em2,pos1,pos2){
-      r=sum(c(sum(em1[pos1>=x & pos1<=y]),sum(em2[pos2>=x & pos2<=y])),na.rm=TRUE)
+    calem1Loc = function(x,y,pos1){
+      return(which(pos1>=x & pos1<=y))
+    }
+    calem2Loc = function(x,y,pos2){
+      return(which(pos2>=x & pos2<=y))
+    }
+    if(is.null(em1Loc)){
+      em1Loc = mapply(calem1Loc,Lposi[,1],Lposi[,2],MoreArgs=list(pos1=pos_exom),SIMPLIFY = FALSE)
+    }
+    if(is.null(em2Loc)){
+      em2Loc = mapply(calem2Loc,Lposi[,1],Lposi[,2],MoreArgs=list(pos2=rpos2i),SIMPLIFY = FALSE)
+    }
+    
+    calem12 = function(Loc1,Loc2,em1,em2){
+      r=sum(c(sum(em1[Loc1]),sum(em2[Loc2])),na.rm=TRUE)
       return(r)
     }
     # total emission probability
-    emission1=mapply(calem12,Lposi[,1],Lposi[,2],MoreArgs = list(em1=emission11,em2=emission21,pos1=pos_exom,pos2=rpos2i))
-    emission2=mapply(calem12,Lposi[,1],Lposi[,2],MoreArgs = list(em1=emission12,em2=emission22,pos1=pos_exom,pos2=rpos2i))
-    emission3=mapply(calem12,Lposi[,1],Lposi[,2],MoreArgs = list(em1=emission13,em2=emission23,pos1=pos_exom,pos2=rpos2i))
+    emission1=mapply(calem12,em1Loc,em2Loc,MoreArgs = list(em1=emission11,em2=emission21))
+    emission2=mapply(calem12,em1Loc,em2Loc,MoreArgs = list(em1=emission12,em2=emission22))
+    emission3=mapply(calem12,em1Loc,em2Loc,MoreArgs = list(em1=emission13,em2=emission23))
+
   }else if(!is.null(emission11)&is.null(emission21)){
     Lposi = rpos1i
     emission1=emission11
@@ -413,7 +441,8 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
     ctb[i]=-(wt+log(sum(exp(pmin.(pmax.(c(s1-wt,s2-wt,s3-wt),-745),709)))))
     bt[i,]=ctb[i]+(c(s1,s2,s3))
   }
-  rt=(exp(at+bt)+1e-323)/(rowSums(exp(at+bt))+1e-323)
+  abt=pmin.(pmax.(at+bt,-745),709)
+  rt=(exp(abt)+1e-323)/(rowSums(exp(abt))+1e-323)
   rt=rt/rowSums(rt)
   ct=cta+ctb
 
@@ -430,11 +459,11 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   score=apply(rt,1,calscore)
 
   # M step
-  getZs = function(x,y,z1,z2,pos1,pos2){
-    return(mean(c((z1[pos1>=x & pos1<=y]),(z2[pos2>=x & pos2<=y])),na.rm=TRUE))
+  getZs = function(Loc1,Loc2,z1,z2){
+    return(mean(c((z1[Loc1]),(z2[Loc2])),na.rm=TRUE))
   }
   if(!is.null(emission11)&!is.null(emission21)){
-    zs=mapply(getZs, Lposi[,1],Lposi[,2], MoreArgs = list(pos1=pos_exom,pos2=rpos2i,z1=z1i,z2=z2i))
+    zs=mapply(getZs, em1Loc,em2Loc, MoreArgs = list(z1=z1i,z2=z2i))
   }else if(!is.null(emission11)&is.null(emission21)){
     zs=z1i
   }else if(is.null(emission11)&!is.null(emission21)){
@@ -442,7 +471,7 @@ HMMiEM = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,pir,pib,mu,sig
   }else{cat('Intensity and BAF emission probability are NULL')}
 
   sigmahat= rep(sqrt(sum(rt*(cbind(zs-mu[1],zs-mu[2],zs-mu[3])^2))/sum(rt)),3)
-  return (list(result,Lposi,rt,sigmahat,score))
+  return (list(result,Lposi,rt,sigmahat,score,emissionBLoc,em1Loc,em2Loc))
 }
 
 visualization = function(testres,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
