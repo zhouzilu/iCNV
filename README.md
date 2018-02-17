@@ -66,3 +66,4 @@ Variants BAF(vcf) PLR                                   |        Array LRR   Arr
 ## Demo code & Vignettes
 * [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
 * [Vignettes.pdf](https://github.com/zhouzilu/iCNV/blob/master/inst/doc/iCNV-vignette.pdf)
+* [Vignettes.html](http://htmlpreview.github.io/?https://github.com/zhouzilu/iCNV/blob/master/inst/doc/iCNV-vignette.html)
