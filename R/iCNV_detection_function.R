@@ -47,6 +47,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     indivd=seq(1,n)
     HMMcall = mapply(HMMEM,r1L,baf1,rpos1,bpos1,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r2i=r2L,baf2i=baf2,rpos2i=rpos2,bpos2i=bpos2,cap=cap),SIMPLIFY=FALSE)
     if (CN!=0){
+      print('Start estimating integer copy number...')
       bafzIs=novisualization_ngs(HMMcall,r1L,baf1,rpos1,bpos1)
       CNV=exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
       if (visual!=0){
@@ -70,6 +71,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     indivd=seq(1,n)
     HMMcall = mapply(HMMEM,r2L,baf2,rpos2,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r1i=r1L,baf1i=baf1,rpos1i=rpos1,bpos1i=bpos1,cap=cap),SIMPLIFY=FALSE)
     if (CN!=0){
+      print('Start estimating integer copy number...')
       bafzIs=novisualization_snp(HMMcall,r2L,baf2,rpos2,bpos2)
       CNV=exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
       if (visual!=0){
@@ -96,6 +98,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     if (visual==2){
       pdf(file=paste0(projname,'visual',visual,'.pdf'),width=13,height = 10)
       if (CN!=0){
+        print('Start estimating integer copy number...')
         bafzIs=visualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],bafzIs[[7]],bafzIs[[8]],bafzIs[[9]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         plotHMMscore(list(HMMcall,CNV),title=projname)
@@ -106,6 +109,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     else if (visual==1){
       pdf(file=paste0(projname,'visual',visual,'.pdf'),width=13,height = 10)
       if (CN!=0){
+        print('Start estimating integer copy number...')
         bafzIs=novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)       
       }
@@ -114,6 +118,7 @@ iCNV_detection = function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ng
     }
     else{
       if (CN!=0){
+        print('Start estimating integer copy number...')
         bafzIs=novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         CNV=exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
@@ -583,9 +588,9 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz1=dzs[dI==1|dI==1.5]
-  if(length(dz1<3)){
-    dzprob11=function(x){log(1)}
-    dzprob12=function(x){log(0)}
+  if(length(dz1)<3){
+    dzprob11=function(x){log(0.99)}
+    dzprob12=function(x){log(0.01)}
   }
   else{
     dz1fit <- kmeans(dz1, 2)
@@ -594,9 +599,9 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
     dzprob12=function(x){dnorm(x,min(dmu1),1,log=TRUE)}
   }
   dz2=dzs[dI==2|dI==2.5]
-  if(length(dz2<3)){
-    dzprob21=function(x){log(1)}
-    dzprob22=function(x){log(0)}
+  if(length(dz2)<3){
+    dzprob21=function(x){log(0.99)}
+    dzprob22=function(x){log(0.01)}
   }
   else{
     dz2fit <- kmeans(dz2, 2)
@@ -604,13 +609,13 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
     dzprob21=function(x){dnorm(x,max(dmu2),1,log=TRUE)}
     dzprob22=function(x){dnorm(x,min(dmu2),1,log=TRUE)}
   }
-  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
+  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
+  dbprob2=function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
   
   pz1=pzs[pI==1|pI==1.5]
-  if(length(pz1<3)){
-    pzprob11=function(x){log(1)}
-    pzprob12=function(x){log(0)}
+  if(length(pz1)<3){
+    pzprob11=function(x){log(0.99)}
+    pzprob12=function(x){log(0.01)}
   }
   else{
     pz1fit <- kmeans(pz1, 2)
@@ -619,9 +624,9 @@ exactCN = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rpo
     pzprob12=function(x){dnorm(x,max(pmu1),1,log=TRUE)}
   }
   pz2=pzs[pI==2|pI==2.5]
-  if(length(pz2<3)){
-    pzprob21=function(x){log(1)}
-    pzprob22=function(x){log(0)}
+  if(length(pz2)<3){
+    pzprob21=function(x){log(0.99)}
+    pzprob22=function(x){log(0.01)}
   }
   else{
     pz2fit <- kmeans(pz2, 2)
@@ -673,22 +678,22 @@ exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz1=dzs[dI==1|dI==1.5]
-  if(length(dz1<3)){
-    dzprob11=function(x){log(1)}
-    dzprob12=function(x){log(0)}
+  if(length(dz1)<3){
+    dzprob11=function(x){log(0.99)}
+    dzprob12=function(x){log(0.01)}
   }else{
     dz1fit <- kmeans(dz1, 2)
     dmu1=aggregate(dz1,by=list(dz1fit$cluster),FUN=mean)$x
     dzprob11=function(x){dnorm(x,max(dmu1),1,log=TRUE)}
     dzprob12=function(x){dnorm(x,min(dmu1),1,log=TRUE)}
   }
-  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
+  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
+  dbprob2=function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
   
   pz1=pzs[pI==1|pI==1.5]
-  if(length(pz1<3)){
-    pzprob11=function(x){log(1)}
-    pzprob12=function(x){log(0)}
+  if(length(pz1)<3){
+    pzprob11=function(x){log(0.99)}
+    pzprob12=function(x){log(0.01)}
   }else{
     pz1fit <- kmeans(pz1, 2)
     pmu1=aggregate(pz1,by=list(pz1fit$cluster),FUN=mean)$x
@@ -716,7 +721,7 @@ exactCN_ngs = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
 # Likelihood estimator
 exactCNi_ngs = function(r1i,baf1i,rpos1i,bpos1i,resulti,Lposi,dzprob11,dzprob12,dbprob1,dbprob2,pzprob11,pzprob12,pbprob1,pbprob2){
   CNi=resulti
-  z1i=(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
+  z1i=r1i#(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
   baf1i[is.na(baf1i)]=1
   z1i[is.na(z1i)]=0
   for (j in 1:length(resulti)){
@@ -766,8 +771,8 @@ exactCNi_ngs = function(r1i,baf1i,rpos1i,bpos1i,resulti,Lposi,dzprob11,dzprob12,
 # Likelihood estimator
 exactCNi = function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,Lposi,dzprob11,dzprob12,dzprob21,dzprob22,dbprob1,dbprob2,pzprob11,pzprob12,pzprob21,pzprob22,pbprob1,pbprob2){
   CNi=resulti
-  z1i=(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
-  z2i=(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
+  z1i=r1i#(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
+  z2i=r2i#(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
   baf1i[is.na(baf1i)]=1
   baf2i[is.na(baf2i)]=1
   z1i[is.na(z1i)]=0
@@ -1033,21 +1038,21 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
   mLpos=lapply(res,function(x){x[[2]]})
   # Distribution mean inference using K means
   dz2=dzs[dI==2|dI==2.5]
-  if(length(dz2<3)){
-    dzprob21=function(x){log(1)}
-    dzprob22=function(x){log(0)}
+  if(length(dz2)<3){
+    dzprob21=function(x){log(0.99)}
+    dzprob22=function(x){log(0.01)}
   }else{
     dz2fit <- kmeans(dz2, 2)
     dmu2=aggregate(dz2,by=list(dz2fit$cluster),FUN=mean)$x
     dzprob21=function(x){dnorm(x,max(dmu2),1,log=TRUE)}
     dzprob22=function(x){dnorm(x,min(dmu2),1,log=TRUE)}
   }
-  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.05))}
-  dbprob2=function(x){log(0.4*truncnorm::dtruncnorm(x,0,1,0,0.05)+0.4*truncnorm::dtruncnorm(x,0,1,1,0.05)+0.2*dunif(x,0,1,log=TRUE))}
+  dbprob1=function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
+  dbprob2=function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
   pz2=pzs[pI==2|pI==2.5]
-  if(pz2<3){
-    pzprob21=function(x){log(1)}
-    pzprob22=function(x){log(0)}
+  if(length(pz2)<3){
+    pzprob21=function(x){log(0.99)}
+    pzprob22=function(x){log(0.01)}
   }else{
     pz2fit <- kmeans(pz2, 2)
     pmu2=aggregate(pz2,by=list(pz2fit$cluster),FUN=mean)$x
@@ -1076,7 +1081,7 @@ exactCN_snp = function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
 # Likelihood estimator
 exactCNi_snp = function(r2i,baf2i,rpos2i,bpos2i,resulti,Lposi,dzprob21,dzprob22,dbprob1,dbprob2,pzprob21,pzprob22,pbprob1,pbprob2){
   CNi=resulti
-  z2i=(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
+  z2i=r2i#(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
   baf2i[is.na(baf2i)]=1
   z2i[is.na(z2i)]=0
   for (j in 1:length(resulti)){
