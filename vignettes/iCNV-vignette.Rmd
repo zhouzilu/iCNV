@@ -1,7 +1,7 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 # iCNV Vignette
@@ -65,11 +65,11 @@ biocLite("CODEX")
 ```r
 install.packages("devtools")
 library(devtools)
-install_github("zhouzilu/iCNV/package")
+install_github("zhouzilu/iCNV")
 ```
 
 ### 2.2 .bam file normalization using CODEX
-  For researchers work on WGS data, you need to generate your own BED file for CODEX normalization. We made a function [bed_generator](https://github.com/zhouzilu/iCNV/blob/master/R/bed_generator.R) to help you with this.
+  For researchers work on WGS data, you need to generate your own BED file for CODEX normalization. We made a function [bed_generator](https://github.com/zhouzilu/iCNV/blob/master/iCNV_rdoc.pdf) to help you with this.
 
   After you have BAM file and BED file available, follow code below to get normalized NGS PLR. Code modified from https://github.com/yuchaojiang/CODEX with permission. If you have any addtional question, please refer to `CODEX`. iCNV only adopt normalized Possion Likelihood Ratio from `CODEX`, representing NGS 'intensity'. In this example, we utilize toy data from the 1000 Genomes Project for illustration.
 
@@ -127,7 +127,7 @@ save(qcObj,normObj,sampname,file=paste0(projectname,'plrObj_', chr,".rda"))
   cannot be recovered, CODEX opts for a more conservative normalization that, when in doubt, uses a smaller
   value of K. For example,
 
-```{r include=F}
+```{r ,fig.height=2, fig.width=8, include=F}
 Kmax <- length(AIC)
 par(mfrow = c(1, 3))
 plot(K, RSS, type = "b", xlab = "Number of latent variables")
@@ -172,7 +172,7 @@ for i in *bam; do PATH/TO/SAMTOOLS/samtools mpileup -ugI -t AD -t DP -f
 for i in *gz; do PATH/TO/BAFTOOLS/bcftools view -g het -i 'FORMAT/DP>10' -O z -o $i.filter $i; done
 ```
 
-  We could further extract variants BAF info from vcf file by function [bambaf_from_vcf](https://github.com/zhouzilu/iCNV/blob/master/R/bambaf_from_vcf.R). 
+  We could further extract variants BAF info from vcf file by function [bambaf_from_vcf](https://github.com/zhouzilu/iCNV/blob/master/iCNV_rdoc.pdf). 
 
 ```{r message=FALSE,results='hide'}
 ###################################################
@@ -197,7 +197,7 @@ rs4,22,15863717,-0.21270519495,0.957377910614
 rs5,22,16532045,-0.0330782271922,0.0300635993481
 ```
   
-  First row is the rsid (Name), followed by chromosome (Chr) and position (POS), then the log R ratio (sample1.Log R Ratio) and BAF (sample1.B Allele Freq). We could use function [get_array_input](https://github.com/zhouzilu/iCNV/blob/master/R/get_array_input.R) to convert into iCNV input. For example, in demo:
+  First row is the rsid (Name), followed by chromosome (Chr) and position (POS), then the log R ratio (sample1.Log R Ratio) and BAF (sample1.B Allele Freq). We could use function [get_array_input](https://github.com/zhouzilu/iCNV/blob/master/iCNV_rdoc.pdf) to convert into iCNV input. For example, in demo:
 
 ```{r results='hide'}
 ###################################################
@@ -212,7 +212,7 @@ get_array_intput(dir,pattern,chr,projectname)
 load(paste0(projectname,'array_lrrbaf_',chr,'.rda'))
 ```
 
-  For some of the SNP array LRR data, we need to apply SVD normalization to remove high dimension noisy and preserve low dimension signal. The best way to decide data senity is by plotting out the data by [plot_intensity](https://github.com/zhouzilu/iCNV/blob/master/R/plot_intensity.R) function. Noisy data has the feature of local strip across samples. Conventional way for identifying elbow points as the optK can also apply here. Example code for remove high dimension noisy and plot:
+  For some of the SNP array LRR data, we need to apply SVD normalization to remove high dimension noisy and preserve low dimension signal. The best way to decide data senity is by plotting out the data by `plot_intensity` function. Noisy data has the feature of local strip across samples. Conventional way for identifying elbow points as the optK can also apply here. Example code for remove high dimension noisy and plot:
 
 ```{r fig.width=8, fig.height=3}
 ###################################################
@@ -307,7 +307,7 @@ This is different from the color code for us plotting the data. We are just try 
 plotHMMscore(icnv_res0,title=projectname,col='DGV')
 ```
 
-We could also plot information in a single individual using function [plotindi](https://github.com/zhouzilu/iCNV/blob/master/R/plotindi_function.R). Example shows below:
+We could also plot information in a single individual using function `plotindi`. Example shows below:
 
 ```{r message=FALSE,results='hide',fig.keep='all',fig.height=3, fig.width=8}
 ###################################################
@@ -356,8 +356,8 @@ str(snp_baf.pos) # List of n vector, each one is the SNP BAF position
 projectname='icnv.demo.snp'
 icnv_res0_snp=iCNV_detection(snp_lrr=snp_lrr, snp_baf = snp_baf, 
                              snp_lrr.pos = snp_lrr.pos,snp_baf.pos = snp_baf.pos,
-                             projname=projectname,CN=0,mu=c(-3,0,2),cap=TRUE,visual = 2)
-icnv.output = output_list(icnv_res0_snp,sampname_qc,CN=0)
+                             projname=projectname,CN=1,mu=c(-3,0,2),cap=TRUE,visual = 2)
+icnv.output = output_list(icnv_res0_snp,sampname_qc,CN=1)
 head(icnv.output)
 plotHMMscore(icnv_res0_snp,title=projectname)
 ```
