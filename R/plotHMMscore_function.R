@@ -117,17 +117,18 @@ addCNVtoplot=function(result,col){
     cp1dup = which(result[i,]==3)
     cp2dup = which(result[i,]==4)
     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
-    sel=hemidel
     if(col=='DGV'){
-      points(x=sel,y=rep(i,length(sel)),col='darkred',pch=16,cex=0.5)
-      sel=homodel
+      sel=hemidel
       points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
+      sel=homodel
+      points(x=sel,y=rep(i,length(sel)),col='darkred',pch=16,cex=0.5)
       sel=cp1dup
       points(x=sel,y=rep(i,length(sel)),col='cyan',pch=16,cex=0.5)
       sel=cp2dup
       points(x=sel,y=rep(i,length(sel)),col='darkblue',pch=16,cex=0.5)
     }
     else{
+      sel=hemidel
       points(x=sel,y=rep(i,length(sel)),col='grey',pch=16,cex=0.5)
       sel=homodel
       points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)

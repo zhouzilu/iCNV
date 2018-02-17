@@ -140,7 +140,7 @@ plotindi = function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_
   fields::image.plot((as.matrix((pmin(pmax(mat[5,],-l),l)))),zlim=c(-l,l),axes=FALSE,main='score',ylab=I)
   del = which(result<2)
   dup = which(result>2)
-  cat(I,' del:',length(del),' dup:',length(dup),'\n')
+  cat('individual',I,', # of deletion states:',length(del),', # of duplication states:',length(dup),'\n')
   sel=unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},Lposi[del,1],Lposi[del,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='white',pch=20,cex=1)
   sel=unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},Lposi[dup,1],Lposi[dup,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
