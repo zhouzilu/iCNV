@@ -1,0 +1,2 @@
+inst/* linguist-documentation
+docs/formatter.rb linguist-documentation=false
