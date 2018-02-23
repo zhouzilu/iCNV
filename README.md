@@ -67,3 +67,6 @@ Variants BAF(vcf) PLR                                   |        Array LRR   Arr
 * [Vignettes](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
 * [Vignettes.pdf](https://github.com/zhouzilu/iCNV/blob/master/inst/doc/iCNV-vignette.pdf)
 * [Vignettes.html](http://htmlpreview.github.io/?https://github.com/zhouzilu/iCNV/blob/master/inst/doc/iCNV-vignette.html)
+
+## Citation
+Zilu Zhou, Weixin Wang, Li-San Wang, Nancy Ruonan Zhang; Integrative DNA copy number detection and genotyping from sequencing and array-based platforms, Bioinformatics, , bty104, https://doi.org/10.1093/bioinformatics/bty104
