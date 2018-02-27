@@ -166,7 +166,7 @@ HMMEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,maxIt,ind,mu,c
   em2Loc <- NULL # Use for combine NGS and ARRAY emission probability
   cat('iteration',1,': p=',p,'; mu=',mu,'; sigma=',sigma,'; sum of difference',Inf,'\n')
   for (i in 2:maxIt){
-    res <- HMMiEM(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,,mu,sigma,p,cap,emissionBLoc,em1Loc,em2Loc)
+    res <- HMMiEM(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,cap,emissionBLoc,em1Loc,em2Loc)
     result <- res[[1]]
     Lposi <- res[[2]]
     rt <- res[[3]]
