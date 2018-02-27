@@ -2,7 +2,8 @@
 title: "iCNV Vignette"
 author: "Zilu Zhou, Nancy R. Zhang"
 date: "02/23/2018"
-output: rmarkdown::html_vignette:
+output: 
+  html_document:
     toc: true
     toc_depth: 3
 vignette: >
