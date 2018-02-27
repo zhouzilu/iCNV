@@ -14,28 +14,28 @@
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject')
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject',col='DGV')
 #' @export
-plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=''){
+plotHMMscore <- function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=''){
   if(is.null(h)){
-    h=min(icnv_res[[1]][[1]][[2]])
+    h <- min(icnv_res[[1]][[1]][[2]])
   }
   if(is.null(t)){
-    t=max(icnv_res[[1]][[1]][[2]])
+    t <- max(icnv_res[[1]][[1]][[2]])
   }
-  HMMcalls=icnv_res[[1]]
-  CNV=icnv_res[[2]]
-  sel=(h<=HMMcalls[[1]][[2]][,1] & HMMcalls[[1]][[2]][,2]<=t)
-  Lpos=HMMcalls[[1]][[2]][sel,]
-  scores=lapply(HMMcalls,function(x){x[[7]]})
-  scores=t(sapply(scores,function(x)x, simplify = TRUE))[,sel]
-  result=lapply(HMMcalls,function(x){x[[1]]})
-  result=t(sapply(result,function(x)x, simplify = TRUE))[,sel]
-  toplot=scores
-  l=1
+  HMMcalls <- icnv_res[[1]]
+  CNV <- icnv_res[[2]]
+  sel <- (h<=HMMcalls[[1]][[2]][,1] & HMMcalls[[1]][[2]][,2]<=t)
+  Lpos <- HMMcalls[[1]][[2]][sel,]
+  scores <- lapply(HMMcalls,function(x){x[[7]]})
+  scores <- t(vapply(scores,function(x)x))[,sel]
+  result <- lapply(HMMcalls,function(x){x[[1]]})
+  result <- t(vapply(result,function(x)x))[,sel]
+  toplot <- scores
+  l <- 1
   if(col=='DGV'){
     colfunc<-colorRampPalette(c("red","lightgrey","blue"))
-    fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),col=colfunc(256),main = title,ylab='sample',xlab='')
+    fields::image.plot(x=seq_len(ncol(toplot)),y=seq_len(nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),col=colfunc(256),main = title,ylab='sample',xlab='')
   }else{
-    fields::image.plot(x=seq(1,ncol(toplot)),y=seq(1,nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
+    fields::image.plot(x=seq_len(ncol(toplot)),y=seq_len(nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
   }
   if (!is.null(output)){
     addCNVtoplot2(output,Lpos,col)
@@ -51,7 +51,7 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=
     }
   }
   else{
-    CNV=t(sapply(CNV,function(x)x, simplify = TRUE))[,sel]
+    CNV <- t(vapply(CNV,function(x)x))[,sel]
     addCNVtoplot(CNV,col)
     if(col=='DGV'){
       legend("topright",c("0", "1", "3", "4"),
@@ -63,13 +63,13 @@ plotHMMscore=function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=
   }
 }
 
-addCNVtoplot2=function(output,Lpos,col){
-  for (i in 1:length(output)){
-    outputi=output[[i]]
+addCNVtoplot2 <- function(output,Lpos,col){
+  for (i in seq_along(output)){
+    outputi <- output[[i]]
     if(length(outputi)>0){
       apply(outputi,1,function(x){
         if(x[1]==1){
-          del=which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
+          del <- which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
           if(col=='DGV'){
             points(x=del,y=rep(i,length(del)),col='darkred',pch=16,cex=0.5)
           }else{
@@ -77,7 +77,7 @@ addCNVtoplot2=function(output,Lpos,col){
           }
         }
         if(x[1]==3){
-          dup=which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
+          dup <- which(Lpos[,1]>=x[2]&Lpos[,2]<=x[3])
           if(col=='DGV'){
             points(x=dup,y=rep(i,length(dup)),col='darkblue',pch=16,cex=0.5)
           }else{
@@ -90,18 +90,18 @@ addCNVtoplot2=function(output,Lpos,col){
   }
 }
 
-addCNVtoplot1=function(result,col){
-  for (i in 1:nrow(result)){
-    del = which(result[i,]==1)
-    dup = which(result[i,]==3)
+addCNVtoplot1 <- function(result,col){
+  for (i in seq_len(nrow(result))){
+    del <- which(result[i,]==1)
+    dup <- which(result[i,]==3)
     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
-    sel=del
+    sel <- del
     if(col=='DGV'){
       points(x=sel,y=rep(i,length(sel)),col='darkred',pch=16,cex=0.5)
     }else{
       points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
     }
-    sel=dup
+    sel <- dup
     if(col=='DGV'){
       points(x=sel,y=rep(i,length(sel)),col='darkblue',pch=16,cex=0.5)
     }else{
@@ -110,31 +110,31 @@ addCNVtoplot1=function(result,col){
   }
 }
 
-addCNVtoplot=function(result,col){
-  for (i in 1:nrow(result)){
-    hemidel = which(result[i,]==1)
-    homodel = which(result[i,]==0)
-    cp1dup = which(result[i,]==3)
-    cp2dup = which(result[i,]==4)
+addCNVtoplot <- function(result,col){
+  for (i in seq_len(nrow(result))){
+    hemidel <- which(result[i,]==1)
+    homodel <- which(result[i,]==0)
+    cp1dup <- which(result[i,]==3)
+    cp2dup <- which(result[i,]==4)
     # cat(i,'del:',length(del),' dup:',length(dup),'\n')
     if(col=='DGV'){
-      sel=hemidel
+      sel <- hemidel
       points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
-      sel=homodel
+      sel <- homodel
       points(x=sel,y=rep(i,length(sel)),col='darkred',pch=16,cex=0.5)
-      sel=cp1dup
+      sel <- cp1dup
       points(x=sel,y=rep(i,length(sel)),col='cyan',pch=16,cex=0.5)
-      sel=cp2dup
+      sel <- cp2dup
       points(x=sel,y=rep(i,length(sel)),col='darkblue',pch=16,cex=0.5)
     }
     else{
-      sel=hemidel
+      sel <- hemidel
       points(x=sel,y=rep(i,length(sel)),col='grey',pch=16,cex=0.5)
-      sel=homodel
+      sel <- homodel
       points(x=sel,y=rep(i,length(sel)),col='white',pch=16,cex=0.5)
-      sel=cp1dup
+      sel <- cp1dup
       points(x=sel,y=rep(i,length(sel)),col='magenta',pch=16,cex=0.5)
-      sel=cp2dup
+      sel <- cp2dup
       points(x=sel,y=rep(i,length(sel)),col='black',pch=16,cex=0.5)
     }
   }

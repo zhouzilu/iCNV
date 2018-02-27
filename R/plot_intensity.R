@@ -6,13 +6,13 @@
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22
 #' @return void
 #' @examples
-#' chr = 22
+#' chr <- 22
 #' plot_intensity(ngs_plr,chr)
 #' plot_intensity(snp_lrr,chr)
 #' @export
-plot_intensity = function(intensity,chr){
-  intensity = do.call(cbind,intensity)
-  l=4
-  toplot=(intensity-rowMeans(intensity,na.rm=TRUE))/apply(intensity,1,function(x){sd(x,na.rm=TRUE)})
-  fields::image.plot(x=seq(1,nrow(toplot)),y=seq(1,ncol(toplot)),z=pmin(pmax(toplot,-l),l),zlim=c(-l,l),xlab=paste0('chr',chr),ylab='samples')
+plot_intensity <- function(intensity,chr){
+  intensity <- do.call(cbind,intensity)
+  l <- 4
+  toplot <- (intensity-rowMeans(intensity,na.rm=TRUE))/apply(intensity,1,function(x){sd(x,na.rm=TRUE)})
+  fields::image.plot(x=seq_len(nrow(toplot)),y=seq_len(ncol(toplot)),z=pmin(pmax(toplot,-l),l),zlim=c(-l,l),xlab=paste0('chr',chr),ylab='samples')
 }

@@ -4,9 +4,9 @@
 #' 
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22
 #' @param hg Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented.
-#' @param start The start position of your BED file.
-#' @param end The end position of your BED file.
-#' @param by The chunk of your DNA for each bin. Default 1kb.
+#' @param start The start position of your BED file. Default NULL
+#' @param end The end position of your BED file. Default NULL
+#' @param by The chunk of your DNA for each bin. Default 1000.
 #' @return void
 #' @examples
 #' bed_generator(chr=22,hg=38)

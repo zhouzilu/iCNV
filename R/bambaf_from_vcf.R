@@ -5,10 +5,10 @@
 #' ngs_baf.nm: name of the bamfiles; ngs_baf.chr: the chromosome; ngs_baf.pos: the position of the variants; 
 #' ngs_baf: the BAF of the variants; ngs_baf.id: the ID of the variants; filenm:the file name
 #' 
-#' @param dir The directory to all the vcf stored; default is right in this folder.
+#' @param dir The directory to all the vcf stored; default is right in this folder. Defualt '.'
 #' @param vcf_list All the vcf names stored in vcf.list; could use command:"ls *.vcf > vcf.list" to generate.
-#' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes.
-#' @param projectname Name of the project
+#' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes. Defualt NULL
+#' @param projectname Name of the project. Default ''
 #' @return void 
 #' @examples
 #' dir <- system.file("extdata", package="iCNV")
@@ -31,7 +31,7 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
 			ngs_baf.pos=list()
 			ngs_baf.id=list()
 			ngs_baf=list()
-			for (i in seq(1:length(baf.all.chr))){
+			for (i in seq_along(baf.all.chr)){
 				x=baf.all.chr[[i]]
 				ngs_baf.nm[[i]]=names(x)[4]
 				ngs_baf.chr[[i]]=x$`#CHROM`
@@ -48,7 +48,7 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
 		ngs_baf.pos=list()
 		ngs_baf.id=list()
 		ngs_baf=list()
-		for (i in seq(1:length(baf.all.chr))){
+		for (i in seq_along(baf.all.chr)){
 			x=baf.all.chr[[i]]
 			ngs_baf.nm[[i]]=names(x)[4]
 			ngs_baf.chr[[i]]=x$`#CHROM`
