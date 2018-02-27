@@ -18,5 +18,7 @@ plot_intensity <- function(intensity,chr){
   intensity <- do.call(cbind,intensity)
   l <- 4
   toplot <- (intensity-rowMeans(intensity,na.rm=TRUE))/apply(intensity,1,function(x){sd(x,na.rm=TRUE)})
-  fields::image.plot(x=seq_len(nrow(toplot)),y=seq_len(ncol(toplot)),z=pmin(pmax(toplot,-l),l),zlim=c(-l,l),xlab=paste0('chr',chr),ylab='samples')
+  fields::image.plot(x=seq_len(nrow(toplot)),y=seq_len(ncol(toplot)),
+    z=pmin(pmax(toplot,-l),l),zlim=c(-l,l),
+    xlab=paste0('chr',chr),ylab='samples')
 }

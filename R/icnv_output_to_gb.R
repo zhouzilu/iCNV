@@ -22,7 +22,9 @@ icnv_output_to_gb <- function(chr,icnv.output){
     gb.list <- mapply(function(x,id){
         nr <- nrow(x)
         if(nr>0){
-            return(cbind(rep(paste0('chr',chr),nr),matrix(x[,c(2,3)],ncol=2),rep(id,nr),rep(0,nr),rep('.',nr),rep(0,nr),rep(0,nr),colcode[x[,1]+1]))
+            return(cbind(rep(paste0('chr',chr),nr),matrix(x[,c(2,3)],ncol=2),
+                rep(id,nr),rep(0,nr),rep('.',nr),
+                rep(0,nr),rep(0,nr),colcode[x[,1]+1]))
         }else{
             return(matrix(rep(NA,9),ncol=9))
         }

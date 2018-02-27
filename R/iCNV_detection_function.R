@@ -1,6 +1,7 @@
 #' CNV detection
 #' 
-#' Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
+#' Copy number variation detection tool for germline data. Able to combine 
+#' intensity and BAF from SNP array and NGS data.
 #' 
 #' @importFrom grDevices colorRampPalette dev.off pdf
 #' @importFrom graphics axis grid legend par plot points
@@ -41,8 +42,9 @@
 #' @export
 iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ngs_plr.pos=NULL,snp_lrr.pos=NULL,ngs_baf.pos=NULL,snp_baf.pos=NULL,maxIt=50,visual=0,projname='iCNV.',CN=0,mu=c(-3,0,2),cap=FALSE){
   # Change variable name for easier code writing
-  r1L <- ngs_plr;r2L <- snp_lrr;baf1 <- ngs_baf;baf2 <- snp_baf
-  rpos1 <- ngs_plr.posrpos2 <- snp_lrr.pos;bpos1 <- ngs_baf.pos;bpos2 <- snp_baf.pos
+  r1L <- ngs_plr; r2L <- snp_lrr; baf1 <- ngs_baf; baf2 <- snp_baf
+  rpos1 <- ngs_plr.pos; rpos2 <- snp_lrr.pos
+  bpos1 <- ngs_baf.pos; bpos2 <- snp_baf.pos
   ptm <- proc.time()
   CNV <- NULL
   c <- checkdim(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
@@ -55,7 +57,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
     if (CN!=0){
       print('Start estimating integer copy number...')
       bafzIs <- novisualization_ngs(HMMcall,r1L,baf1,rpos1,bpos1)
-      CNV <- exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
+      CNV <- exactCN_ngs(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],
+        bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,baf1,rpos1,bpos1)
       if (visual!=0){
         pdf(file=paste0(projname,'visual',visual,'.pdf'),width=13,height = 10)
         plotHMMscore(list(HMMcall,CNV),title=projname)
@@ -80,7 +83,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
     if (CN!=0){
       print('Start estimating integer copy number...')
       bafzIs <- novisualization_snp(HMMcall,r2L,baf2,rpos2,bpos2)
-      CNV <- exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
+      CNV <- exactCN_snp(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],
+        bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r2L,baf2,rpos2,bpos2)
       if (visual!=0){
         pdf(file=paste0(projname,'visual',visual,'.pdf'),width=13,height = 10)
         plotHMMscore(list(HMMcall,CNV),title=projname)
@@ -99,7 +103,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
   else{
     n <- length(r1L)
     indivd <- seq_len(n)
-    HMMcall <- mapply(HMMEM,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,rep(maxIt,n),indivd,rep(list(mu),n),rep(list(cap),n),SIMPLIFY=FALSE)
+    HMMcall <- mapply(HMMEM,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,
+        rep(maxIt,n),indivd,rep(list(mu),n),rep(list(cap),n),SIMPLIFY=FALSE)
     print(paste0('Inference time cost:',sum((proc.time() - ptm)[c(1,2)])))
     ptm <- proc.time()
     if (visual==2){
@@ -107,7 +112,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
       if (CN!=0){
         print('Start estimating integer copy number...')
         bafzIs <- visualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        CNV <- exactCN(HMMcall,bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],bafzIs[[7]],bafzIs[[8]],bafzIs[[9]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
+        CNV <- exactCN(HMMcall,bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],bafzIs[[7]],
+            bafzIs[[8]],bafzIs[[9]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
         plotHMMscore(list(HMMcall,CNV),title=projname)
         visualization2(HMMcall,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
@@ -118,7 +124,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
       if (CN!=0){
         print('Start estimating integer copy number...')
         bafzIs <- novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        CNV <- exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)       
+        CNV <- exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],
+            bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)       
       }
       plotHMMscore(list(HMMcall,CNV),title=projname)
       dev.off()
@@ -127,7 +134,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
       if (CN!=0){
         print('Start estimating integer copy number...')
         bafzIs <- novisualization(HMMcall,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
-        CNV <- exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
+        CNV <- exactCN(HMMcall,bafzIs[[1]],bafzIs[[2]],bafzIs[[3]],bafzIs[[4]],
+            bafzIs[[5]],bafzIs[[6]],r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
       }
     }
     print(paste0('Visualization time cost:',sum((proc.time() - ptm)[c(1,2)])))
@@ -136,16 +144,21 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
 }
 
 checkdim <- function(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
-  c1 <- !all(length(r1L) == c(length(r1L),length(r2L),length(baf1),length(baf2),length(rpos1),length(rpos2),length(bpos1),length(rpos2)))
-  c2 <- all(length(r1L) == c(length(r1L),length(baf1),length(rpos1),length(bpos1)))&length(r1L)!=0
-  c3 <- all(length(r2L) == c(length(r2L),length(baf2),length(rpos2),length(rpos2)))&length(r2L)!=0
+  c1 <- !all(length(r1L) == c(length(r1L),length(r2L),length(baf1),length(baf2),
+    length(rpos1),length(rpos2),length(bpos1),length(rpos2)))
+  c2 <- all(length(r1L) == c(length(r1L),length(baf1),length(rpos1),
+    length(bpos1)))&length(r1L)!=0
+  c3 <- all(length(r2L) == c(length(r2L),length(baf2),length(rpos2),
+    length(rpos2)))&length(r2L)!=0
   if(c1){
     if(c2 & !c3){
-      cat('Dimension of dataset is wrong in array. Use sequencing data only. Exact CN inference down')
+      cat('Dimension of dataset is wrong in array. Use sequencing data only. 
+        Exact CN inference down')
       c3 <- FALSE
     }
     else if(c3 & !c2){
-      cat('Dimension of dataset is wrong in sequencing. Use array data only. Exact CN inference down')
+      cat('Dimension of dataset is wrong in sequencing. Use array data only. 
+        Exact CN inference down')
       c2 <- FALSE
     }
     else{
@@ -168,7 +181,8 @@ HMMEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,maxIt,ind,mu,c
   em2Loc <- NULL # Use for combine NGS and ARRAY emission probability
   cat('iteration',1,': p=',p,'; mu=',mu,'; sigma=',sigma,'; sum of difference',Inf,'\n')
   for (i in 2:maxIt){
-    res <- HMMiEM(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,cap,emissionBLoc,em1Loc,em2Loc)
+    res <- HMMiEM(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,
+        mu,sigma,p,cap,emissionBLoc,em1Loc,em2Loc)
     result <- res[[1]]
     Lposi <- res[[2]]
     rt <- res[[3]]
@@ -195,12 +209,15 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
   # BAF function
   # 0 or 1
   bsig1 <- 0.05
-  emissionB1 <- function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,bsig1)+0.5*truncnorm::dtruncnorm(x,0,1,1,bsig1))}
+  emissionB1 <- function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,bsig1)+
+    0.5*truncnorm::dtruncnorm(x,0,1,1,bsig1))}
   # 0 or 0.5 or 1
   bsig <- 0.1
-  emissionB2 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,bsig)+0.25*truncnorm::dtruncnorm(x,0,1,1,bsig)+0.5*truncnorm::dtruncnorm(x,0,1,0.5,bsig))}
+  emissionB2 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,bsig)+
+    0.25*truncnorm::dtruncnorm(x,0,1,1,bsig)+0.5*truncnorm::dtruncnorm(x,0,1,0.5,bsig))}
   # 0 or 0.25 or 0.33 or 0.5 or 0.67 or 0.75 or 1
-  emissionB3 <- function(x){log(0.14*truncnorm::dtruncnorm(x,0,1,0,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,1,bsig)+
+  emissionB3 <- function(x){log(0.14*truncnorm::dtruncnorm(x,0,1,0,bsig)+
+    0.14*truncnorm::dtruncnorm(x,0,1,1,bsig)+
       0.16*truncnorm::dtruncnorm(x,0,1,0.5,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.25,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.33,bsig)+
       0.14*truncnorm::dtruncnorm(x,0,1,0.67,bsig)+0.14*truncnorm::dtruncnorm(x,0,1,0.75,bsig))}
 
@@ -227,7 +244,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
       return(which(posb>=x & posb<=y))
     }
     if(is.null(emissionBLoc)){
-      emissionBLoc <- mapply(calexomeLoc,rpos1is,rpos1ie,MoreArgs = list(posb = bpos1i),SIMPLIFY = FALSE)
+      emissionBLoc <- mapply(calexomeLoc,rpos1is,rpos1ie,
+        MoreArgs = list(posb = bpos1i),SIMPLIFY = FALSE)
     }
     calexomeP <- function(indb,baf,fx){
       b <- baf[indb]
@@ -238,9 +256,12 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
         return(fx(0))
       }
     }
-    emissionB11 <- (mapply(calexomeP,emissionBLoc,MoreArgs = list(baf = baf1i, fx=emissionB1)))
-    emissionB12 <- (mapply(calexomeP,emissionBLoc,MoreArgs = list(baf = baf1i, fx=emissionB2)))
-    emissionB13 <- (mapply(calexomeP,emissionBLoc,MoreArgs = list(baf = baf1i, fx=emissionB3)))
+    emissionB11 <- (mapply(calexomeP,emissionBLoc,
+        MoreArgs = list(baf = baf1i, fx=emissionB1)))
+    emissionB12 <- (mapply(calexomeP,emissionBLoc,
+        MoreArgs = list(baf = baf1i, fx=emissionB2)))
+    emissionB13 <- (mapply(calexomeP,emissionBLoc,
+        MoreArgs = list(baf = baf1i, fx=emissionB3)))
 
     # combine emission from r and baf
     emission11 <- emissionR11+emissionB11
@@ -253,7 +274,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
   emission23 <- NULL
   if(!is.null(r2i)){
     #normalize log ratio
-    z2i <- (r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE);baf2i[is.na(baf2i)] <- 1;z2i[is.na(z2i)] <- 0
+    z2i <- (r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
+    baf2i[is.na(baf2i)] <- 1;z2i[is.na(z2i)] <- 0
     if (cap==TRUE){
       # Cap intensity
       z2i <- pmax(pmin(z2i,30),-30)
@@ -273,7 +295,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
 
   if(!is.null(emission11)&!is.null(emission21)){
     # match position
-    sel <- unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},rpos1is,rpos1ie,MoreArgs = list(pos=rpos2i),SIMPLIFY = FALSE)))
+    sel <- unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},
+        rpos1is,rpos1ie,MoreArgs = list(pos=rpos2i),SIMPLIFY = FALSE)))
     rpos2iUexon <- rpos2i[-sel]
     rpos2iUexon <- matrix(rep(rpos2iUexon,2),ncol=2,byrow=FALSE)
     Lposi <- rbind(rpos2iUexon,rpos1i)
@@ -287,10 +310,12 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
       return(which(pos2>=x & pos2<=y))
     }
     if(is.null(em1Loc)){
-      em1Loc <- mapply(calem1Loc,Lposi[,1],Lposi[,2],MoreArgs=list(pos1=pos_exom),SIMPLIFY = FALSE)
+      em1Loc <- mapply(calem1Loc,Lposi[,1],Lposi[,2],
+        MoreArgs=list(pos1=pos_exom),SIMPLIFY = FALSE)
     }
     if(is.null(em2Loc)){
-      em2Loc <- mapply(calem2Loc,Lposi[,1],Lposi[,2],MoreArgs=list(pos2=rpos2i),SIMPLIFY = FALSE)
+      em2Loc <- mapply(calem2Loc,Lposi[,1],Lposi[,2],
+        MoreArgs=list(pos2=rpos2i),SIMPLIFY = FALSE)
     }
     
     calem12 <- function(Loc1,Loc2,em1,em2){
@@ -298,9 +323,12 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
       return(r)
     }
     # total emission probability
-    emission1 <- mapply(calem12,em1Loc,em2Loc,MoreArgs = list(em1=emission11,em2=emission21))
-    emission2 <- mapply(calem12,em1Loc,em2Loc,MoreArgs = list(em1=emission12,em2=emission22))
-    emission3 <- mapply(calem12,em1Loc,em2Loc,MoreArgs = list(em1=emission13,em2=emission23))
+    emission1 <- mapply(calem12,em1Loc,em2Loc,
+        MoreArgs = list(em1=emission11,em2=emission21))
+    emission2 <- mapply(calem12,em1Loc,em2Loc,
+        MoreArgs = list(em1=emission12,em2=emission22))
+    emission3 <- mapply(calem12,em1Loc,em2Loc,
+        MoreArgs = list(em1=emission13,em2=emission23))
 
   }else if(!is.null(emission11)&is.null(emission21)){
     Lposi <- rpos1i
@@ -316,7 +344,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
     cat('Intensity and BAF emission probability are null.')
   }
 
-  # cat('emission 1 range:', range(emission1),'emission 2 range:', range(emission2),'emission 3 range:', range(emission3),'\n')
+  # cat('emission 1 range:', range(emission1),'emission 2 range:', 
+  #     range(emission2),'emission 3 range:', range(emission3),'\n')
 
   n <- nrow(Lposi)
   D <- 70000
@@ -349,7 +378,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
   pointer[1,3] <- 0
 
   for (i in 2:n){
-    # max1=max((v[i-1,1]+(transition11[i-1])),(v[i-1,2]+(transition21[i-1])),(v[i-1,3]+(transition31[i-1])))
+    # max1=max((v[i-1,1]+(transition11[i-1])),(v[i-1,2]+
+    #    (transition21[i-1])),(v[i-1,3]+(transition31[i-1])))
     max1 <- max(v[i-1,]+transitionarray[,1,i-1])
     v[i,1] <- emission1[i]+max1
     if ((v[i-1,1]+(transition11[i-1]))==max1){
@@ -359,7 +389,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
     } else{
       pointer[i,1] <- 3
     }
-    # max2=max((v[i-1,1]+(transition12[i-1])),(v[i-1,2]+(transition22[i-1])),(v[i-1,3]+(transition32[i-1])))
+    # max2=max((v[i-1,1]+(transition12[i-1])),(v[i-1,2]+
+    #    (transition22[i-1])),(v[i-1,3]+(transition32[i-1])))
     max2 <- max(v[i-1,]+transitionarray[,2,i-1])
     v[i,2] <- emission2[i]+max2
     if ((v[i-1,1]+(transition12[i-1]))==max2){
@@ -369,7 +400,8 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
     } else {
       pointer[i,2] <- 3
     }
-    # max3=max((v[i-1,1]+(transition13[i-1])),(v[i-1,2]+(transition23[i-1])),(v[i-1,3]+(transition33[i-1])))
+    # max3=max((v[i-1,1]+(transition13[i-1])),(v[i-1,2]+
+    #    (transition23[i-1])),(v[i-1,3]+(transition33[i-1])))
     max3 <- max(v[i-1,]+transitionarray[,3,i-1])
     v[i,3] <- emission3[i]+max3
     if ((v[i-1,1]+(transition13[i-1]))==max3){
@@ -425,14 +457,17 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
   at[1,3] <- (emission3[1])+log(p)
   for (i in 2:n){
     wt <- sum(range(at[i-1,]))/2
-    #s1=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition11[i-1]-wt,at[i-1,2]+transition21[i-1]-wt,at[i-1,3]+transition31[i-1]-wt),-745),709))))
+    #s1=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition11[i-1]-wt,at[i-1,2]+
+    #    transition21[i-1]-wt,at[i-1,3]+transition31[i-1]-wt),-745),709))))
     s1 <- wt+log(sum(exp(pmin.(pmax.(at[i-1,]+transitionarray[,1,i-1]-wt,-745),709))))
     
     at[i,1] <- emission1[i]+s1
-    #s2=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition12[i-1]-wt,at[i-1,2]+transition22[i-1]-wt,at[i-1,3]+transition32[i-1]-wt),-745),709))))
+    #s2=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition12[i-1]-wt,at[i-1,2]+
+    #    transition22[i-1]-wt,at[i-1,3]+transition32[i-1]-wt),-745),709))))
     s2 <- wt+log(sum(exp(pmin.(pmax.(at[i-1,]+transitionarray[,2,i-1]-wt,-745),709))))
     at[i,2] <- emission2[i]+s2
-    #s3=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition13[i-1]-wt,at[i-1,2]+transition23[i-1]-wt,at[i-1,3]+transition33[i-1]-wt),-745),709))))
+    #s3=wt+log(sum(exp(pmin(pmax(c(at[i-1,1]+transition13[i-1]-wt,at[i-1,2]+
+    #    transition23[i-1]-wt,at[i-1,3]+transition33[i-1]-wt),-745),709))))
     s3 <- wt+log(sum(exp(pmin.(pmax.(at[i-1,]+transitionarray[,3,i-1]-wt,-745),709))))
     at[i,3] <- emission3[i]+s3
     wt <- sum(range(at[i,]))/2
@@ -520,9 +555,11 @@ visualization <- function(testres,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2){
   points(x=pzs[pI==2.5],y=pbafs[pI==2.5],pch=20,cex=0.8,col='pink')
   points(x=pzs[pI==1],y=pbafs[pI==1],pch=20,cex=0.8,col='magenta')
   points(x=pzs[pI==1.5],y=pbafs[pI==1.5],pch=20,cex=0.8,col='purple')
-  legend(x.lim[1],0.5, c("Del SNPs only", "Del SNPs in Exon", "Del Exon w/ BAFs", "Del Exon w/ no BAF",
-    "Dup SNPs only","Dup SNPs in Exon","Dup Exon w/BAFs","Dup Exon w/ no BAF"),
-    col = c('blue','cyan','cornflowerblue','deepskyblue','red','pink','magenta','purple'),text.col = "green4", pch = c(20,20,20,20),cex = 0.75)
+  legend(x.lim[1],0.5, c("Del SNPs only", "Del SNPs in Exon", 
+    "Del Exon w/ BAFs", "Del Exon w/ no BAF","Dup SNPs only","Dup SNPs in Exon",
+    "Dup Exon w/BAFs","Dup Exon w/ no BAF"),col = c('blue','cyan',
+    'cornflowerblue','deepskyblue','red','pink','magenta','purple'),
+    text.col = "green4", pch = c(20,20,20,20),cex = 0.75)
   return(list(nbafs,nzs,nI,dbafs,dzs,dI,pbafs,pzs,pI,x.lim))
 }
 
@@ -644,10 +681,15 @@ exactCN <- function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,r2L,baf1,baf2,rpos1,rp
     pzprob21 <- function(x){dnorm(x,min(pmu2),1,log=TRUE)}
     pzprob22 <- function(x){dnorm(x,max(pmu2),1,log=TRUE)}
   }
-  pbprob1 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+
-      0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
-  pbprob2 <- function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+
-      0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
+  pbprob1 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2 <- function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+
+      0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+
+      0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+
+      0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1 <- mapply(exactCNi,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,mresult,mLpos,
       MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,dzprob21=dzprob21,dzprob22=dzprob22,
       dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pzprob21=pzprob21,
@@ -702,8 +744,10 @@ exactCN_ngs <- function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
     dzprob11 <- function(x){dnorm(x,max(dmu1),1,log=TRUE)}
     dzprob12 <- function(x){dnorm(x,min(dmu1),1,log=TRUE)}
   }
-  dbprob1 <- function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
-  dbprob2 <- function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
+  dbprob1 <- function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
+  dbprob2 <- function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+
+    0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
   
   pz1 <- pzs[pI==1|pI==1.5]
   if(length(pz1)<3){
@@ -715,10 +759,15 @@ exactCN_ngs <- function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r1L,baf1,rpos1,bpos1){
     pzprob11 <- function(x){dnorm(x,min(pmu1),1,log=TRUE)}
     pzprob12 <- function(x){dnorm(x,max(pmu1),1,log=TRUE)}    
   }
-  pbprob1 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+
-      0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
-  pbprob2 <- function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+
-      0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
+  pbprob1 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2 <- function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
   CN1 <- mapply(exactCNi_ngs,r1L,baf1,rpos1,bpos1,mresult,mLpos,MoreArgs=list(dzprob11=dzprob11,dzprob12=dzprob12,
       dbprob1=dbprob1,dbprob2=dbprob2,pzprob11=pzprob11,pzprob12=pzprob12,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
   CN <- mapply(function(CNs,mLpos,result,Lpos){
@@ -787,8 +836,9 @@ exactCNi_ngs <- function(r1i,baf1i,rpos1i,bpos1i,resulti,Lposi,dzprob11,dzprob12
 
 
 # Likelihood estimator
-exactCNi <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,Lposi,
-    dzprob11,dzprob12,dzprob21,dzprob22,dbprob1,dbprob2,pzprob11,pzprob12,pzprob21,pzprob22,pbprob1,pbprob2){
+exactCNi <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,resulti,
+    Lposi,dzprob11,dzprob12,dzprob21,dzprob22,dbprob1,dbprob2,
+    pzprob11,pzprob12,pzprob21,pzprob22,pbprob1,pbprob2){
   CNi <- resulti
   z1i <- r1i#(r1i-mean(r1i,na.rm=TRUE))/sd(r1i,na.rm=TRUE)
   z2i <- r2i#(r2i-mean(r2i,na.rm=TRUE))/sd(r2i,na.rm=TRUE)
@@ -878,31 +928,36 @@ visualization2 <- function(testres,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2
   ttldel2poslist <- mapply(function(x){which(x==0)},CNV,SIMPLIFY=FALSE)
   ttldup1poslist <- mapply(function(x){which(x==3)},CNV,SIMPLIFY=FALSE)
   ttldup2poslist <- mapply(function(x){which(x==4)},CNV,SIMPLIFY=FALSE)
-  nzvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldipposlist,Lpos,SIMPLIFY = FALSE)
+  nzvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,
+    ttldipposlist,Lpos,SIMPLIFY = FALSE)
   nbafs <- unlist(mapply(function(x){x[,2]},nzvsbaf))
   nbafs[is.na(nbafs)] <- 0
   nzs <- unlist(mapply(function(x){x[,1]},nzvsbaf))
   nI <- unlist(mapply(function(x){x[,3]},nzvsbaf))
   cat('step1 of 5','\n')
-  d1zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldel1poslist,Lpos,SIMPLIFY = FALSE)
+  d1zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,
+    ttldel1poslist,Lpos,SIMPLIFY = FALSE)
   d1bafs <- unlist(mapply(function(x){x[,2]},d1zvsbaf))
   d1bafs[is.na(d1bafs)] <- 0
   d1zs <- unlist(mapply(function(x){x[,1]},d1zvsbaf))
   d1I <- unlist(mapply(function(x){x[,3]},d1zvsbaf))
   cat('step2 of 5','\n')
-  d2zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldel2poslist,Lpos,SIMPLIFY = FALSE)
+  d2zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,
+    ttldel2poslist,Lpos,SIMPLIFY = FALSE)
   d2bafs <- unlist(mapply(function(x){x[,2]},d2zvsbaf))
   d2bafs[is.na(d2bafs)] <- 0
   d2zs <- unlist(mapply(function(x){x[,1]},d2zvsbaf))
   d2I <- unlist(mapply(function(x){x[,3]},d2zvsbaf))
   cat('step3 of 5','\n')
-  p1zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldup1poslist,Lpos,SIMPLIFY = FALSE)
+  p1zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,
+    ttldup1poslist,Lpos,SIMPLIFY = FALSE)
   p1bafs <- unlist(mapply(function(x){x[,2]},p1zvsbaf))
   p1bafs[is.na(p1bafs)] <- 0
   p1zs <- unlist(mapply(function(x){x[,1]},p1zvsbaf))
   p1I <- unlist(mapply(function(x){x[,3]},p1zvsbaf))
   cat('step4 of 5','\n')
-  p2zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,ttldup2poslist,Lpos,SIMPLIFY = FALSE)
+  p2zvsbaf <- mapply(BAFvsZ,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2,
+    ttldup2poslist,Lpos,SIMPLIFY = FALSE)
   p2bafs <- unlist(mapply(function(x){x[,2]},p2zvsbaf))
   p2bafs[is.na(p2bafs)] <- 0
   p2zs <- unlist(mapply(function(x){x[,1]},p2zvsbaf))
@@ -914,9 +969,10 @@ visualization2 <- function(testres,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2
       Is=factor(c(nI,d1I,d2I,p1I,p2I),labels=c("SNPs only", "SNPs in Exon", "Exon w/ BAFs", "Exon w/ no BAF")),
       CNV=c(rep(2,length(nI)),rep(1,length(d1I)),rep(0,length(d2I)),rep(3,length(p1I)),rep(4,length(p2I))))
   # save(d.f,file='ggplot_df.rda')
-  p <- ggplot2::ggplot(d.f,ggplot2::aes(x=zs,y=bafs))+ggplot2::geom_point(ggplot2::aes(colour=factor(CNV),shape=Is),alpha=0.75)+
-      ggplot2::scale_colour_manual(name="", values = c("0"="blue", "1"="cyan", "2"="grey","3"="orange", "4"="red"))+
-      ggplot2::stat_density2d(ggplot2::aes(colour=factor(CNV),linetype=Is),h=c(8,0.3))
+  p <- ggplot2::ggplot(d.f,ggplot2::aes(x=zs,y=bafs))+
+    ggplot2::geom_point(ggplot2::aes(colour=factor(CNV),shape=Is),alpha=0.75)+
+    ggplot2::scale_colour_manual(name="", values = c("0"="blue", "1"="cyan", "2"="grey","3"="orange", "4"="red"))+
+    ggplot2::stat_density2d(ggplot2::aes(colour=factor(CNV),linetype=Is),h=c(8,0.3))
   print(p)
   cat('\n','Finish generating visualization2 plot...','\n')
 }
@@ -1069,8 +1125,10 @@ exactCN_snp <- function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
     dzprob21 <- function(x){dnorm(x,max(dmu2),1,log=TRUE)}
     dzprob22 <- function(x){dnorm(x,min(dmu2),1,log=TRUE)}
   }
-  dbprob1 <- function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
-  dbprob2 <- function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
+  dbprob1 <- function(x){log(0.5*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.5*truncnorm::dtruncnorm(x,0,1,1,0.1))}
+  dbprob2 <- function(x){log(0.45*truncnorm::dtruncnorm(x,0,1,0,0.01)+
+    0.45*truncnorm::dtruncnorm(x,0,1,1,0.01)+0.1*dunif(x,0,1,log=TRUE))}
   pz2 <- pzs[pI==2|pI==2.5]
   if(length(pz2)<3){
     pzprob21 <- function(x){log(0.99)}
@@ -1081,12 +1139,19 @@ exactCN_snp <- function(testres,dbafs,dzs,dI,pbafs,pzs,pI,r2L,baf2,rpos2,bpos2){
     pzprob21 <- function(x){dnorm(x,min(pmu2),1,log=TRUE)}
     pzprob22 <- function(x){dnorm(x,max(pmu2),1,log=TRUE)}
   }
-  pbprob1 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+
-      0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
-  pbprob2 <- function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+
-      0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
-  CN1 <- mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,
-      dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
+  pbprob1 <- function(x){log(0.25*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,1,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,0.33,0.1)+
+    0.25*truncnorm::dtruncnorm(x,0,1,0.67,0.1))}
+  pbprob2 <- function(x){log(0.2*truncnorm::dtruncnorm(x,0,1,0,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,1,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,0.5,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,0.25,0.1)+
+    0.2*truncnorm::dtruncnorm(x,0,1,0.75,0.1))}
+  CN1 <- mapply(exactCNi_snp,r2L,baf2,rpos2,bpos2,mresult,mLpos,
+    MoreArgs=list(dzprob21=dzprob21,dzprob22=dzprob22,
+      dbprob1=dbprob1,dbprob2=dbprob2,pzprob21=pzprob21,pzprob22=pzprob22,
+      pbprob1=pbprob1,pbprob2=pbprob2),SIMPLIFY = FALSE)
   CN <- mapply(function(CNs,mLpos,result,Lpos){
     CNi <- result
       for (i in seq_along(CNs)){

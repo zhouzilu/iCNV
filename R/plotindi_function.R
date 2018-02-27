@@ -25,7 +25,8 @@
 #'  icnv_res0,I=1)
 #' @export
 plotindi <- function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,icnvres,I,h=NULL,t=NULL){
-  r1L=ngs_plr;r2L=snp_lrr;baf1=ngs_baf;baf2=snp_baf;rpos1=ngs_plr.pos;rpos2=snp_lrr.pos;bpos1=ngs_baf.pos;bpos2=snp_baf.pos
+  r1L=ngs_plr;r2L=snp_lrr;baf1=ngs_baf;baf2=snp_baf;rpos1=ngs_plr.pos
+  rpos2=snp_lrr.pos;bpos1=ngs_baf.pos;bpos2=snp_baf.pos
   hmmcalls <- icnvres[[1]]
   if (is.null(h)){
     h <- min(hmmcalls[[1]][[2]])
@@ -141,37 +142,52 @@ plotindi <- function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs
   x <- seq_len(n2)
   par(mfrow=c(1,1))
   l <- 3
-  fields::image.plot((as.matrix((pmin(pmax(mat[5,],-l),l)))),zlim=c(-l,l),axes=FALSE,main='score',ylab=I)
+  fields::image.plot((as.matrix((pmin(pmax(mat[5,],-l),l)))),zlim=c(-l,l),
+    axes=FALSE,main='score',ylab=I)
   del <- which(result<2)
   dup <- which(result>2)
   cat('individual',I,', # of deletion states:',length(del),', # of duplication states:',length(dup),'\n')
-  sel <- unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},Lposi[del,1],Lposi[del,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
+  sel <- unique(unlist(mapply(
+    function(x,y,pos){which(x<=pos & y>=pos)},Lposi[del,1],Lposi[del,2],
+    MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='white',pch=20,cex=1)
-  sel <- unique(unlist(mapply(function(x,y,pos){which(x<=pos & y>=pos)},Lposi[dup,1],Lposi[dup,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
+  sel <- unique(unlist(mapply(
+    function(x,y,pos){which(x<=pos & y>=pos)},Lposi[dup,1],Lposi[dup,2],
+    MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='black',pch=20,cex=1)
-  sel <- unique(unlist(mapply(function(x,y,pos){which(x==y & abs(x-pos)<1000)},Lposi[del,1],Lposi[del,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
+  sel <- unique(unlist(mapply(
+    function(x,y,pos){which(x==y & abs(x-pos)<1000)},Lposi[del,1],Lposi[del,2],
+    MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='white',pch=20,cex=1)
-  sel <- unique(unlist(mapply(function(x,y,pos){which(x==y & abs(x-pos)<1000)},Lposi[dup,1],Lposi[dup,2],MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
+  sel <- unique(unlist(mapply(
+    function(x,y,pos){which(x==y & abs(x-pos)<1000)},Lposi[dup,1],Lposi[dup,2],
+    MoreArgs = list(pos=ttlpos),SIMPLIFY = FALSE)))-1
   points(x=sel/length(ttlpos),y=rep(0,length(sel)),col='black',pch=20,cex=1)
-  legend("topright",c("del", "dup"),
-    col = c('white','black'),bg='green2',text.col = c('white','black'), pch = c(20,20),cex = 0.75)
+  legend("topright",c("del", "dup"), col = c('white','black'),bg='green2',
+    text.col = c('white','black'), pch = c(20,20),cex = 0.75)
 
   par(xaxs='i')
-  plot(x,y=mat[5,],pch=20,xlab="",type='l', axes=FALSE,col='green',ylab="",ylim=c(-smax,smax),xlim=c(0,n2),lwd=2)
+  plot(x,y=mat[5,],pch=20,xlab="",type='l', axes=FALSE,col='green',ylab="",
+    ylim=c(-smax,smax),xlim=c(0,n2),lwd=2)
   par(new=TRUE,xaxs='i')
-  plot(x,y=mat[1,],pch=20,col='grey',cex=0.5,xlab="", ylab=I,ylim=c(-r1max,r1max),xlim=c(0,n2),main='Sequencing')
+  plot(x,y=mat[1,],pch=20,col='grey',cex=0.5,xlab="", ylab=I,
+    ylim=c(-r1max,r1max),xlim=c(0,n2),main='Sequencing')
   par(new=TRUE,xaxs='i')
-  plot(x,y=mat[2,],pch=20,cex=0.5,axes=FALSE,xlab="", ylab="",ylim=c(0,1),xlim=c(0,n2))
+  plot(x,y=mat[2,],pch=20,cex=0.5,axes=FALSE,xlab="", ylab="",
+    ylim=c(0,1),xlim=c(0,n2))
   axis(side = 4)
   legend("topright",c("intensity", "BAF","score"),
     col = c('grey','black','green'), pch = c(20,20,20),cex = 0.75)
 
   par(xaxs='i')
-  plot(x,y=mat[5,],pch=20,xlab="",type='l', axes=FALSE,col='green',ylab="",ylim=c(-smax,smax),xlim=c(0,n2),lwd=2)
+  plot(x,y=mat[5,],pch=20,xlab="",type='l', axes=FALSE,col='green',ylab="",
+    ylim=c(-smax,smax),xlim=c(0,n2),lwd=2)
   par(new=TRUE,xaxs='i')
-  plot(x,y=mat[3,],pch=20,col='grey',cex=0.5,xlab="",ylab=I,ylim=c(-r2max,r2max),xlim=c(0,n2),main='SNP')
+  plot(x,y=mat[3,],pch=20,col='grey',cex=0.5,xlab="",ylab=I,
+    ylim=c(-r2max,r2max),xlim=c(0,n2),main='SNP')
   par(new=TRUE,xaxs='i')
-  plot(x,y=mat[4,],pch=20,cex=0.5,axes=FALSE,xlab="", ylab="",ylim=c(0,1),xlim=c(0,n2))
+  plot(x,y=mat[4,],pch=20,cex=0.5,axes=FALSE,xlab="", ylab="",
+    ylim=c(0,1),xlim=c(0,n2))
   axis(side = 4)
   legend("topright",c("intensity", "BAF","score"),
     col = c('grey','black','green'), pch = c(20,20,20),cex = 0.75)

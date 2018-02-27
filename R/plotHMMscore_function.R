@@ -37,9 +37,13 @@ plotHMMscore <- function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,c
   l <- 1
   if(col=='DGV'){
     colfunc<-colorRampPalette(c("red","lightgrey","blue"))
-    fields::image.plot(x=seq_len(ncol(toplot)),y=seq_len(nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),col=colfunc(256),main = title,ylab='sample',xlab='')
+    fields::image.plot(x=seq_len(ncol(toplot)),y=seq_len(nrow(toplot)),
+      z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),col=colfunc(256),
+      main = title,ylab='sample',xlab='')
   }else{
-    fields::image.plot(x=seq_len(ncol(toplot)),y=seq_len(nrow(toplot)),z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),main = title,ylab='sample',xlab='')
+    fields::image.plot(x=seq_len(ncol(toplot)),y=seq_len(nrow(toplot)),
+      z=t(pmin(pmax(toplot,-l),l)),zlim=c(-l,l),
+      main = title,ylab='sample',xlab='')
   }
   if (!is.null(output)){
     addCNVtoplot2(output,Lpos,col)
@@ -59,10 +63,12 @@ plotHMMscore <- function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,c
     addCNVtoplot(CNV,col)
     if(col=='DGV'){
       legend("topright",c("0", "1", "3", "4"),
-             col = c('darkred','magenta','cyan','blue'),text.col = "green4", pch = c(20,20,20,20),cex = 0.75)
+             col = c('darkred','magenta','cyan','blue'),text.col = "green4", 
+             pch = c(20,20,20,20),cex = 0.75)
     }else{
       legend("topright",c("0", "1", "3", "4"),
-             col = c('white','grey','magenta','black'),text.col = "green4", pch = c(1,20,20,20),cex = 0.75)
+             col = c('white','grey','magenta','black'),text.col = "green4", 
+             pch = c(1,20,20,20),cex = 0.75)
     }
   }
 }

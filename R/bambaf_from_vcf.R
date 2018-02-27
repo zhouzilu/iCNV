@@ -21,7 +21,8 @@
 #' @export
 bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
     `%>%`=tidyr::`%>%`
-    filenm=file.path(dir,read.table(file.path(dir,vcf_list),header=FALSE,as.is=TRUE)[[1]])
+    filenm=file.path(dir,read.table(file.path(dir,vcf_list),
+        header=FALSE,as.is=TRUE)[[1]])
 
     # Read all the VCF data
     baf.all=lapply(filenm,bam.baf)
@@ -43,7 +44,8 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
                 ngs_baf.id[[i]]=x$ID
                 ngs_baf[[i]]=x[[4]]
             }
-            save(chr,ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
+            save(chr,ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,
+                ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
         }
     }else{
         baf.all.chr=lapply(baf.all,function(x){return(x %>% dplyr::filter(`#CHROM`==chr))})
@@ -60,7 +62,8 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
             ngs_baf.id[[i]]=x$ID
             ngs_baf[[i]]=x[[4]]
         }
-        save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
+        save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,
+            file=paste0(projectname,'bambaf_',chr,'.rda'))
     }
 }
 
@@ -73,7 +76,8 @@ bam.baf=function(filenm){
     dt <- dt %>% dplyr::filter(QUAL!='.') %>% dplyr::select(-REF,-ALT,-QUAL,-FILTER,-INFO)
     ind_AD=match('AD',strsplit(dt[[4]],':')[[1]])
     ind_DP=match('DP',strsplit(dt[[4]],':')[[1]])
-    bafi <- vapply(strsplit(dt[[5]],':'),function(x){a=as.numeric(strsplit(x[ind_AD],',')[[1]]);return(a[1]/(a[1]+a[2]))},0.0)
+    bafi <- vapply(strsplit(dt[[5]],':'),
+        function(x){a=as.numeric(strsplit(x[ind_AD],',')[[1]]);return(a[1]/(a[1]+a[2]))},0.0)
     dt[nm] <- bafi
     dt <- dt %>% dplyr::select(-FORMAT)
     return(dt)

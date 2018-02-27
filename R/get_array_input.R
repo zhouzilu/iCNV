@@ -32,9 +32,12 @@ get_array_intput <- function(dir,pattern,chr=NULL,projectname=''){
             names(snp_lrr) <- signalFile
             snp_baf <- lapply(signal.DT,function(t){t[[5]][t$Chr==chr]})
             names(snp_baf) <- signalFile
-            snp_lrr.pos <- lapply(seq_along(snp_lrr), function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
-            snp_baf.pos <- lapply(seq_along(snp_baf), function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
-            save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, file=paste0(projectname,'array_lrrbaf_',chr,'.rda'))
+            snp_lrr.pos <- lapply(seq_along(snp_lrr), 
+                function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
+            snp_baf.pos <- lapply(seq_along(snp_baf), 
+                function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
+            save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, 
+                file=paste0(projectname,'array_lrrbaf_',chr,'.rda'))
         }
     }else{
         cat(chr,'\n')
@@ -46,9 +49,12 @@ get_array_intput <- function(dir,pattern,chr=NULL,projectname=''){
         names(snp_lrr) <- signalFile
         snp_baf <- lapply(signal.DT,function(t){t[[5]]})
         names(snp_baf) <- signalFile
-        snp_lrr.pos <- lapply(seq_along(snp_lrr), function(i) signal.DT[[1]]$POS)
-        snp_baf.pos <- lapply(seq_along(snp_baf), function(i) signal.DT[[1]]$POS)
-        save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, file=paste0(projectname,'array_lrrbaf_',chr,'.rda'))
+        snp_lrr.pos <- lapply(seq_along(snp_lrr), 
+            function(i) signal.DT[[1]]$POS)
+        snp_baf.pos <- lapply(seq_along(snp_baf), 
+            function(i) signal.DT[[1]]$POS)
+        save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, 
+            file=paste0(projectname,'array_lrrbaf_',chr,'.rda'))
     }
 }
 
