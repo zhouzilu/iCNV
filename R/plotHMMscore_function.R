@@ -30,9 +30,9 @@ plotHMMscore <- function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,c
   sel <- (h<=HMMcalls[[1]][[2]][,1] & HMMcalls[[1]][[2]][,2]<=t)
   Lpos <- HMMcalls[[1]][[2]][sel,]
   scores <- lapply(HMMcalls,function(x){x[[7]]})
-  scores <- t(vapply(scores,function(x)x))[,sel]
+  scores <- t(vapply(scores,function(x)x,scores[[1]]))[,sel]
   result <- lapply(HMMcalls,function(x){x[[1]]})
-  result <- t(vapply(result,function(x)x))[,sel]
+  result <- t(vapply(result,function(x)x,result[[1]]))[,sel]
   toplot <- scores
   l <- 1
   if(col=='DGV'){
@@ -55,7 +55,7 @@ plotHMMscore <- function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,c
     }
   }
   else{
-    CNV <- t(vapply(CNV,function(x)x))[,sel]
+    CNV <- t(vapply(CNV,function(x)x,CNV[[1]]))[,sel]
     addCNVtoplot(CNV,col)
     if(col=='DGV'){
       legend("topright",c("0", "1", "3", "4"),
