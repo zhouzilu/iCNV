@@ -15,9 +15,11 @@ icnv_output_to_gb(chr, icnv.output)
 matrix for Genome browser
 }
 \description{
-We could add the output to custom tracks on Genome Browser. Remeber to choose human assembly matches your input data.
-We color coded the CNVs to make it as consistant as IGV. To show color, click 'User Track after submission', and edit
-config to 'visibility=2 itemRgb="On"'. Color see Github page for more example.
+We could add the output to custom tracks on Genome Browser. Remeber to choose 
+human assembly matches your input data.
+We color coded the CNVs to make it as consistant as IGV. To show color, 
+click 'User Track after submission', and edit config to 
+'visibility=2 itemRgb="On"'. Color see Github page for more example.
 }
 \examples{
 icnv.output <- output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0, min_size=10000)

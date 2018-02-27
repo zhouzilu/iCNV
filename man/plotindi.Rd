@@ -36,7 +36,8 @@ plotindi(ngs_plr, snp_lrr, ngs_baf, snp_baf, ngs_plr.pos, snp_lrr.pos,
 void
 }
 \description{
-Plot relationship between platforms and features for each individual. Only work for muli-platform inference.
+Plot relationship between platforms and features for each individual. 
+Only work for muli-platform inference.
 }
 \examples{
 plotindi(ngs_plr,snp_lrr,ngs_baf,snp_baf,

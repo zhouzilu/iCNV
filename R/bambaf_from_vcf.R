@@ -1,6 +1,7 @@
 #' Get BAM baf information from vcf
 #' 
-#' If your vcf follow the format in the example, you could use this function to extract NGS baf from vcf files. Remember to load library before hands.
+#' If your vcf follow the format in the example, you could use this function to 
+#' extract NGS baf from vcf files. Remember to load library before hands.
 #' Save 6 lists, each list has N entry. N = # of individuals (or vcf file)
 #' ngs_baf.nm: name of the bamfiles; ngs_baf.chr: the chromosome; ngs_baf.pos: the position of the variants; 
 #' ngs_baf: the BAF of the variants; ngs_baf.id: the ID of the variants; filenm:the file name

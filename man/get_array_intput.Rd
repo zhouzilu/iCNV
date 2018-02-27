@@ -19,7 +19,8 @@ get_array_intput(dir, pattern, chr = NULL, projectname = "")
 void
 }
 \description{
-If your array input file follow the format in the example, you could use this function to extract array LRR and baf. Remember to load library before hands.
+If your array input file follow the format in the example, you could use this
+ function to extract array LRR and baf. Remember to load library before hands.
 Save 4*[# of chr] lists, each list has N entry. N = # of individuals
 snp_lrr: SNP LRR intensity; snp_lrr.pos: the position of the SNPs
 snp_baf: the BAF of the SNPs; snp_baf.pos: the position of the SNPs

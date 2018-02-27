@@ -1,6 +1,7 @@
 #' Individual sample plot
 #' 
-#' Plot relationship between platforms and features for each individual. Only work for muli-platform inference.
+#' Plot relationship between platforms and features for each individual. 
+#' Only work for muli-platform inference.
 #' 
 #' @importFrom grDevices colorRampPalette dev.off pdf
 #' @importFrom graphics axis grid legend par plot points

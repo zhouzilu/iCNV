@@ -44,7 +44,8 @@ iCNV_detection(ngs_plr = NULL, snp_lrr = NULL, ngs_baf = NULL,
 (2) exact copy number for each CNV inference, if CN=1.
 }
 \description{
-Copy number variation detection tool for germline data. Able to combine intensity and BAF from SNP array and NGS data.
+Copy number variation detection tool for germline data. Able to combine 
+intensity and BAF from SNP array and NGS data.
 }
 \examples{
 # icnv call without genotype (just infer deletion, duplication)

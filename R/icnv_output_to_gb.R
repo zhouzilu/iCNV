@@ -1,8 +1,10 @@
 #' Convert icnv.output to input for Genome Browser. 
 #' 
-#' We could add the output to custom tracks on Genome Browser. Remeber to choose human assembly matches your input data.
-#' We color coded the CNVs to make it as consistant as IGV. To show color, click 'User Track after submission', and edit
-#' config to 'visibility=2 itemRgb="On"'. Color see Github page for more example.
+#' We could add the output to custom tracks on Genome Browser. Remeber to choose 
+#' human assembly matches your input data.
+#' We color coded the CNVs to make it as consistant as IGV. To show color, 
+#' click 'User Track after submission', and edit config to 
+#' 'visibility=2 itemRgb="On"'. Color see Github page for more example.
 #' 
 #' @importFrom grDevices colorRampPalette dev.off pdf
 #' @importFrom graphics axis grid legend par plot points
