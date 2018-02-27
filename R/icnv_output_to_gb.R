@@ -4,6 +4,10 @@
 #' We color coded the CNVs to make it as consistant as IGV. To show color, click 'User Track after submission', and edit
 #' config to 'visibility=2 itemRgb="On"'. Color see Github page for more example.
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param chr CNV chromosome
 #' @param icnv.output output from output_list_function
 #' @return matrix for Genome browser

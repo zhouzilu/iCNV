@@ -5,6 +5,10 @@
 #' snp_lrr: SNP LRR intensity; snp_lrr.pos: the position of the SNPs
 #' snp_baf: the BAF of the SNPs; snp_baf.pos: the position of the SNPs
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param dir A string. The directory path to the folder where store signal intensity file according to chr
 #' @param pattern A string. The pattern of all the intensity file
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate files for all chromosomes. Default NULL

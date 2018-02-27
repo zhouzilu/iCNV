@@ -3,6 +3,10 @@
 #' Plot out CNV inference score. Each row is a sample, each column is a SNP or, exon (WES) or bin (WGS). Red color indicate score
 #' favor duplication whereas blue favor deletion.
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param icnv_res CNV inference result. Result from iCNV_detection() (i.e. iCNV_detection(...))
 #' @param h start position of this plot. Default Start of the whole chromosome
 #' @param t end position of this plot. Default End of the whole chromosome

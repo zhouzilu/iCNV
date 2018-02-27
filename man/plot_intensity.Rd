@@ -18,7 +18,7 @@ void
 For quality checking purpose during intermediate steps
 }
 \examples{
-chr = 22
+chr <- 22
 plot_intensity(ngs_plr,chr)
 plot_intensity(snp_lrr,chr)
 }

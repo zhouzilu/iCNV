@@ -7,13 +7,13 @@
 bambaf_from_vcf(dir = ".", vcf_list, chr = NULL, projectname = "")
 }
 \arguments{
-\item{dir}{The directory to all the vcf stored; default is right in this folder.}
+\item{dir}{The directory to all the vcf stored; default is right in this folder. Defualt '.'}
 
 \item{vcf_list}{All the vcf names stored in vcf.list; could use command:"ls *.vcf > vcf.list" to generate.}
 
-\item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes.}
+\item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes. Defualt NULL}
 
-\item{projectname}{Name of the project}
+\item{projectname}{Name of the project. Default ''}
 }
 \value{
 void

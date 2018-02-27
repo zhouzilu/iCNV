@@ -22,5 +22,5 @@ output CNV list of each individual
 Generate human readable output from result calculated by iCNV_detection function
 }
 \examples{
-icnv.output = output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0)
+icnv.output <- output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0)
 }

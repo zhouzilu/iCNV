@@ -2,6 +2,10 @@
 #' 
 #' Default position generated from USCS genome browser
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22
 #' @param hg Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented.
 #' @param start The start position of your BED file. Default NULL

@@ -11,11 +11,11 @@ bed_generator(chr, hg, start = NULL, end = NULL, by = 1000)
 
 \item{hg}{Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented.}
 
-\item{start}{The start position of your BED file.}
+\item{start}{The start position of your BED file. Default NULL}
 
-\item{end}{The end position of your BED file.}
+\item{end}{The end position of your BED file. Default NULL}
 
-\item{by}{The chunk of your DNA for each bin. Default 1kb.}
+\item{by}{The chunk of your DNA for each bin. Default 1000.}
 }
 \value{
 void

@@ -2,6 +2,10 @@
 #' 
 #' Plot relationship between platforms and features for each individual. Only work for muli-platform inference.
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param ngs_plr A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.
 #' @param snp_lrr A list of SNP array intensity data. Each entry is an individual. If no SNP array data, no need to specify.
 #' @param ngs_baf A list of NGS BAF data. Each entry is an individual. If no NGS data, no need to specify.
@@ -66,7 +70,7 @@ plotindi <- function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs
   n <- length(ttlpos)
   # row: z1, baf1, z2, baf2, score
   mat <- matrix(NA,ncol=n-1,nrow=5)
-  for (i in seq_len(n-1){
+  for (i in seq_len(n-1)){
     sel <- which(rpos2i>=ttlpos[i] & rpos2i<=ttlpos[i+1])
     if (length(sel)>0){
       mat[3,i] <- mean(r2i[sel],na.rm=TRUE)

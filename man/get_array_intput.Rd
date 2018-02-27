@@ -11,7 +11,7 @@ get_array_intput(dir, pattern, chr = NULL, projectname = "")
 
 \item{pattern}{A string. The pattern of all the intensity file}
 
-\item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate files for all chromosomes.}
+\item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate files for all chromosomes. Default NULL}
 
 \item{projectname}{Name of the project}
 }
@@ -26,6 +26,6 @@ snp_baf: the BAF of the SNPs; snp_baf.pos: the position of the SNPs
 }
 \examples{
 dir <- system.file("extdata", package="iCNV")
-pattern=paste0('*.csv.arrayicnv$')
+pattern <- paste0('*.csv.arrayicnv$')
 get_array_intput(dir,pattern,chr=22,projectname='icnv.demo.')
 }

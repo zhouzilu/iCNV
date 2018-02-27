@@ -2,6 +2,10 @@
 #' 
 #' Generate human readable output from result calculated by iCNV_detection function
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param icnv_res CNV inference result. Output from iCNV_detection()
 #' @param sampleid the name of the sample, same order as the input
 #' @param CN An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Default 0.

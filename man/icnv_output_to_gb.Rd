@@ -20,7 +20,7 @@ We color coded the CNVs to make it as consistant as IGV. To show color, click 'U
 config to 'visibility=2 itemRgb="On"'. Color see Github page for more example.
 }
 \examples{
-icnv.output = output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0, min_size=10000)
-gb_input = icnv_output_to_gb(chr=22,icnv.output)
+icnv.output <- output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0, min_size=10000)
+gb_input <- icnv_output_to_gb(chr=22,icnv.output)
 write.table(gb_input,file='icnv_res_gb_chr22.tab',quote=FALSE,col.names=FALSE,row.names=FALSE)
 }

@@ -5,6 +5,10 @@
 #' ngs_baf.nm: name of the bamfiles; ngs_baf.chr: the chromosome; ngs_baf.pos: the position of the variants; 
 #' ngs_baf: the BAF of the variants; ngs_baf.id: the ID of the variants; filenm:the file name
 #' 
+#' @importFrom grDevices colorRampPalette dev.off pdf
+#' @importFrom graphics axis grid legend par plot points
+#' @importFrom stats aggregate dnorm dunif kmeans sd
+#' @importFrom utils read.table write.table
 #' @param dir The directory to all the vcf stored; default is right in this folder. Defualt '.'
 #' @param vcf_list All the vcf names stored in vcf.list; could use command:"ls *.vcf > vcf.list" to generate.
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes. Defualt NULL
