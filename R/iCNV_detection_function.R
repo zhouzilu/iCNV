@@ -41,7 +41,8 @@
 #' @export
 iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ngs_plr.pos=NULL,snp_lrr.pos=NULL,ngs_baf.pos=NULL,snp_baf.pos=NULL,maxIt=50,visual=0,projname='iCNV.',CN=0,mu=c(-3,0,2),cap=FALSE){
   # Change variable name for easier code writing
-  r1L <- ngs_plr;r2L <- snp_lrr;baf1 <- ngs_baf;baf2 <- snp_baf;rpos1 <- ngs_plr.pos;rpos2 <- snp_lrr.pos;bpos1 <- ngs_baf.pos;bpos2 <- snp_baf.pos
+  r1L <- ngs_plr;r2L <- snp_lrr;baf1 <- ngs_baf;baf2 <- snp_baf
+  rpos1 <- ngs_plr.posrpos2 <- snp_lrr.pos;bpos1 <- ngs_baf.pos;bpos2 <- snp_baf.pos
   ptm <- proc.time()
   CNV <- NULL
   c <- checkdim(r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2)
@@ -49,7 +50,8 @@ iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,n
     r2L <- NULL;baf2 <- NULL;rpos2 <- NULL;bpos2 <- NULL
     n <- length(r1L)
     indivd <- seq_len(n)
-    HMMcall <- mapply(HMMEM,r1L,baf1,rpos1,bpos1,rep(maxIt,n),indivd,rep(list(mu),n),MoreArgs=list(r2i=r2L,baf2i=baf2,rpos2i=rpos2,bpos2i=bpos2,cap=cap),SIMPLIFY=FALSE)
+    HMMcall <- mapply(HMMEM,r1L,baf1,rpos1,bpos1,rep(maxIt,n),indivd,rep(list(mu),n),
+        MoreArgs=list(r2i=r2L,baf2i=baf2,rpos2i=rpos2,bpos2i=bpos2,cap=cap),SIMPLIFY=FALSE)
     if (CN!=0){
       print('Start estimating integer copy number...')
       bafzIs <- novisualization_ngs(HMMcall,r1L,baf1,rpos1,bpos1)
@@ -318,7 +320,7 @@ HMMiEM <- function(r1i,r2i,baf1i,baf2i,rpos1i,rpos2i,bpos1i,bpos2i,mu,sigma,p,ca
 
   n <- nrow(Lposi)
   D <- 70000
-  d <- pmax(rowMeans(Lposi)[2:n]-rowMeans(Lposi)[1:(n-1)],1)
+  d <- pmax(rowMeans(Lposi)[2:n]-rowMeans(Lposi)[seq_len(n-1)],1)
   f <- exp(-d/D)
   # p <- 10^-8
   q <- 1/6

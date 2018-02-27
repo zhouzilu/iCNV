@@ -20,61 +20,61 @@
 #' bambaf_from_vcf(dir,'bam_vcf.list',chr=22,projectname='icnv.demo.')
 #' @export
 bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
-	`%>%`=tidyr::`%>%`
-	filenm=file.path(dir,read.table(file.path(dir,vcf_list),header=FALSE,as.is=TRUE)[[1]])
+    `%>%`=tidyr::`%>%`
+    filenm=file.path(dir,read.table(file.path(dir,vcf_list),header=FALSE,as.is=TRUE)[[1]])
 
-	# Read all the VCF data
-	baf.all=sapply(filenm,bam.baf,simplify=FALSE)
+    # Read all the VCF data
+    baf.all=lapply(filenm,bam.baf)
 
-	# Seperate the data into different chromosome
-	if(is.null(chr)){
-		for (chr in 1:22){
-			baf.all.chr=sapply(baf.all,function(x){x1=x %>% dplyr::filter(`#CHROM`==chr); return(x1)},simplify=FALSE)
-			ngs_baf.nm=list()
-			ngs_baf.chr=list()
-			ngs_baf.pos=list()
-			ngs_baf.id=list()
-			ngs_baf=list()
-			for (i in seq_along(baf.all.chr)){
-				x=baf.all.chr[[i]]
-				ngs_baf.nm[[i]]=names(x)[4]
-				ngs_baf.chr[[i]]=x$`#CHROM`
-				ngs_baf.pos[[i]]=x$POS
-				ngs_baf.id[[i]]=x$ID
-				ngs_baf[[i]]=x[[4]]
-			}
-			save(chr,ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
-		}
-	}else{
-		baf.all.chr=sapply(baf.all,function(x){return(x %>% dplyr::filter(`#CHROM`==chr))},simplify=FALSE)
-		ngs_baf.nm=list()
-		ngs_baf.chr=list()
-		ngs_baf.pos=list()
-		ngs_baf.id=list()
-		ngs_baf=list()
-		for (i in seq_along(baf.all.chr)){
-			x=baf.all.chr[[i]]
-			ngs_baf.nm[[i]]=names(x)[4]
-			ngs_baf.chr[[i]]=x$`#CHROM`
-			ngs_baf.pos[[i]]=x$POS
-			ngs_baf.id[[i]]=x$ID
-			ngs_baf[[i]]=x[[4]]
-		}
-		save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
-	}
+    # Seperate the data into different chromosome
+    if(is.null(chr)){
+        for (chr in seq_len(22)){
+            baf.all.chr=lapply(baf.all,function(x){x1=x %>% dplyr::filter(`#CHROM`==chr); return(x1)})
+            ngs_baf.nm=list()
+            ngs_baf.chr=list()
+            ngs_baf.pos=list()
+            ngs_baf.id=list()
+            ngs_baf=list()
+            for (i in seq_along(baf.all.chr)){
+                x=baf.all.chr[[i]]
+                ngs_baf.nm[[i]]=names(x)[4]
+                ngs_baf.chr[[i]]=x$`#CHROM`
+                ngs_baf.pos[[i]]=x$POS
+                ngs_baf.id[[i]]=x$ID
+                ngs_baf[[i]]=x[[4]]
+            }
+            save(chr,ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
+        }
+    }else{
+        baf.all.chr=lapply(baf.all,function(x){return(x %>% dplyr::filter(`#CHROM`==chr))})
+        ngs_baf.nm=list()
+        ngs_baf.chr=list()
+        ngs_baf.pos=list()
+        ngs_baf.id=list()
+        ngs_baf=list()
+        for (i in seq_along(baf.all.chr)){
+            x=baf.all.chr[[i]]
+            ngs_baf.nm[[i]]=names(x)[4]
+            ngs_baf.chr[[i]]=x$`#CHROM`
+            ngs_baf.pos[[i]]=x$POS
+            ngs_baf.id[[i]]=x$ID
+            ngs_baf[[i]]=x[[4]]
+        }
+        save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
+    }
 }
 
 bam.baf=function(filenm){
-	`%>%`=tidyr::`%>%`
-	cat('load ',filenm,'...\n')
-	dt = data.table::fread(filenm,skip='#CHROM')
-	nm=names(dt)[length(dt)]
-	cat('individual ',nm,'\n')
-	dt <- dt %>% dplyr::filter(QUAL!='.') %>% dplyr::select(-REF,-ALT,-QUAL,-FILTER,-INFO)
-	ind_AD=match('AD',strsplit(dt[[4]],':')[[1]])
-	ind_DP=match('DP',strsplit(dt[[4]],':')[[1]])
-	bafi <- sapply(strsplit(dt[[5]],':'),function(x){a=as.numeric(strsplit(x[ind_AD],',')[[1]]);return(a[1]/(a[1]+a[2]))})
-	dt[nm] <- bafi
-	dt <- dt %>% dplyr::select(-FORMAT)
-	return(dt)
+    `%>%`=tidyr::`%>%`
+    cat('load ',filenm,'...\n')
+    dt = data.table::fread(filenm,skip='#CHROM')
+    nm=names(dt)[length(dt)]
+    cat('individual ',nm,'\n')
+    dt <- dt %>% dplyr::filter(QUAL!='.') %>% dplyr::select(-REF,-ALT,-QUAL,-FILTER,-INFO)
+    ind_AD=match('AD',strsplit(dt[[4]],':')[[1]])
+    ind_DP=match('DP',strsplit(dt[[4]],':')[[1]])
+    bafi <- vapply(strsplit(dt[[5]],':'),function(x){a=as.numeric(strsplit(x[ind_AD],',')[[1]]);return(a[1]/(a[1]+a[2]))},0.0)
+    dt[nm] <- bafi
+    dt <- dt %>% dplyr::select(-FORMAT)
+    return(dt)
 }
