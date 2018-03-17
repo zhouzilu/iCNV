@@ -16,7 +16,7 @@
 #' @param ngs_baf.pos A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.
 #' @param snp_baf.pos A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.
 #' @param icnvres CNV inference result. The output from iCNV_detection()
-#' @param I Indicating the position of the individual to plot
+#' @param I Indicating the position of the individual to plot. Type integer. 
 #' @param h start position of this plot. Default Start of the whole chromosome
 #' @param t end position of this plot. Default End of the whole chromosome
 #' @return void
@@ -26,6 +26,7 @@
 #'  icnv_res0,I=1)
 #' @export
 plotindi <- function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,icnvres,I,h=NULL,t=NULL){
+  stopifnot(is.numeric(I))
   r1L=ngs_plr;r2L=snp_lrr;baf1=ngs_baf;baf2=snp_baf;rpos1=ngs_plr.pos
   rpos2=snp_lrr.pos;bpos1=ngs_baf.pos;bpos2=snp_baf.pos
   hmmcalls <- icnvres[[1]]

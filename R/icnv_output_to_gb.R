@@ -10,7 +10,7 @@
 #' @importFrom graphics axis grid legend par plot points
 #' @importFrom stats aggregate dnorm dunif kmeans sd
 #' @importFrom utils read.table write.table
-#' @param chr CNV chromosome
+#' @param chr CNV chromosome. Type integer. 
 #' @param icnv.output output from output_list_function
 #' @return matrix for Genome browser
 #' @examples
@@ -19,6 +19,7 @@
 #' write.table(gb_input,file='icnv_res_gb_chr22.tab',quote=FALSE,col.names=FALSE,row.names=FALSE)
 #' @export
 icnv_output_to_gb <- function(chr,icnv.output){
+    stopifnot(is.numeric(chr))
     ids <- names(icnv.output)
     colcode <- c('130,0,0','255,0,0',NA,'0,255,0','0,130,0')
     gb.list <- mapply(function(x,id){

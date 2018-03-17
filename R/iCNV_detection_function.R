@@ -15,12 +15,12 @@
 #' @param snp_lrr.pos A list of SNP array intensity postion data. Each entry is an individual with length=#of SNPs. If no SNP array data, no need to specify.
 #' @param ngs_baf.pos A list of NGS BAF postion data. Each entry is an individual with length=#of BAFs. If no NGS data, no need to specify.
 #' @param snp_baf.pos A list of SNP array BAF postion data. Each entry is an individual with length=#of BAFs. If no SNP array data, no need to specify.
-#' @param maxIt An integer number indicate the maximum number of EM iteration if not converged during parameter inference. Default 50.
-#' @param visual An indicator variable with value {0,1,2}. 0 indicates no visualization, 1 indicates basic visualization, 2 indicates complete visualization (Note visual 2 only work for single platform and integer CN inferenced)
-#' @param projname A string as the name of this project. Default 'iCNV.'
-#' @param CN An indicator variable with value {0,1} for whether wants to infer exact copy number. 0 no exact CN, 1 exact CN. Default 0.
+#' @param maxIt An integer number indicate the maximum number of EM iteration if not converged during parameter inference. Type integer. Default 50. 
+#' @param visual An indicator variable with value {0,1,2}. 0 indicates no visualization, 1 indicates basic visualization, 2 indicates complete visualization (Note visual 2 only work for single platform and integer CN inferenced). Type integer. Default 0
+#' @param projname A string as the name of this project. Type character. Default 'iCNV.'
+#' @param CN An indicator variable with value {0,1} for whether wants to infer exact copy number. 0 no exact CN, 1 exact CN. Type integer. Default 0.
 #' @param mu A length tree vectur specify means of intensity in mixture normal distribution (Deletion, Diploid, Duplification). Default c(-3,0,2)
-#' @param cap A boolean decides whether we cap insane intensity value due to double deletion or mutiple amplification. Default False
+#' @param cap A boolean decides whether we cap insane intensity value due to double deletion or mutiple amplification. Type logical. Default False
 #' @keywords CNV, BAF, Platform integration, Intensity
 #' @return (1) CNV inference, contains CNV inference, Start and end position for each inference, Conditional probability for each inference, mu for mixture normal, sigma for mixture normal, probability of CNVs, Z score for each inference.
 #' @return (2) exact copy number for each CNV inference, if CN=1.
@@ -41,6 +41,12 @@
 #'                          projname=projname,CN=1,mu=c(-3,0,2),cap=TRUE,visual = 2)
 #' @export
 iCNV_detection <- function(ngs_plr=NULL,snp_lrr=NULL,ngs_baf=NULL,snp_baf=NULL,ngs_plr.pos=NULL,snp_lrr.pos=NULL,ngs_baf.pos=NULL,snp_baf.pos=NULL,maxIt=50,visual=0,projname='iCNV.',CN=0,mu=c(-3,0,2),cap=FALSE){
+  stopifnot(is.numeric(maxIt))
+  stopifnot(is.numeric(visual))
+  stopifnot(is.character(projname))
+  stopifnot(is.numeric(CN))
+  stopifnot(is.logical(cap))
+
   # Change variable name for easier code writing
   r1L <- ngs_plr; r2L <- snp_lrr; baf1 <- ngs_baf; baf2 <- snp_baf
   rpos1 <- ngs_plr.pos; rpos2 <- snp_lrr.pos

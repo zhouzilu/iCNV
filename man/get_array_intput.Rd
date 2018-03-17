@@ -4,16 +4,16 @@
 \alias{get_array_intput}
 \title{Get array information from given format}
 \usage{
-get_array_intput(dir, pattern, chr = NULL, projectname = "")
+get_array_intput(dir, pattern, chr = NULL, projname = "")
 }
 \arguments{
-\item{dir}{A string. The directory path to the folder where store signal intensity file according to chr}
+\item{dir}{A string. The directory path to the folder where store signal intensity file according to chr. Type character}
 
-\item{pattern}{A string. The pattern of all the intensity file}
+\item{pattern}{A string. The pattern of all the intensity file. Type character}
 
 \item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate files for all chromosomes. Default NULL}
 
-\item{projectname}{Name of the project}
+\item{projname}{Name of the project. Type character}
 }
 \value{
 void
@@ -28,5 +28,5 @@ snp_baf: the BAF of the SNPs; snp_baf.pos: the position of the SNPs
 \examples{
 dir <- system.file("extdata", package="iCNV")
 pattern <- paste0('*.csv.arrayicnv$')
-get_array_intput(dir,pattern,chr=22,projectname='icnv.demo.')
+get_array_intput(dir,pattern,chr=22,projname='icnv.demo.')
 }

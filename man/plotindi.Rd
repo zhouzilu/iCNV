@@ -26,7 +26,7 @@ plotindi(ngs_plr, snp_lrr, ngs_baf, snp_baf, ngs_plr.pos, snp_lrr.pos,
 
 \item{icnvres}{CNV inference result. The output from iCNV_detection()}
 
-\item{I}{Indicating the position of the individual to plot}
+\item{I}{Indicating the position of the individual to plot. Type integer.}
 
 \item{h}{start position of this plot. Default Start of the whole chromosome}
 

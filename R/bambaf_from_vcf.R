@@ -10,17 +10,21 @@
 #' @importFrom graphics axis grid legend par plot points
 #' @importFrom stats aggregate dnorm dunif kmeans sd
 #' @importFrom utils read.table write.table
-#' @param dir The directory to all the vcf stored; default is right in this folder. Defualt '.'
-#' @param vcf_list All the vcf names stored in vcf.list; could use command:"ls *.vcf > vcf.list" to generate.
+#' @importFrom rlang .data
+#' @param dir The directory to all the vcf stored; default is right in this folder. Type character. Defualt '.'
+#' @param vcf_list All the vcf names stored in vcf.list; could use command:"ls *.vcf > vcf.list" to generate. Type character. 
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate all chromosomes. Defualt NULL
-#' @param projectname Name of the project. Default ''
+#' @param projname Name of the project. Type character. Default ''
 #' @return void 
 #' @examples
 #' dir <- system.file("extdata", package="iCNV")
-#' bambaf_from_vcf(dir,'bam_vcf.list',projectname='icnv.demo.')
-#' bambaf_from_vcf(dir,'bam_vcf.list',chr=22,projectname='icnv.demo.')
+#' bambaf_from_vcf(dir,'bam_vcf.list',projname='icnv.demo.')
+#' bambaf_from_vcf(dir,'bam_vcf.list',chr=22,projname='icnv.demo.')
 #' @export
-bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
+bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projname=''){
+    stopifnot(is.character(dir))
+    stopifnot(is.character(vcf_list))
+    stopifnot(is.character(projname))
     `%>%`=tidyr::`%>%`
     filenm=file.path(dir,read.table(file.path(dir,vcf_list),
         header=FALSE,as.is=TRUE)[[1]])
@@ -31,7 +35,7 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
     # Seperate the data into different chromosome
     if(is.null(chr)){
         for (chr in seq_len(22)){
-            baf.all.chr=lapply(baf.all,function(x){x1=x %>% dplyr::filter(`#CHROM`==chr); return(x1)})
+            baf.all.chr=lapply(baf.all,function(x){x1=x %>% dplyr::filter(.data$`#CHROM`==chr); return(x1)})
             ngs_baf.nm=list()
             ngs_baf.chr=list()
             ngs_baf.pos=list()
@@ -46,10 +50,10 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
                 ngs_baf[[i]]=x[[4]]
             }
             save(chr,ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,
-                ngs_baf.id,filenm,file=paste0(projectname,'bambaf_',chr,'.rda'))
+                ngs_baf.id,filenm,file=paste0(projname,'bambaf_',chr,'.rda'))
         }
     }else{
-        baf.all.chr=lapply(baf.all,function(x){return(x %>% dplyr::filter(`#CHROM`==chr))})
+        baf.all.chr=lapply(baf.all,function(x){return(x %>% dplyr::filter(.data$`#CHROM`==chr))})
         ngs_baf.nm=list()
         ngs_baf.chr=list()
         ngs_baf.pos=list()
@@ -64,7 +68,7 @@ bambaf_from_vcf = function(dir='.',vcf_list,chr=NULL,projectname=''){
             ngs_baf[[i]]=x[[4]]
         }
         save(ngs_baf.nm,ngs_baf.chr,ngs_baf.pos,ngs_baf,ngs_baf.id,filenm,
-            file=paste0(projectname,'bambaf_',chr,'.rda'))
+            file=paste0(projname,'bambaf_',chr,'.rda'))
     }
 }
 
@@ -74,12 +78,12 @@ bam.baf=function(filenm){
     dt = data.table::fread(filenm,skip='#CHROM')
     nm=names(dt)[length(dt)]
     cat('individual ',nm,'\n')
-    dt <- dt %>% dplyr::filter(QUAL!='.') %>% dplyr::select(-REF,-ALT,-QUAL,-FILTER,-INFO)
+    dt <- dt %>% dplyr::filter(.data$QUAL!='.') %>% dplyr::select(-.data$REF,-.data$ALT,-.data$QUAL,-.data$FILTER,-.data$INFO)
     ind_AD=match('AD',strsplit(dt[[4]],':')[[1]])
     ind_DP=match('DP',strsplit(dt[[4]],':')[[1]])
     bafi <- vapply(strsplit(dt[[5]],':'),
         function(x){a=as.numeric(strsplit(x[ind_AD],',')[[1]]);return(a[1]/(a[1]+a[2]))},0.0)
     dt[nm] <- bafi
-    dt <- dt %>% dplyr::select(-FORMAT)
+    dt <- dt %>% dplyr::select(-.data$FORMAT)
     return(dt)
 }

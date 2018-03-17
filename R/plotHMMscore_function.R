@@ -11,15 +11,17 @@
 #' @param icnv_res CNV inference result. Result from iCNV_detection() (i.e. iCNV_detection(...))
 #' @param h start position of this plot. Default Start of the whole chromosome
 #' @param t end position of this plot. Default End of the whole chromosome
-#' @param title of this plot. Default "score plot"
+#' @param title of this plot. Character value. Type character Default "score plot"
 #' @param output generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL
-#' @param col Specify if would like to plot in DGV color scheme (red for deletion, blue for duplication and grey for diploid) or default color scheme (blue for deletion, red for duplicatin and and green for diploid) Default NULL
+#' @param col Specify if would like to plot in DGV color scheme ('DGV',red for deletion, blue for duplication and grey for diploid) or default color scheme (blue for deletion, red for duplicatin and and green for diploid) Type character. Default ''
 #' @return void
 #' @examples
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject')
 #' plotHMMscore(icnv_res0,h=21000000, t=22000000, title='my favorite subject',col='DGV')
 #' @export
 plotHMMscore <- function(icnv_res,h=NULL,t=NULL,title="score plot",output=NULL,col=''){
+  stopifnot(is.character(title))
+  stopifnot(is.character(col))
   if(is.null(h)){
     h <- min(icnv_res[[1]][[1]][[2]])
   }

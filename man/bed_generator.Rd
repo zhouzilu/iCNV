@@ -7,15 +7,15 @@
 bed_generator(chr, hg, start = NULL, end = NULL, by = 1000)
 }
 \arguments{
-\item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22}
+\item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. Type integer.}
 
-\item{hg}{Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented.}
+\item{hg}{Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented. Type integer.}
 
 \item{start}{The start position of your BED file. Default NULL}
 
 \item{end}{The end position of your BED file. Default NULL}
 
-\item{by}{The chunk of your DNA for each bin. Default 1000.}
+\item{by}{The chunk of your DNA for each bin. Type integer. Default 1000.}
 }
 \value{
 void

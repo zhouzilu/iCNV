@@ -10,18 +10,21 @@
 #' @importFrom graphics axis grid legend par plot points
 #' @importFrom stats aggregate dnorm dunif kmeans sd
 #' @importFrom utils read.table write.table
-#' @param dir A string. The directory path to the folder where store signal intensity file according to chr
-#' @param pattern A string. The pattern of all the intensity file
+#' @param dir A string. The directory path to the folder where store signal intensity file according to chr. Type character 
+#' @param pattern A string. The pattern of all the intensity file. Type character 
 #' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. If not specify, this function will generate files for all chromosomes. Default NULL
-#' @param projectname Name of the project
+#' @param projname Name of the project. Type character 
 #' @return void 
 #' @examples
 #' dir <- system.file("extdata", package="iCNV")
 #' pattern <- paste0('*.csv.arrayicnv$')
-#' get_array_intput(dir,pattern,chr=22,projectname='icnv.demo.')
+#' get_array_intput(dir,pattern,chr=22,projname='icnv.demo.')
 #' @export
 
-get_array_intput <- function(dir,pattern,chr=NULL,projectname=''){
+get_array_intput <- function(dir,pattern,chr=NULL,projname=''){
+    stopifnot(is.character(dir))
+    stopifnot(is.character(pattern))
+    stopifnot(is.character(projname))
     if(is.null(chr)){
         for (chr in seq_len(22)){
             cat(chr,'\n')
@@ -38,7 +41,7 @@ get_array_intput <- function(dir,pattern,chr=NULL,projectname=''){
             snp_baf.pos <- lapply(seq_along(snp_baf), 
                 function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
             save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, 
-                file=paste0(projectname,'array_lrrbaf_',chr,'.rda'))
+                file=paste0(projname,'array_lrrbaf_',chr,'.rda'))
         }
     }else{
         cat(chr,'\n')
@@ -55,7 +58,7 @@ get_array_intput <- function(dir,pattern,chr=NULL,projectname=''){
         snp_baf.pos <- lapply(seq_along(snp_baf), 
             function(i) signal.DT[[1]]$POS)
         save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, 
-            file=paste0(projectname,'array_lrrbaf_',chr,'.rda'))
+            file=paste0(projname,'array_lrrbaf_',chr,'.rda'))
     }
 }
 

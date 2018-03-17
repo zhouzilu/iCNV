@@ -7,7 +7,7 @@
 icnv_output_to_gb(chr, icnv.output)
 }
 \arguments{
-\item{chr}{CNV chromosome}
+\item{chr}{CNV chromosome. Type integer.}
 
 \item{icnv.output}{output from output_list_function}
 }

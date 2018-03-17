@@ -6,17 +6,20 @@
 #' @importFrom graphics axis grid legend par plot points
 #' @importFrom stats aggregate dnorm dunif kmeans sd
 #' @importFrom utils read.table write.table
-#' @param chr Specify the chromosome you want to generate. Must be of int from 1-22
-#' @param hg Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented.
+#' @param chr Specify the chromosome you want to generate. Must be of int from 1-22. Type integer. 
+#' @param hg Specify the coordinate you want to generate from. Start and end position of hg19 and hg38 have been pre-implemented. Type integer. 
 #' @param start The start position of your BED file. Default NULL
 #' @param end The end position of your BED file. Default NULL
-#' @param by The chunk of your DNA for each bin. Default 1000.
+#' @param by The chunk of your DNA for each bin. Type integer. Default 1000.
 #' @return void
 #' @examples
 #' bed_generator(chr=22,hg=38)
 #' bed_generator(22,38,5001,10000,by=500)
 #' @export
 bed_generator <- function(chr, hg, start=NULL, end=NULL, by=1000){
+    stopifnot(is.numeric(chr))
+    stopifnot(is.numeric(hg))
+    stopifnot(is.numeric(by))
     hg19_loc = matrix(c(0,249251000,1,243200000,1,198023000,1,191155000,1,180916000,1,171116000,1,159139000,1,146364000,1,141214000,1,135535000,
         0,135007000,1,133852000,1,115170000,1,107350000,1,102532000,1,90355000,1,81196000,1,78078000,1,59129000,1,63026000,
         0,48130000,1,51305000),ncol=2,byrow = TRUE)

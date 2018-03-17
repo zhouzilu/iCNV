@@ -8,13 +8,15 @@
 #' @importFrom utils read.table write.table
 #' @param icnv_res CNV inference result. Output from iCNV_detection()
 #' @param sampleid the name of the sample, same order as the input
-#' @param CN An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Default 0.
-#' @param min_size A integer which indicate the minimum length of the CNV you are interested in. This could remove super short CNVs due to noise. Default 0. Recommend 1000.
+#' @param CN An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Type integer. Default 0.
+#' @param min_size A integer which indicate the minimum length of the CNV you are interested in. This could remove super short CNVs due to noise. Type integer. Default 0. Recommend 1000.
 #' @return output CNV list of each individual
 #' @examples
 #' icnv.output <- output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0)
 #' @export
 output_list <- function(icnv_res,sampleid=NULL,CN=0,min_size=0){
+  stopifnot(is.numeric(CN))
+  stopifnot(is.numeric(min_size))
   if (CN!=0){
     testres <- icnv_res[[1]]
     result <- lapply(icnv_res[[2]],function(x){x})

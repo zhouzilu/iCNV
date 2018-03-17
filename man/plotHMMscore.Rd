@@ -14,11 +14,11 @@ plotHMMscore(icnv_res, h = NULL, t = NULL, title = "score plot",
 
 \item{t}{end position of this plot. Default End of the whole chromosome}
 
-\item{title}{of this plot. Default "score plot"}
+\item{title}{of this plot. Character value. Type character Default "score plot"}
 
 \item{output}{generated from output_list_function. If it isn't null, only CNVs in output file will be highlighted. Default NULL}
 
-\item{col}{Specify if would like to plot in DGV color scheme (red for deletion, blue for duplication and grey for diploid) or default color scheme (blue for deletion, red for duplicatin and and green for diploid) Default NULL}
+\item{col}{Specify if would like to plot in DGV color scheme ('DGV',red for deletion, blue for duplication and grey for diploid) or default color scheme (blue for deletion, red for duplicatin and and green for diploid) Type character. Default ''}
 }
 \value{
 void
