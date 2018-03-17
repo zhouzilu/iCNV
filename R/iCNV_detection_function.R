@@ -972,11 +972,12 @@ visualization2 <- function(testres,CNV,r1L,r2L,baf1,baf2,rpos1,rpos2,bpos1,bpos2
   cat('step5 of 5','\n')
   Is <- c(nI,d1I,d2I,p1I,p2I)
   CNV <- c(rep(2,length(nI)),rep(1,length(d1I)),rep(0,length(d2I)),rep(3,length(p1I)),rep(4,length(p2I)))
+  zs<-bafs<-NULL
   d.f <- data.frame(zs=c(nzs,d1zs,d2zs,p1zs,p2zs),bafs=c(nbafs,d1bafs,d2bafs,p1bafs,p2bafs),
       Is=factor(c(nI,d1I,d2I,p1I,p2I),labels=c("SNPs only", "SNPs in Exon", "Exon w/ BAFs", "Exon w/ no BAF")),
       CNV=c(rep(2,length(nI)),rep(1,length(d1I)),rep(0,length(d2I)),rep(3,length(p1I)),rep(4,length(p2I))))
   # save(d.f,file='ggplot_df.rda')
-  p <- ggplot2::ggplot(d.f,ggplot2::aes(x=.data$zs,y=.data$bafs))+
+  p <- ggplot2::ggplot(d.f,ggplot2::aes(x=zs,y=bafs))+
     ggplot2::geom_point(ggplot2::aes(colour=factor(CNV),shape=Is),alpha=0.75)+
     ggplot2::scale_colour_manual(name="", values = c("0"="blue", "1"="cyan", "2"="grey","3"="orange", "4"="red"))+
     ggplot2::stat_density2d(ggplot2::aes(colour=factor(CNV),linetype=Is),h=c(8,0.3))

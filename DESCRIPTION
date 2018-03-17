@@ -1,6 +1,6 @@
 Package: iCNV
 Title: Integrated Copy Number Variation detection
-Version: 0.99.23
+Version: 0.99.24
 Author: Zilu Zhou, Nancy Zhang
 Maintainer: Zilu Zhou <zhouzilu@pennmedicine.upenn.edu>
 Description: Integrative copy number variation (CNV) detection from multiple platform and experimental design.
@@ -21,8 +21,7 @@ Imports:
   graphics,
   stats,
   utils,
-  rlang,
-  CODEX
+  rlang
 Suggests: knitr,
     rmarkdown,
     WES.1KG.WUGSC
