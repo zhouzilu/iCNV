@@ -16,7 +16,7 @@
 #' bed_generator(chr=22,hg=38)
 #' bed_generator(22,38,5001,10000,by=500)
 #' @export
-bed_generator <- function(chr, hg, start=NULL, end=NULL, by=1000){
+bed_generator <- function(chr=numeric(), hg=numeric(), start=NULL, end=NULL, by=1000){
     stopifnot(is.numeric(chr))
     stopifnot(is.numeric(hg))
     stopifnot(is.numeric(by))

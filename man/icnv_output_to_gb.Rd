@@ -4,7 +4,7 @@
 \alias{icnv_output_to_gb}
 \title{Convert icnv.output to input for Genome Browser.}
 \usage{
-icnv_output_to_gb(chr, icnv.output)
+icnv_output_to_gb(chr = numeric(), icnv.output)
 }
 \arguments{
 \item{chr}{CNV chromosome. Type integer.}

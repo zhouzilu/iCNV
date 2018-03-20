@@ -4,7 +4,8 @@
 \alias{bed_generator}
 \title{Generate BED file for WGS dataset.}
 \usage{
-bed_generator(chr, hg, start = NULL, end = NULL, by = 1000)
+bed_generator(chr = numeric(), hg = numeric(), start = NULL, end = NULL,
+  by = 1000)
 }
 \arguments{
 \item{chr}{Specify the chromosome you want to generate. Must be of int from 1-22. Type integer.}

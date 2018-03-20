@@ -25,7 +25,7 @@
 #'  ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,
 #'  icnv_res0,I=1)
 #' @export
-plotindi <- function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,icnvres,I,h=NULL,t=NULL){
+plotindi <- function(ngs_plr,snp_lrr,ngs_baf,snp_baf,ngs_plr.pos,snp_lrr.pos,ngs_baf.pos,snp_baf.pos,icnvres,I=numeric(),h=NULL,t=NULL){
   stopifnot(is.numeric(I))
   r1L=ngs_plr;r2L=snp_lrr;baf1=ngs_baf;baf2=snp_baf;rpos1=ngs_plr.pos
   rpos2=snp_lrr.pos;bpos1=ngs_baf.pos;bpos2=snp_baf.pos

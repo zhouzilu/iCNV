@@ -18,7 +18,7 @@
 #' gb_input <- icnv_output_to_gb(chr=22,icnv.output)
 #' write.table(gb_input,file='icnv_res_gb_chr22.tab',quote=FALSE,col.names=FALSE,row.names=FALSE)
 #' @export
-icnv_output_to_gb <- function(chr,icnv.output){
+icnv_output_to_gb <- function(chr=numeric(),icnv.output){
     stopifnot(is.numeric(chr))
     ids <- names(icnv.output)
     colcode <- c('130,0,0','255,0,0',NA,'0,255,0','0,130,0')

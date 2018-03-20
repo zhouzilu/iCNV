@@ -204,7 +204,7 @@ dir <- system.file("extdata", package="iCNV")#PATH/TO/FOLDER where you stored th
 chr <- 22
 projectname <- "icnv.demo."
 pattern <- paste0('*.csv.arrayicnv$')
-get_array_intput(dir,pattern,chr,projectname)
+get_array_input(dir,pattern,chr,projectname)
 load(paste0(projectname,'array_lrrbaf_',chr,'.rda'))
 ```
 

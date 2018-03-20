@@ -14,7 +14,7 @@
 #' plot_intensity(ngs_plr,chr)
 #' plot_intensity(snp_lrr,chr)
 #' @export
-plot_intensity <- function(intensity,chr){
+plot_intensity <- function(intensity,chr=numeric()){
 	stopifnot(is.numeric(chr))
   	intensity <- do.call(cbind,intensity)
   	l <- 4

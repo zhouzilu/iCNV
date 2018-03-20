@@ -18,10 +18,10 @@
 #' @examples
 #' dir <- system.file("extdata", package="iCNV")
 #' pattern <- paste0('*.csv.arrayicnv$')
-#' get_array_intput(dir,pattern,chr=22,projname='icnv.demo.')
+#' get_array_input(dir,pattern,chr=22,projname='icnv.demo.')
 #' @export
 
-get_array_intput <- function(dir,pattern,chr=NULL,projname=''){
+get_array_input <- function(dir=character(),pattern=character(),chr=NULL,projname=''){
     stopifnot(is.character(dir))
     stopifnot(is.character(pattern))
     stopifnot(is.character(projname))

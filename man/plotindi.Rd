@@ -5,7 +5,7 @@
 \title{Individual sample plot}
 \usage{
 plotindi(ngs_plr, snp_lrr, ngs_baf, snp_baf, ngs_plr.pos, snp_lrr.pos,
-  ngs_baf.pos, snp_baf.pos, icnvres, I, h = NULL, t = NULL)
+  ngs_baf.pos, snp_baf.pos, icnvres, I = numeric(), h = NULL, t = NULL)
 }
 \arguments{
 \item{ngs_plr}{A list of NGS intensity data. Each entry is an individual. If no NGS data, no need to specify.}
