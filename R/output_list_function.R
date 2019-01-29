@@ -49,21 +49,19 @@ output_list <- function(icnv_res,sampleid=NULL,CN=0,min_size=0,min_gap=0){
     }
     return(list(It,post))
   },result,Lpos,SIMPLIFY = FALSE)
-
+  
+  # Generate calls in easy format
   icnv_res <- mapply(function(res){
     cnv <- res[[1]]
     pos <- res[[2]]
     ind <-  cnv!=2
     cnv <- cnv[ind]
     pos <- matrix(pos[ind,],ncol=2)
-    filt <- (pos[,2]-pos[,1]>=min_size)
-    cnv <- cnv[filt]
-    pos <- matrix(pos[filt,],ncol=2)
     return(cbind(cnv,pos))
   },res,SIMPLIFY = TRUE)
-
   names(icnv_res) <- sampleid
   
+  # Merge min_gap
   icnv_res <- mapply(function(res){
     if(nrow(res)>1){
       not.merged=TRUE
@@ -81,6 +79,16 @@ output_list <- function(icnv_res,sampleid=NULL,CN=0,min_size=0,min_gap=0){
           }
         }
       }
+      return(res)
+    }else{
+      return(res)
+    }
+  },icnv_res)
+  # filt min_size
+  icnv_res <- mapply(function(res){
+    if(nrow(res)>0){
+      filt <- ((res[,3]-res[,2])>=min_size)
+      res=res[filt,,drop=FALSE]
       return(res)
     }else{
       return(res)
