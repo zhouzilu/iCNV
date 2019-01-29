@@ -10,11 +10,12 @@
 #' @param sampleid the name of the sample, same order as the input
 #' @param CN An indicator variable with value {0,1} for whether exact copy number inferred in iCNV_detection. 0 no exact CN, 1 exact CN. Type integer. Default 0.
 #' @param min_size A integer which indicate the minimum length of the CNV you are interested in. This could remove super short CNVs due to noise. Type integer. Default 0. Recommend 1000.
+#' @param min_gap A integer which indicate the minimum gap of CNV you are likely to merge. The can remove gaps due to unstable estimation. However, the gap size have to be smaller than min_size to prevent error. Type integer. Default 0.
 #' @return output CNV list of each individual
 #' @examples
 #' icnv.output <- output_list(icnv_res=icnv_res0,sampleid=sampname_qc, CN=0)
 #' @export
-output_list <- function(icnv_res,sampleid=NULL,CN=0,min_size=0){
+output_list <- function(icnv_res,sampleid=NULL,CN=0,min_size=0,min_gap=0){
   stopifnot(is.numeric(CN))
   stopifnot(is.numeric(min_size))
   if (CN!=0){
@@ -62,5 +63,29 @@ output_list <- function(icnv_res,sampleid=NULL,CN=0,min_size=0){
   },res,SIMPLIFY = TRUE)
 
   names(icnv_res) <- sampleid
+  
+  icnv_res <- mapply(function(res){
+    if(nrow(res)>1){
+      not.merged=TRUE
+      while(not.merged){
+        not.merged=FALSE
+        sel=which((res[-1,2]-res[-nrow(res),3])<min_gap)
+        if (length(sel)>0){
+          for(i in sel){
+            if(res[i,1]==res[i+1,1]){
+              not.merged=TRUE
+              res[i,3]=res[i+1,3]
+              res=res[-i,]
+              break
+            }
+          }
+        }
+      }
+      return(res)
+    }else{
+      return(res)
+    }
+  },icnv_res)
+  
   return(icnv_res)
 }
