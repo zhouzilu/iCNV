@@ -1,7 +1,7 @@
 ---
 title: "iCNV Vignette"
 author: "Zilu Zhou, Nancy R. Zhang"
-date: "02/23/2018"
+date: "01/29/2019"
 output: 
   html_document:
     toc: true
@@ -268,7 +268,9 @@ icnv_res0 <- iCNV_detection(ngs_plr,snp_lrr,
                          ngs_plr.pos,snp_lrr.pos,
                          ngs_baf.pos,snp_baf.pos,
                          projname=projectname,CN=1,mu=c(-3,0,2),cap=TRUE,visual = 1)
-icnv.output <- output_list(icnv_res0,sampname_qc,CN=1)
+icnv.output <- output_list(icnv_res0,sampname_qc,CN=1,min_size=0,min_gap=0) 
+# You can alter min size of the CNV you want to keep and merge CNV with gap 
+# smaller than min gap.
 head(icnv.output)
 ```
  
@@ -341,10 +343,20 @@ head(icnv.output)
 plotHMMscore(icnv_res0_ngs,title=projectname)
 ```
 
+```{r message=FALSE,results='hide',fig.keep='all',fig.height=3, fig.width=8, out.width = "200%", dpi=200}
+### 2.6 code chunk number 2: plotindi
+I <- 24 # ploting out the 24th individual
+plotindi(ngs_plr=ngs_plr,
+         ngs_baf=ngs_baf,
+         ngs_plr.pos=ngs_plr.pos,
+         ngs_baf.pos=ngs_baf.pos,
+         icnvres=icnv_res0_ngs,I=I)
+```
+
  SNP array only CNV detection using **iCNV** 
 
 ```{r message=FALSE,results='hide',fig.keep='all',fig.height=4, fig.width=8, out.width = "200%", dpi=200}
-### 2.6 code chunk number 2: array only iCNV_detection
+### 2.6 code chunk number 3: array only iCNV_detection
 str(snp_lrr) # List of n vector, each one is the normalized LRR for a SNP
 str(snp_lrr.pos) # List of n vector, each one is a SNP position
 str(snp_baf) # List of n vector, each one is the BAF for a SNP
@@ -356,6 +368,16 @@ icnv_res0_snp <- iCNV_detection(snp_lrr=snp_lrr, snp_baf = snp_baf,
 icnv.output <- output_list(icnv_res0_snp,sampname_qc,CN=1)
 head(icnv.output)
 plotHMMscore(icnv_res0_snp,title=projectname)
+```
+
+```{r message=FALSE,results='hide',fig.keep='all',fig.height=3, fig.width=8, out.width = "200%", dpi=200}
+### 2.6 code chunk number 4: plotindi
+I <- 24 # ploting out the 24th individual
+plotindi(snp_lrr=snp_lrr,
+         snp_baf=snp_baf,
+         snp_lrr.pos=snp_lrr.pos,
+         snp_baf.pos=snp_baf.pos,
+         icnvres=icnv_res0_snp,I=I)
 ```
 
 ## 3. Session information
