@@ -38,7 +38,7 @@ install_github("zhouzilu/iCNV")
 ```
 
 ## Workflow overview
-Number in the parentheses referring to different section in [Vignettes](http://rawgit.com/zhouzilu/iCNV/master/vignettes/iCNV-vignette.html) and function details can be found [here](https://bioconductor.org/packages/release/bioc/manuals/iCNV/man/iCNV.pdf)
+Number in the parentheses referring to different section in [Vignettes](http://raw.githack.com/zhouzilu/iCNV/master/vignettes/iCNV-vignette.html) and function details can be found [here](https://bioconductor.org/packages/release/bioc/manuals/iCNV/man/iCNV.pdf)
 ```
         NGS                                             |           Array
 BAM    BED(UCSC for WES or bed_generator.R for WGS 2.2) |    SNP Intensity(in standard format)
@@ -64,7 +64,7 @@ Variants BAF(vcf) PLR                                   |        Array LRR   Arr
                               Genome Browser input
 ```
 ## Demo code & Vignettes with rich displays
-* [Vignettes](http://rawgit.com/zhouzilu/iCNV/master/vignettes/iCNV-vignette.html)
+* [Vignettes](http://raw.githack.com/zhouzilu/iCNV/master/vignettes/iCNV-vignette.html)
 * [Vignettes.RMD](https://github.com/zhouzilu/iCNV/blob/master/vignettes/iCNV-vignette.Rmd)
 * [Function manual](https://bioconductor.org/packages/release/bioc/manuals/iCNV/man/iCNV.pdf)
 
