@@ -2,6 +2,7 @@
 #' 
 #' If your array input file follow the format in the example, you could use this
 #'  function to extract array LRR and baf. Remember to load library before hands.
+#' Recent modification also will automatically sort the location of the SNPs.
 #' Save 4*[# of chr] lists, each list has N entry. N = # of individuals
 #' snp_lrr: SNP LRR intensity; snp_lrr.pos: the position of the SNPs
 #' snp_baf: the BAF of the SNPs; snp_baf.pos: the position of the SNPs
@@ -40,6 +41,32 @@ get_array_input <- function(dir=character(),pattern=character(),chr=NULL,projnam
                 function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
             snp_baf.pos <- lapply(seq_along(snp_baf), 
                 function(i) signal.DT[[1]]$POS[signal.DT[[1]]$Chr==chr])
+
+            # Sort snp locations
+            snp_lrr=mapply(function(snp_lrri,snp_lrr.posi){
+                ord=order(snp_lrr.posi)
+                return(snp_lrri[ord])
+            },snp_lrr,snp_lrr.pos,SIMPLIFY=FALSE)
+            names(snp_lrr) <- signalFile
+
+            snp_baf=mapply(function(snp_bafi,snp_baf.posi){
+                ord=order(snp_baf.posi)
+                return(snp_bafi[ord])
+            },snp_baf,snp_baf.pos,SIMPLIFY=FALSE)
+            names(snp_baf) <- signalFile
+            
+            snp_lrr.pos=mapply(function(snp_lrr.posi){
+                ord=order(snp_lrr.posi)
+                return(snp_lrr.posi[ord])
+            },snp_lrr.pos,SIMPLIFY=FALSE)
+            names(snp_lrr.pos) <- signalFile
+            
+            snp_baf.pos=mapply(function(snp_baf.posi){
+                ord=order(snp_baf.posi)
+                return(snp_baf.posi[ord])
+            },snp_baf.pos,SIMPLIFY=FALSE)
+            names(snp_baf.pos) <- signalFile
+            
             save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, 
                 file=paste0(projname,'array_lrrbaf_',chr,'.rda'))
         }
@@ -57,6 +84,32 @@ get_array_input <- function(dir=character(),pattern=character(),chr=NULL,projnam
             function(i) signal.DT[[1]]$POS)
         snp_baf.pos <- lapply(seq_along(snp_baf), 
             function(i) signal.DT[[1]]$POS)
+
+        # Sort snp locations
+        snp_lrr=mapply(function(snp_lrri,snp_lrr.posi){
+            ord=order(snp_lrr.posi)
+            return(snp_lrri[ord])
+        },snp_lrr,snp_lrr.pos,SIMPLIFY=FALSE)
+        names(snp_lrr) <- signalFile
+
+        snp_baf=mapply(function(snp_bafi,snp_baf.posi){
+            ord=order(snp_baf.posi)
+            return(snp_bafi[ord])
+        },snp_baf,snp_baf.pos,SIMPLIFY=FALSE)
+        names(snp_baf) <- signalFile
+        
+        snp_lrr.pos=mapply(function(snp_lrr.posi){
+            ord=order(snp_lrr.posi)
+            return(snp_lrr.posi[ord])
+        },snp_lrr.pos,SIMPLIFY=FALSE)
+        names(snp_lrr.pos) <- signalFile
+        
+        snp_baf.pos=mapply(function(snp_baf.posi){
+            ord=order(snp_baf.posi)
+            return(snp_baf.posi[ord])
+        },snp_baf.pos,SIMPLIFY=FALSE)
+        names(snp_baf.pos) <- signalFile
+        
         save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos, 
             file=paste0(projname,'array_lrrbaf_',chr,'.rda'))
     }

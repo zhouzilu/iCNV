@@ -1,15 +1,16 @@
 ---
 title: "iCNV Vignette"
 author: "Zilu Zhou, Nancy R. Zhang"
-date: "01/29/2019"
-output: 
+date: "04/05/2019"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
-    toc: true
+    toc: yes
     toc_depth: 3
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{iCNV Vignette}
-  %\VignetteEncoding{UTF-8}
+vignette: |
+  %\VignetteEngine{knitr::rmarkdown} %\VignetteIndexEntry{iCNV Vignette} %\VignetteEncoding{UTF-8}
 ---
 
 # iCNV Vignette
@@ -81,7 +82,7 @@ install_github("zhouzilu/iCNV")
 ### 2.2 .bam file normalization using CODEX
   For researchers work on WGS data, you need to generate your own BED file for CODEX normalization. We made a function [bed_generator](https://github.com/zhouzilu/iCNV/blob/master/R/bed_generator.R) to help you with this.
 
-  After you have BAM file and BED file available, follow code below to get normalized NGS PLR. Code modified from https://github.com/yuchaojiang/CODEX with permission. If you have any additional question, please refer to `CODEX`. iCNV only adopt normalized Poisson Likelihood Ratio from `CODEX`, representing NGS 'intensity'. In this example, we utilize toy data from the 1000 Genomes Project for illustration.
+  After you have BAM file and BED file available, follow code below to get normalized NGS PLR. Code modified from https://github.com/yuchaojiang/CODEX with permission. If you have any additional question, please refer to `CODEX`. iCNV only adopt normalized Poisson Likelihood Ratio from `CODEX`, representing NGS 'intensity'. Note from the `CODEX` user, the normalization should be performed per chromosome. In this example, we utilize toy data from the 1000 Genomes Project for illustration.
 
 ```{r CODEX_Normalization_1, message=FALSE,results='hide',warning=FALSE}
 
@@ -250,7 +251,7 @@ save(snp_lrr,snp_baf,snp_lrr.pos,snp_baf.pos,
 
 ### 2.5 Mutiple platform CNV detection using **iCNV**
 
-  At this step, we should already have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array. All the input should be in list form. This is mainly to accommodate the fact that length for `ngs_baf` and `ngs_baf.pos` is sample specific
+  At this step, we should already have PLR and variants BAF from sequencing, normalized LRR and BAF from SNP array. All the input should be in list form. This is mainly to accommodate the fact that length for `ngs_baf` and `ngs_baf.pos` is sample specific. In addition, CNV detection should perform per chromosome basis.
 
 ```{r results='hide',message=FALSE}
 ### 2.5 code chunk number 1: iCNV_detection with genotype
