@@ -6,7 +6,7 @@ Zilu Zhou, Nancy R. Zhang
 
 ## Maintainer
 Zilu Zhou <zhouzilu@pennmedicine.upenn.edu>
-Please comment on the *Issues* section for addtional questions.
+Please comment on the *Issues* section for additional questions.
 
 ## Description
 **iCNV** is a normalization and **germline** copy number variation detection procedure for mutiple study designs: WES only, WGS only, SNP array only, or any combination of SNP and sequencing data. **iCNV** applies platform specific normalization, utilizes allele specific reads from sequencing and integrates matched NGS and SNP-array data by a Hidden Markov Model (HMM).
